@@ -1,9 +1,12 @@
 var express = require("express"),
-    app            = express();
+        app        = express();
+
+// APP CONFIG
 app.set("view engine","ejs");
+app.use(express.static("public"));
 
 app.get("/",(req,res)=>{
-    res.send("Homepage!");
+    res.render("index");
 });
 
 app.listen(3000,()=>{
