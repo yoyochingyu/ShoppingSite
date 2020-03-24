@@ -5,7 +5,12 @@ var express = require("express"),
 app.set("view engine","ejs");
 app.use(express.static("public"));
 
+// Landing Page
 app.get("/",(req,res)=>{
+    res.render("index");
+});
+// Index Route
+app.get("/product",(req,res)=>{
     res.render("index");
 });
 
