@@ -1,25 +1,19 @@
 body{
-    font-family: 'Anton';
+    font-family: 'Anton','Lato';
 
 }
-h1{
-  text-align: center;  
-}
+
+/* Footer */
 h6{
     text-align: center;
     margin-top:100px;
 }
+/* If fixed nav-bar
 .navbar{
     margin-top: 50px;
+} */
+
+.card-text{
+    font-family: 'Lato';
 }
 
-.card{
-    margin-top:100px;
-    text-align: center;
-}
-img{
-    height: 208px;   
-}
-#imgcard{
-    width: 400px;
-}

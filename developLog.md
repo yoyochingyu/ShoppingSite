@@ -1,6 +1,13 @@
 # 待做清單
 1. 把商品調uniform sized(不會變形)
 2. show.ejs的購物網頁名稱不見了！
+3. nav bar調程fixed
+4. 調整衣服的大小
+
+
+
+# 閱讀
+1. card-group(doc)後面可看一下
 
 
 
