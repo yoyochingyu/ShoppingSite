@@ -1,3 +1,21 @@
 body{
     font-family: 'Anton';
+
+}
+h1{
+  text-align: center;  
+}
+h6{
+    text-align: center;
+    margin-top:100px;
+}
+.navbar{
+    margin-top: 50px;
+}
+
+.card{
+    margin-top:100px;
+}
+img{
+    height: 208px;   
 }
