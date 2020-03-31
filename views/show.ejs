@@ -1,0 +1,27 @@
+<%-include("partials/header")%>
+<div class="container">
+    <h1>Specific product</h1>
+    <div class="row">
+        <div class = "col-md-6">
+            <div class="card" >
+                <div class="card-body">
+                <img src="<%=product.imageUrl%>" class="card-img-top inline" alt="https://miro.medium.com/max/880/0*H3jZONKqRuAAeHnG.jpg" id="imgcard">
+                    <h5 class="card-title">Special title treatment</h5>
+                    <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                    <a href="#" class="btn btn-primary">Go somewhere</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title"><%=product.name%></h5>
+                    <p class="card-text "><%=product.description%></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<%-include("partials/footer")%>

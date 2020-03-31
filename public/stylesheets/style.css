@@ -15,7 +15,11 @@ h6{
 
 .card{
     margin-top:100px;
+    text-align: center;
 }
 img{
     height: 208px;   
+}
+#imgcard{
+    width: 400px;
 }

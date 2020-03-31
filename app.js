@@ -13,12 +13,18 @@ var products = [{name:"Socks",description:"Great socks!",imageUrl:"https://scont
 
 // Landing Page
 app.get("/",(req,res)=>{
-    res.render("index",{products:products});
+    res.render("landing",);
 });
 // Index Route
-app.get("/product",(req,res)=>{
-    res.render("index");
+app.get("/products",(req,res)=>{
+    res.render("index",{products:products});
 });
+
+// Show Route
+app.get("/products/:id",(req,res)=>{
+    res.render("show",{product:products[0]});
+});
+
 
 app.listen(3000,()=>{
     console.log("Server has started!");
