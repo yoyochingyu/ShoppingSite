@@ -26,6 +26,13 @@ app.get("/products/:id",(req,res)=>{
     res.render("show",{product:products[0]});
 });
 
+// ====================
+// User Route
+// ====================
+app.get("/login",(req,res)=>{
+    res.render("user/login");
+});
+
 
 app.listen(3000,()=>{
     console.log("Server has started!");

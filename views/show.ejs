@@ -1,14 +1,65 @@
 <%-include("partials/header")%>
-<div class="container">
-    <div class="card mb-3 mt-5 mx-auto">
+<div class="container-fluid">
+    <div class="card mb-3  mx-auto" style="width: 65em;" >
         <div class="row no-gutters">
           <div class="col-md-5">
             <img src="<%=product.imageUrl%>" class="card-img" alt="https://miro.medium.com/max/880/0*H3jZONKqRuAAeHnG.jpg" >
           </div>
           <div class="col-md-7">
             <div class="card-body">
-              <h3 class="card-title text-center"><%=product.name%></h3>
-              <p class="card-text text-center"><%=product.description%></p>
+              <h2 class="card-title text-center mt-4"><%=product.name%></h2>
+              <p class="card-text text-muted mb-0">Description</p>
+              <p class="card-text showcard mb-0"><%=product.description%></p>
+              <p class="card-text" style="font-size: 3em">$ 29.9</p>
+              <p class="card-text text-muted mb-1">Select a size</p>
+              <ul class="list-group list-group-horizontal mb-3">
+                <li class="list-group-item">S</li>
+                <li class="list-group-item">M</li>
+                <li class="list-group-item">L</li>
+              </ul>
+              <p class="card-text text-muted">Select quality</p>
+              <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                  <button type="button" class="btn btn-secondary">-</button>
+                </div>
+                <input type="text" class="form-control text-center"  value=1 maxlength="3" >
+                <div class="input-group-append">
+                  <button type="button" class="btn btn-secondary">+</button>
+                </div>
+              </div>
+              <button type="button" class="btn btn-outline-danger"><i class="far fa-heart"></i> Wishlist</button>
+              <!-- ♡  -->
+              <button type="button" class="btn btn-outline-dark"><i class="fas fa-shopping-cart"></i> Add to cart</button>
+
+              <!-- Sidebar testing -->
+              <!-- Pushy Menu -->
+<nav class="pushy pushy-left">
+  <div class="pushy-content">
+      <ul>
+          <!-- Submenu -->
+          <li class="pushy-submenu">
+              <button>Submenu</button>
+              <ul>
+                  <li class="pushy-link"><a href="#">Item 1</a></li>
+                  <li class="pushy-link"><a href="#">Item 2</a></li>
+                  <li class="pushy-link"><a href="#">Item 3</a></li>
+              </ul>
+          </li>
+          <li class="pushy-link"><a href="#">Item 1</a></li>
+          <li class="pushy-link"><a href="#">Item 2</a></li>
+      </ul>
+  </div>
+</nav>
+
+<!-- Site Overlay -->
+<div class="site-overlay"></div>
+
+<!-- Your Content -->
+<div id="container">
+  <!-- Menu Button -->
+  <button class="menu-btn">&#9776; Menu</button>
+</div>
+
             </div>
           </div>
         </div>
