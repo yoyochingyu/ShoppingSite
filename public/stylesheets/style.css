@@ -21,3 +21,29 @@ h6{
     font-size: 1.2em;
 }
 
+/* Change pusy width */
+.pushy{
+    width: 400px; /* Changed the width to 400px */
+}
+.pushy-left{
+    transform: translate3d(-400px,0,0); /* Updated the values */
+    /* Don't forget the vendor prefixes */
+}
+.pushy-open-left #container,
+.pushy-open-left .push {
+    transform: translate3d(400px, 0, 0); /* Updated the values */
+}
+.pushy-right {
+    transform: translate3d(400px, 0, 0); /* Updated the values */
+    /* Don't forget the vendor prefixes */
+}
+.pushy-open-right #container,
+.pushy-open-right .push {
+    transform: translate3d(-400px, 0, 0); /* Updated the values */
+    /* Don't forget the vendor prefixes */
+}
+
+
+.menu-btn:focus{
+    outline: none;
+}

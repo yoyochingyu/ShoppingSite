@@ -11,53 +11,78 @@
             <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
             <link rel = "stylesheet" href = '/stylesheets/style.css' >
         </head>
-        <body>
-            <h1 class="text-center m-3">ShoppingSite</h1>
-            <!-- nav bar-collapse-->
-            <nav class="navbar navbar-expand-lg navbar-light bg-light mb-5">
-                <!-- <a class="navbar-brand" href="#">Navbar</a> -->
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-                </button>
-            
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item">
-                    <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-                    </li>
-                    <!-- dropdown menu -->
-                    <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Category
-                    </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <a class="dropdown-item text-muted" href="#">T-Shirt</a>
-                        <a class="dropdown-item text-muted" href="#">Short</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item text-muted" href="#">On Sale Products</a>
-                    </div>
-                    </li>
 
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">About us</a>
-                    </li>
-                </ul>
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="fas fa-user-circle"></i> Login / Sign up</a>
-                    </li>
-                <!-- search form -->
-                    <form class="form-inline my-2 my-lg-0 ml-auto">
-                        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                    </form>
-                </ul>
-                
+        <body>
+             <!-- Pushy Sidebar -->
+             <nav class="pushy pushy-right">
+                <div class="pushy-content">
+                    <ul>
+                        <li class="pushy-submenu">
+                            <button>Submenu</button>
+                            <ul>
+                                <li class="pushy-link"><a href="#">Item 1</a></li>
+                                <li class="pushy-link"><a href="#">Item 2</a></li>
+                                <li class="pushy-link"><a href="#">Item 3</a></li>
+                            </ul>
+                        </li>
+                        <li class="pushy-link"><a href="#">Item 1</a></li>
+                        <li class="pushy-link"><a href="#">Item 2</a></li>
+                    </ul>
                 </div>
             </nav>
+            <!-- Site Overlay -->
+            <div class="site-overlay"></div>
             
-            
-            
-            
+            <!-- Main -->
+            <div class="main push">
+                <h1 class="text-center m-3">ShoppingSite</h1>
+                <!-- nav bar-collapse-->
+                <nav class="navbar navbar-expand-lg navbar-light bg-light mb-5">
+                    <!-- <a class="navbar-brand" href="#">Navbar</a> -->
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                    </button>
+                
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav mr-auto">
+                            <li class="nav-item">
+                            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+                            </li>
+                            <!-- dropdown menu -->
+                            <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Category
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item text-muted" href="#">T-Shirt</a>
+                                <a class="dropdown-item text-muted" href="#">Short</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item text-muted" href="#">On Sale Products</a>
+                            </div>
+                            </li>
 
-        
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">About us</a>
+                            </li>
+                        </ul>
+
+                        <!-- right nav-bar -->
+                        <ul class="navbar-nav ml-auto">
+                            <!-- search form -->
+                            <form class="form-inline my-2 my-lg-0 ml-auto">
+                                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                            </form>
+                            <!-- user login -->
+                            <li class="nav-item ml-3">
+                                <a class="nav-link" href="#"><i class="fas fa-user-circle"></i> Login / Sign up</a>
+                            </li>
+                            <!-- cart -->
+                            <li class="nav-item">
+                                <a class="nav-link menu-btn btn " href="#" type="button"><i class="fas fa-shopping-cart"></i> Cart</a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+    

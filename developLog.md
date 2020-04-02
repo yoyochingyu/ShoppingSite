@@ -13,9 +13,12 @@
 12. Login的記得我
 13. Gender label in register form
 14. nav-bar category只要屬標滑上去就自動展開
+15. nav-bar collapse的時候右側nav-bar顯示很奇怪
+16. 按下cart實不想要focus
+17. push時左側內容被吃掉
 
 # NEXT
-1. Register form
+~~1. Register form~~
 2. pushy->cart
 
 
