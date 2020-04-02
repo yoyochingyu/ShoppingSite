@@ -11,6 +11,12 @@
 10. 統一各種spacing
 11. arial label by
 12. Login的記得我
+13. Gender label in register form
+14. nav-bar category只要屬標滑上去就自動展開
+
+# NEXT
+1. Register form
+2. pushy->cart
 
 
 
