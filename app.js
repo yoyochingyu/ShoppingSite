@@ -34,7 +34,7 @@ app.get("/login",(req,res)=>{
 });
 
 app.get("/profile",(req,res)=>{
-    res.render("user/profile",{product:products[0]});
+    res.render("user/profile",{product:products[2]});
 });
 
 

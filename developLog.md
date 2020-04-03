@@ -22,6 +22,7 @@
 Indicate the current page’s location within a navigational hierarchy that automatically adds separators via CSS.
 21. carousel
 show.ejs 圖片變成幻燈片顯示
+22. toggle的時候footer的字不會被往下擠
 
 
 # NEXT

@@ -50,5 +50,9 @@ h6{
 
 .order-detail{
     font-family: 'Lato';
-    font-weight: 500;
+    font-weight: 600;
+}
+.profile-card{
+    height: 149px;
+    width: 900px;
 }
