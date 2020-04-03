@@ -16,12 +16,28 @@
 15. nav-bar collapse的時候右側nav-bar顯示很奇怪
 16. 按下cart實不想要focus
 17. push時左側內容被吃掉
+18. 購物車的content
+19. show.ejs的SML尺忖改以buttongroup
+20. breadcrumb
+Indicate the current page’s location within a navigational hierarchy that automatically adds separators via CSS.
+21. carousel
+show.ejs 圖片變成幻燈片顯示
+
 
 # NEXT
 ~~1. Register form~~
-2. pushy->cart
+~~2. pushy->cart~~
+3. Profile page:
+    1. 個人資料維護
+    2. 訂單查詢
 
 
+# Confusion
+1.<input=button>  & <button> & <a>的不同使用場景
+
+# 邏輯
+1. 尚未login->顯示signin/up
+    login/register完璧->顯示登出&profile
 
 # 閱讀
 1. card-group(doc)後面可看一下
@@ -37,3 +53,14 @@
  5. Edit
  6. Update
  7. Remove
+
+
+
+<p class="card-text">Status</p>
+                                        <p class="card-text">Purchase date</p>
+                                        <p class="card-text">Expected Delivery date</p>
+                                        <p class="card-text">Product name</p>
+                                        <p class="card-text">Size</p>
+                                        <p class="card-text">Amount</p>
+                                        <p class="card-text">Shipping Fee</p>
+                                        <p class="card-text">Overall Price</p>

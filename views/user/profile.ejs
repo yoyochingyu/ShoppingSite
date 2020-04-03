@@ -1,0 +1,124 @@
+<%-include("../partials/header")%>
+<div class="conatiner-fluid push">
+    <div class="accordion" id="accordionExample">
+        <div class="row mx-auto no-gutters">
+            <div class="btn-group-vertical col-xs-2" role="group" aria-label="Profile tags">
+                <button type="button" class="btn btn-secondary"  data-toggle="collapse" data-target="#collapseProfile" aria-expanded="false" aria-controls="collapseProfile">Profile</button>
+                <button type="button" class="btn btn-secondary" data-toggle="collapse" data-target="#collapseOrders" aria-expanded="false" aria-controls="collapseOrders">Order History</button>
+                <!-- <button type="button" class="btn btn-secondary">Right</button> -->
+            </div>
+            
+            <div class=" col-xs-10">
+                <div class="collapse " id="collapseProfile" data-parent="#accordionExample">
+                    <div class="card card-body mx-auto" >
+                        <form>
+                            <div class="form-row">
+                                <div class="form-group col-md-4.5">
+                                    <label for="firstName">First Name</label>
+                                    <input type="text" class="form-control" id="firstName">
+                                </div>
+                                <div class="form-group col-md-4.5">
+                                    <label for="lastName">Last Name</label>
+                                    <input type="text" class="form-control" id="lastName">
+                                </div>
+                                <!-- <label class="form-check-label" >Gender</label> -->
+
+                                <div class="form-check form-check-inline pt-3 ml-3">
+                                    <input class="form-check-input" type="radio" name="registerFemale" id="registerFemale">
+                                    <label class="form-check-label" for="registerFemale">F</label>
+                                </div>
+                                <div class="form-check form-check-inline pt-3">
+                                    <input class="form-check-input" type="radio" name="registerMale" id="registerMale">
+                                    <label class="form-check-label" for="registerMale">M</label>
+                                </div>
+                                <div class="form-check form-check-inline pt-3">
+                                    <input class="form-check-input" type="radio" name="registerOther" id="registerOther">
+                                    <label class="form-check-label" for="registerOther">Other</label>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="registerEmail">Email</label>
+                                    <input type="email" class="form-control" id="registerEmail">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="registerPassword">Password</label>
+                                    <input type="password" class="form-control" id="registerPassword">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="inputAddress">Address</label>
+                                <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St">
+                            </div>
+                            <div class="form-group">
+                                <label for="inputAddress2">Address 2</label>
+                                <input type="text" class="form-control" id="inputAddress2" placeholder="Apartment, studio, or floor">
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label for="inputCity">City</label>
+                                    <input type="text" class="form-control" id="inputCity">
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label for="inputState">State</label>
+                                    <select id="inputState" class="form-control">
+                                    <option selected>Choose...</option>
+                                    <option>...</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-2">
+                                    <label for="inputZip">Zip</label>
+                                    <input type="text" class="form-control" id="inputZip">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="gridCheck2">
+                                    <label class="form-check-label" for="gridCheck2">
+                                    Subscribe to receive our  latest products 
+                                    </label>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Update</button>
+                        </form>    
+                    </div>
+                </div>
+
+                <div class="collapse" id="collapseOrders" data-parent="#accordionExample">
+                    <div class="card mx-auto " >
+                        <div class=" card-body">
+                            <div class="row no-gutters">
+                                <div class="col-md-2">
+                                    <img src="<%=product.imageUrl%>" class="card-img" alt="https://miro.medium.com/max/880/0*H3jZONKqRuAAeHnG.jpg" style="width:100px;height:auto;">
+                                </div>
+                                <!-- <div class="col-md-1"></div> -->
+                                <div class="col-md-9">
+                                    <!-- <div class=" card-body"> -->
+                                    <div class="container">
+                                    <h5 class="card-title">Purchase order no. ISC09</h5>  
+                                        <span class="card-title order-detail">Product name: <%=product.name%></span>
+                                        <span class="card-title order-detail">Color: Blue</span>
+                                        <span class="card-title order-detail">Size: S</span>
+                                        <span class="card-title order-detail">Amount: 1</span>
+                                        <span class="card-title order-detail">Price: $30</span>
+                                    </div>
+                                    <div class="container">
+                                        <span class="card-title order-detail">Purchase date: 2020/10/31 08:52 AM</span>
+                                        <span class="card-title order-detail">Status: Processing</span>
+                                        <span class="card-title order-detail">Expected Delivery date: 2020/11/2</span>
+                                        <span class="card-title order-detail">Shipping Fee :$4</span>
+                                        <span class="card-title order-detail">Overall Price: $34</span>
+                                    </div>
+                                 </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+</div>
+<%-include("../partials/footer")%>

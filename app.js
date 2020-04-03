@@ -33,6 +33,9 @@ app.get("/login",(req,res)=>{
     res.render("user/login");
 });
 
+app.get("/profile",(req,res)=>{
+    res.render("user/profile",{product:products[0]});
+});
 
 
 app.listen(3000,()=>{

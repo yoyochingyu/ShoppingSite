@@ -47,3 +47,8 @@ h6{
 .menu-btn:focus{
     outline: none;
 }
+
+.order-detail{
+    font-family: 'Lato';
+    font-weight: 500;
+}
