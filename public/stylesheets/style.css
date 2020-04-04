@@ -53,7 +53,7 @@ h6{
     font-weight: 600;
 }
 .profile-card{
-    height: 149px;
+    min-height: 149px;
     width: 900px;
 }
 .anchor{
