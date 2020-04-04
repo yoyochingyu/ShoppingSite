@@ -56,3 +56,10 @@ h6{
     height: 149px;
     width: 900px;
 }
+.anchor{
+    color:black;
+}
+.anchor:hover{
+    color:black;
+    text-decoration: none;
+}

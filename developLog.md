@@ -23,14 +23,24 @@ Indicate the current page’s location within a navigational hierarchy that auto
 21. carousel
 show.ejs 圖片變成幻燈片顯示
 22. toggle的時候footer的字不會被往下擠
+23. 點擊上方的shopping site也可以回到/products但是不要<a>的底線
 
 
 # NEXT
 ~~1. Register form~~
 ~~2. pushy->cart~~
-3. Profile page:
-    1. 個人資料維護
-    2. 訂單查詢
+~~3. Profile page:~~
+    ~~1. 個人資料維護~~
+    ~~2. 訂單查詢~~
+4. Category根fuzzy search的實施
+5. cart頁面建構
+6. wishlist 根add to cart的邏輯
+
+7. login /sign up form根邏輯設計
+8.引入資料庫+session
+9999. product欄位統一（改寫）
+10000. About us頁面建構
+
 
 
 # Confusion

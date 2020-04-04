@@ -4,16 +4,16 @@
     <div class="row">
         <%products.forEach((product)=>{%>
         <div class="col-lg-3 col-sm-6">
-                <!-- <a href = "products/something"> -->
+                <a href = "/products/<%=product.id%>" class="anchor">
                     <div class="card text-center" >  
                         <img src="<%=product.imageUrl%>" class="card-img-top" alt="https://miro.medium.com/max/880/0*H3jZONKqRuAAeHnG.jpg" style="height: 208px ">
                         <div class="card-body">
                           <h5 class="card-title"><%=product.name%></h5>
                           <p class="card-text"><%=product.description%></p>
-                          <a href="#" class="btn btn-primary">Purchase</a>
+                          <a href="/products/<%=product.id%>" class="btn btn-primary">Purchase</a>
                         </div>
                     </div>
-                <!-- </a> -->
+                </a>
         </div>
     <%});%>
     </div>
