@@ -1,0 +1,31 @@
+{
+    "$id": "https://raw.githubusercontent.com/username/repo/master/schemas/user.json",
+    "$schema": "http://json-schema.org/draft-07/schema#/",
+    "title": "User",
+    "type": "object",
+    "required": ["id", "username", "grants", "datetime"],
+    "properties": {
+      "id": {
+        "type": "string",
+        "description": "unique UUID of the user"      
+      },
+  "username": {
+        "type": "string",
+        "description": "username that uniquely identifies a user in the application.",
+        "minLength": 2,
+        "pattern": "^[\w-$@!]{2,}$"
+  },
+      "grants": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "enum": ["read", "write", "godlike"]
+        },
+        "description": "IAM roles that define the users access rights."
+      },
+      "date": {
+        "type": "string",
+        "description": "ISO 8601 date string"
+      }
+    }
+  }

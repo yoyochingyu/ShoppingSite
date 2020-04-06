@@ -45,6 +45,12 @@ show.ejs 圖片變成幻燈片顯示
 
 
 
+# 改寫
+1. 把require(動態）改成import（靜態）/export(ES6)
+只有動態用require，不然都用import
+2. 改寫ES6
+3. 改成async
+
 # Confusion
 1.<input=button>  & <button> & <a>的不同使用場景
 
