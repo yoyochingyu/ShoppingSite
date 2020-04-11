@@ -43,7 +43,9 @@ show.ejs 圖片變成幻燈片顯示
 9999. login/singup不同介面
 10000. About us頁面建構
 
-
+## JSON
+//userID?
+//addres合併？
 
 # 改寫
 1. 把require(動態）改成import（靜態）/export(ES6)
