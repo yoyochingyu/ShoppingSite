@@ -2,55 +2,35 @@ var express = require("express"),
         app        = express();
         // seed = require("./seed.js"), 
         MongoClient = require('mongodb').MongoClient,
-        assert = require('assert');
-
+        assert = require('assert'),
+        Ajv = require("ajv"),
+        productSchema = require("./lib/schemas/product.json");
 
 // db connection
 const url = 'mongodb://localhost:27017';
 const dbName = 'shoppingSite';
-const client = new MongoClient(url);
+// Setup ajv
+var ajv = new Ajv(); // Create Ajv instance(returns an obj)
 
-client.connect((err)=>{
-    assert.equal(null,err);
-    console.log("Connected successfully to server");
-    const db = client.db(dbName);
-    insertDocuments(db,()=>{
-        findDocuments(db,()=>{
-             client.close();
-        });
-    });
-});
+function test(schema,data){
+  return new Promise((resolve,reject)=>{
+    var valid = ajv.validate(schema,data); //Validate data using passed schema (it will be compiled and cached)(return boolean)
+    if(!valid){
+      reject(ajv.errors);
+    }
+    else resolve(valid);
+  });
+};
 
-const insertDocuments = function(db, callback) {
-    // Get the documents collection
-    const collection = db.collection('documents');
-    // Insert some documents
-    collection.insertMany([
-      {a : 1}, {a : 2}, {a : 3}
-    ], function(err, result) {
-      assert.equal(err, null);
-      //如果正確insert的話err=null，assert.equal出來會是1
-      assert.equal(3, result.result.n);
-    //   console.log('result.result:'+result.result);
-      assert.equal(3, result.ops.length);
-    //   console.log('result.ops:'+result.ops);
-      console.log("Inserted 3 documents into the collection");
-      callback();
-    });
-  }
+MongoClient.connect(url,{ useNewUrlParser: true, useUnifiedTopology: true },(err,client)=>{
+  assert.equal(null,err);
+  console.log("Connected successfully to Mongodb");
+  const db = client.db(dbName);
+  db.products = db.collection('products');
+  
 
-  const findDocuments = function(db, callback) {
-    // Get the documents collection
-    const collection = db.collection('documents');
-    // Find some documents
-    collection.find({}).toArray(function(err, docs) {
-      assert.equal(err, null);
-      console.log("Found the following records");
-      console.log(docs)
-      callback();
-    });
-  }
 
+    
         
 
 // APP CONFIG
@@ -69,24 +49,31 @@ app.use(express.static("public"));
 app.get("/",(req,res)=>{
     res.render("landing",);
 });
+
 // Index Route
 app.get("/products",(req,res)=>{
-    Product.find({},(err,foundProducts)=>{
-        if(err){
-            console.log(err);
-        }
-        res.render("product/index",{products:foundProducts});
-    });
+  db.products.find({}).toArray((err,products)=>{
+    if(err){
+      console.log(err);
+    }
+    else{
+      res.render("product/index",{products:products});
+    }
+  });
 });
 
 // Show Route
 app.get("/products/:id",(req,res)=>{
-    Product.findById(req.params.id,(err,foundProduct)=>{
-        if(err){
-            console.log(err);
-        }
-        res.render("product/show",{product:foundProduct});
-    });
+  let productId = req.params.id;
+  db.products.findOne({productId:productId},(err,foundProduct)=>{
+    if(err){
+      console.log(err);
+    }
+    else{
+      console.log(foundProduct);
+      res.render("product/show",{product:foundProduct});
+    }
+  })
 });
 
 // ====================
@@ -105,4 +92,4 @@ app.listen(3000,()=>{
     console.log("Server has started!");
 });
 
-    
+});   
