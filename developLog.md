@@ -35,9 +35,13 @@ show.ejs 圖片變成幻燈片顯示
 ~~4. 尚未login->顯示signin/up~~
     ~~login/register完璧->顯示登出&profile~~
 7. login /sign up form根邏輯設計
+7-1. 沒有溝agree不讓點register+flash
+7-2. user-session是否可以自動匯入，不要每個route都手動
+7-3. subscribe 改成boolean
 8. 引入資料庫+session
 9. user捆綁wishlist跟cart
 10. remember me跟session(expire)串聯
+11. 404 not found頁面
 ------------------------------------------
 4. Category根fuzzy search的實施
 5. cart頁面建構
@@ -49,6 +53,14 @@ show.ejs 圖片變成幻燈片顯示
 9999. Billing串階
 9999. login/singup不同介面
 10000. About us頁面建構
+100000. breadcumb(添加路徑)
+1. 加flash
+2. 加carousel（商品幻燈片）
+3. register policy用modal去加
+4. pagination去顯示多樣產品
+5. spinner 顯示loading畫面？
+6. toast顯示chatbox
+
 
 
 ## JSON

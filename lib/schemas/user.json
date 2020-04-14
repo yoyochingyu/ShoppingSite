@@ -27,7 +27,7 @@
       },
       "gender":{
         "type":"string",
-        "enum":["F","M","Other"]
+        "enum":["female","male","other"]
       },
       "email":{
         "type":"string",
@@ -40,6 +40,12 @@
         "type":"string",
         "pattern":"^[0-9]{10}$"
       },
-      "address":{"$ref":"#/definitions/address"}
+      "address":{"$ref":"#/definitions/address"},
+      "agree":{
+        "type":"string"
+      },
+      "subscribe":{
+        "type":"string"
+      }
   }
 }

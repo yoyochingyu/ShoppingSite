@@ -90,3 +90,14 @@ var userOne = {firstName:"CHAOCHAO",lastName:"HEIEH",gender:"M",email:"test@test
   .catch((err)=>{
     console.log(err);
   });
+
+  //testing
+  function test(schema,data){		
+    return new Promise((resolve,reject)=>{		
+      var valid = ajv.validate(schema,data); //Validate data using passed schema (it will be compiled and cached)(return boolean)		
+      if(!valid){		
+        reject(ajv.errors);		
+      }		
+      else resolve(valid);		
+    });		
+  };

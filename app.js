@@ -18,9 +18,18 @@ const express = require("express"),
 const url = 'mongodb://localhost:27017';
 const dbName = 'shoppingSite';
 // Setup ajv
-var ajv = new Ajv(); // Create Ajv instance(returns an obj)
+var ajv = new Ajv({allErrors:true}); // Create Ajv instance(returns an obj)
 
-
+//Testing
+function test(schema,data){		
+  return new Promise((resolve,reject)=>{		
+    var valid = ajv.validate(schema,data); //Validate data using passed schema (it will be compiled and cached)(return boolean)		
+    if(!valid){		
+      reject(ajv.errors);		
+    }		
+    else resolve(valid);		
+  });		
+};
 
 MongoClient.connect(url,{ useNewUrlParser: true, useUnifiedTopology: true },(err,client)=>{
   assert.equal(null,err);
@@ -110,10 +119,13 @@ app.get("/login",(req,res)=>{
     res.render("user/login",{user:userSession});
 });
 
+app.get("/register",(req,res)=>{
+  res.render("user/register",{user:userSession});
+});
+
 app.post("/login",(req,res)=>{
   let inputEmail = req.body.inputEmail;
   let inputPassword = req.body.inputPassword;
-
   // Define checkUser function
   async function checkUser(inputEmail,inputPassword){
     db.users.findOne({email:inputEmail})
@@ -124,7 +136,7 @@ app.post("/login",(req,res)=>{
       }
       else{
         let match = await bcrypt.compare(inputPassword,foundUser.password);
-        console.log("isUser:"+match);
+        // console.log("isUser:"+match);
         if(match){
           // res.send("Login successfully!");
           req.session.user = foundUser; 
@@ -139,9 +151,31 @@ app.post("/login",(req,res)=>{
       console.log(err);
     });
   }
-
   checkUser(inputEmail,inputPassword);
+});
 
+app.post("/register",(req,res)=>{
+  var inputUser = req.body;
+  test(userSchema,inputUser)
+  .then(()=>{
+    console.log("Validation succeeds!");
+
+     // Hash password
+     let saltRounds = 12;
+     bcrypt.hash(inputUser.password,saltRounds)
+     .then((hash)=>{
+       inputUser.password = hash;
+       db.users.insertOne(inputUser)
+       .then((result)=>{
+        //  console.log(result.ops);
+         res.redirect("/products");
+        });
+     })
+  })
+  .catch((err)=>{
+    console.log(err);
+    res.redirect("/register"); //加flash，提示輸入錯誤
+  });
 });
 
 app.get("/profile",(req,res)=>{
