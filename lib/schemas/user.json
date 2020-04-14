@@ -1,0 +1,45 @@
+
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id":"localhost:3000/lib/schemas/user",
+  "type":"object",
+  "additionalProperties": false,
+  "required": [ "firstName","lastName","gender","email","password","number","address"],
+  "definitions": {
+    "address": {
+      "type": "object",
+      "properties": {
+        "streetAddress": { "type": "string" },
+        "city":           { "type": "string" },
+        "state":          { "type": "string" },
+        "zip":{"type":"string","pattern":"^[0-9]{3}$"}
+      },
+      "required": ["streetAddress", "city", "state","zip"]
+    }
+  },
+  
+  "properties": {
+      "firstName":{
+        "type":"string"
+      },
+      "lastName":{
+        "type":"string"
+      },
+      "gender":{
+        "type":"string",
+        "enum":["F","M","Other"]
+      },
+      "email":{
+        "type":"string",
+        "format":"email"
+      },
+      "password":{
+        "type":"string"
+      },
+      "number":{
+        "type":"string",
+        "pattern":"^[0-9]{10}$"
+      },
+      "address":{"$ref":"#/definitions/address"}
+  }
+}

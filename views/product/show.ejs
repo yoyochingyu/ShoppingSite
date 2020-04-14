@@ -3,11 +3,11 @@
     <div class="card mb-3  mx-auto" style="width: 65em;" >
         <div class="row no-gutters">
           <div class="col-md-5">
-            <img src="<%=product.image%>" class="card-img" alt="https://miro.medium.com/max/880/0*H3jZONKqRuAAeHnG.jpg" >
+            <img src="<%=product.img%>" class="card-img" alt="https://miro.medium.com/max/880/0*H3jZONKqRuAAeHnG.jpg" >
           </div>
           <div class="col-md-7">
             <div class="card-body">
-              <h2 class="card-title text-center mt-4"><%=product.name%></h2>
+              <h2 class="card-title text-center mt-4"><%=product.productName%></h2>
               <p class="card-text text-muted mb-0">Description</p>
               <p class="card-text showcard mb-0"><%=product.description%></p>
               <p class="card-text" style="font-size: 3em">$ <%=product.price%></p>
@@ -29,7 +29,7 @@
               </div>
               <button type="button" class="btn btn-outline-danger"><i class="far fa-heart"></i> Wishlist</button>
               <button type="button" class="btn btn-outline-dark"><i class="fas fa-shopping-cart"></i> Add to cart</button>
-              <p class="card-text text-muted mb-0 text-right">Product_Id <%=product._id%></p>
+              <p class="card-text text-muted mb-0 text-right">Product_Id <%=product.productId%></p>
             </div>
           </div>
         </div>

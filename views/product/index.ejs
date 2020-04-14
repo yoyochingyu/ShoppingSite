@@ -4,11 +4,11 @@
     <div class="row">
         <%products.forEach((product)=>{%>
         <div class="col-lg-3 col-sm-6">
-                <a href = "/products/<%=product._id%>" class="anchor">
+                <a href = "/products/<%=product.productId%>" class="anchor">
                     <div class="card text-center" >  
-                        <img src="<%=product.image%>" class="card-img-top" alt="https://miro.medium.com/max/880/0*H3jZONKqRuAAeHnG.jpg" style="height: 208px ">
+                        <img src="<%=product.img%>" class="card-img-top" alt="https://miro.medium.com/max/880/0*H3jZONKqRuAAeHnG.jpg" style="height: 208px ">
                         <div class="card-body">
-                          <h5 class="card-title"><%=product.name%></h5>
+                          <h5 class="card-title"><%=product.productName%></h5>
                           <p class="card-text"><%=product.description%></p>
                           <a href="/products/<%=product.id%>" class="btn btn-primary">Purchase</a>
                         </div>
