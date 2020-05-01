@@ -46,6 +46,8 @@ show.ejs 圖片變成幻燈片顯示
 4. Category根fuzzy search的實施
 5. cart頁面建構
 6. wishlist 根add to cart的邏輯
+7. order/product 的schema補上id
+8. 用相同信箱註冊？
 
 
 
@@ -121,3 +123,11 @@ app.get("/products/:id",(req,res)=>{
 //     });
 // });
 ```
+
+//order.json先不管size跟color
+"size":{
+                    "type":"string",
+                    "enum":["S","M","L"]
+                },
+
+//promise要同層才能往下找catch error，包在裏面的promise沒辦法往外找

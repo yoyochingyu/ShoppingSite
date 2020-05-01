@@ -6,6 +6,7 @@ const express = require("express"),
         Ajv = require("ajv"),
         productSchema = require("./lib/schemas/product.json"),
         userSchema  = require("./lib/schemas/user.json"),
+        orderSchema  = require("./lib/schemas/order.json"),
         bcrypt = require("bcrypt"),
         bodyParser = require("body-parser"),
         session = require("express-session"),
@@ -37,6 +38,8 @@ MongoClient.connect(url,{ useNewUrlParser: true, useUnifiedTopology: true },(err
   const db = client.db(dbName);
   db.products = db.collection('products');
   db.users = db.collection('users');
+  db.orders = db.collection('orders');
+
 
   // APP CONFIG
 app.set("view engine","ejs");
@@ -73,6 +76,42 @@ var products = [
   {productName:"Wallet",productId:"MNO1234567890",description:"Place your cards inside",img:  "https://scontent-tpe1-1.xx.fbcdn.net/v/t1.0-9/83944175_1368630926651886_7148803726516420608_o.jpg?_nc_cat=106&_nc_sid=8024bb&_nc_oc=AQlRsrFbYyST9Slwak1bx7qxNNNJqbY3lovbXhujYAJ36io0858pu92Zs5LQ5iVShKc&_nc_ht=scontent-tpe1-1.xx&oh=ff0d1df67053688cd5c1d660b10cc643&oe=5EAA46FE",price:34.5,createdBy:"2018-11-13"}];
 // seed();
 
+
+// Create user
+// db.users.deleteOne({firstName:"test"})
+// .then((result)=>{
+//   console.log("Deleted User Amount:"+result.result.n);
+
+// })
+// .catch((err)=>{console.log(err)});
+
+
+
+
+
+// Insert orders
+// var order1 = {purchaseTime:"2018-11-13T20:20:39+00:00",status:"Processing",expectedDeliveryDate:"2018-11-13",products:[
+//   {productName:"High waist mom jeans",productId:"ABC1234567890",price:29.9,amount:1,net:29.9}
+// ],shipping:0,overall:29.9
+// };
+
+// db.orders.deleteMany({})
+// .then((result)=>{
+//   console.log("Deleted Order Amount:"+result.result.n);
+//   return test(orderSchema,order1);
+// })
+// .then(()=>{
+//     console.log("Validation succeeded!");
+//     return db.orders.insertOne(order1);
+//   })
+// .then((result)=>{
+//   console.log(result.ops);
+// })
+// .catch((err)=>{
+//   console.log(err);
+// })
+
+
 // ====================
 // Product Route
 // ====================
@@ -87,6 +126,7 @@ app.get("/",(req,res)=>{
 
 // Index Route
 app.get("/products",(req,res)=>{
+  console.log(req.session); //read from redis-store
   userSession = req.session.user; //如果未登入會有問題嘛？
   db.products.find({}).toArray((err,products)=>{
     if(err){
@@ -126,6 +166,7 @@ app.get("/register",(req,res)=>{
 app.post("/login",(req,res)=>{
   let inputEmail = req.body.inputEmail;
   let inputPassword = req.body.inputPassword;
+  
   // Define checkUser function
   async function checkUser(inputEmail,inputPassword){
     db.users.findOne({email:inputEmail})
@@ -139,7 +180,7 @@ app.post("/login",(req,res)=>{
         // console.log("isUser:"+match);
         if(match){
           // res.send("Login successfully!");
-          req.session.user = foundUser; 
+          req.session.user = foundUser;  //set session data in redis !??<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
           res.redirect("/products");
         }
         else{

@@ -68,7 +68,7 @@ db.products.drop((err)=>{
   // Fake user
 var userOne = {firstName:"CHAOCHAO",lastName:"HEIEH",gender:"M",email:"test@test.com",number:"0967393302",password:"test",address:{streetAddress:"7Avenue",state:"Queens",city:"NYC",zip:"104"}};
 
-  //  Seeding users
+  //  Seeding users(應改寫)
   db.users.deleteMany({})
   .then((result)=>{
     console.log("Deleted Count : "+result.deletedCount);

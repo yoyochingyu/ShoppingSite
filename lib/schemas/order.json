@@ -1,0 +1,52 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type":"object",
+    "required": ["purchaseTime","status", "expectedDeliveryDate", "products","shipping","overall"],
+    "properties": {
+        "purchaseTime":{
+            "format": "date-time"
+        },
+        "status":{
+            "type":"string",
+            "enum": ["Processing","Delivering","'Completed","Canceled"]
+        },
+        "expectedDeliveryDate":{
+            "format": "date"
+        },
+        "products":{
+            "type":"array",
+            "items": {
+                "type":"object",
+                "name":"product",
+                "required": ["productName","productId","price","net","amount"],
+                "properties": {
+                    "productName":{
+                        "type":"string",
+                        "minLength":2
+                    },
+                    "productId":{
+                        "type":"string",
+                        "pattern": "^[A-Z]{3}[0-9]{10}$"
+                    },
+                    "price":{
+                        "type":"number"
+                    },
+                    "amount":{
+                        "type":"number"
+                    },
+                    "net":{
+                        "type":"number"
+                    }
+                }
+                
+            },
+            "default":[]
+        }, 
+        "shipping":{
+            "type":"number"
+        },
+        "overall":{
+            "type":"number"
+        }
+    }
+}
