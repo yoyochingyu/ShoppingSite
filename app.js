@@ -117,23 +117,29 @@ var products = [
 // ====================
 
 // Session
-var userSession=null;
+app.use((req,res,next)=>{
+  // 第一次拜訪網站/session data到期，沒有user欄位（undefined)
+  if(req.session.user == undefined){
+    req.session.user = null; //設置user欄位，assign null
+  }
+  // logout/保持登入狀態/第一次拜訪
+  res.locals.user = req.session.user;
+  next();
+});
 
 // Landing Page
 app.get("/",(req,res)=>{
-  res.render("landing",{user:userSession});
+  res.render("landing");
 });
 
 // Index Route
 app.get("/products",(req,res)=>{
-  console.log(req.session); //read from redis-store
-  userSession = req.session.user; //如果未登入會有問題嘛？
   db.products.find({}).toArray((err,products)=>{
     if(err){
       console.log(err);
     }
     else{
-      res.render("product/index",{products:products,user:userSession});
+      res.render("product/index",{products:products});
     }
   });
 });
@@ -147,7 +153,7 @@ app.get("/products/:id",(req,res)=>{
     }
     else{
       // console.log(foundProduct);
-      res.render("product/show",{product:foundProduct,user:userSession});
+      res.render("product/show",{product:foundProduct});
     }
   });
 });
@@ -156,11 +162,11 @@ app.get("/products/:id",(req,res)=>{
 // User Route
 // ====================
 app.get("/login",(req,res)=>{
-    res.render("user/login",{user:userSession});
+    res.render("user/login");
 });
 
 app.get("/register",(req,res)=>{
-  res.render("user/register",{user:userSession});
+  res.render("user/register");
 });
 
 app.post("/login",(req,res)=>{
@@ -200,18 +206,17 @@ app.post("/register",(req,res)=>{
   test(userSchema,inputUser)
   .then(()=>{
     console.log("Validation succeeds!");
-
      // Hash password
      let saltRounds = 12;
-     bcrypt.hash(inputUser.password,saltRounds)
-     .then((hash)=>{
-       inputUser.password = hash;
-       db.users.insertOne(inputUser)
-       .then((result)=>{
-        //  console.log(result.ops);
-         res.redirect("/products");
-        });
-     })
+    bcrypt.hash(inputUser.password,saltRounds)
+  })
+  .then((hash)=>{
+    inputUser.password = hash;
+    return db.users.insertOne(inputUser);
+  })
+  .then((result)=>{
+    //  console.log(result.ops);
+  res.redirect("/products");
   })
   .catch((err)=>{
     console.log(err);
@@ -221,7 +226,7 @@ app.post("/register",(req,res)=>{
 
 app.get("/profile",(req,res)=>{
   if(req.session.user){
-    res.render("user/profile",{product:products[2],user:userSession});
+    res.render("user/profile",{product:products[2]});
   }
   else{
     res.redirect("/login");
