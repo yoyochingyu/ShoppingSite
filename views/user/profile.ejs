@@ -89,33 +89,39 @@
                     <div class="card mx-auto profile-card" >
                         <div class=" card-body">
                             <div class="row no-gutters">
-                                <div class="col-xs-2">
+                                <!-- <div class="col-xs-2">
                                     <img src="<%=product.img%>" class="card-img" alt="https://miro.medium.com/max/880/0*H3jZONKqRuAAeHnG.jpg" style="width:100px;height:auto;">
-                                </div>
-                                <div class="col-xs-10 pl-2">
-                                    <h5 class="card-title">Purchase order no. <%=order._id%></h5>  
-                                    <%order.products.forEach((product,i)=>{%>
-                                    <span class="card-title order-detail">[<%=i+1%>]</span>
-                                    <span class="card-title order-detail">Product name: </span> <span class="card-text"><%=product.productName%></span>
-                                    <span class="card-title order-detail">Product ID: </span> <span class="card-text"><%=product.productId%></span>
-                                    <span class="card-title order-detail">Color: </span> <span class="card-text">Blue</span>
-                                    <span class="card-title order-detail">Size: </span> <span class="card-text">S</span>
-                                    <span class="card-title order-detail">Amount: </span> <span class="card-text"><%=product.amount%></span>
-                                    <span class="card-title order-detail">Price: </span> <span class="card-text"><%=product.net%></span>
-                                    <br>
+                                </div> -->
+                                <%if(orders.length===0){%>
+                                    <h5 class="card-title">No purchase yet!</h5>  
+                                <%}else{%>
+                                    <%orders.forEach((order)=>{%>
+                                        <div class="col-xs-10 pl-2">
+                                            <h5 class="card-title">Purchase order no. <%=order._id%></h5>  
+                                            <%order.products.forEach((product,i)=>{%>
+                                                <span class="card-title order-detail">[<%=i+1%>]</span>
+                                                <span class="card-title order-detail">Product name: </span> <span class="card-text"><%=product.productName%></span>
+                                                <span class="card-title order-detail">Product ID: </span> <span class="card-text"><%=product.productId%></span>
+                                                <span class="card-title order-detail">Color: </span> <span class="card-text">Blue</span>
+                                                <span class="card-title order-detail">Size: </span> <span class="card-text">S</span>
+                                                <span class="card-title order-detail">Amount: </span> <span class="card-text"><%=product.amount%></span>
+                                                <span class="card-title order-detail">Price: </span> <span class="card-text"><%=product.net%></span>
+                                                <br>
+                                            <%})%>
+                                            <span class="card-title order-detail">Purchase date: </span><span class="card-text"><%=order.purchaseTime%></span>
+                                            <span class="card-title order-detail">Status: </span><span class="card-text"><%=order.status%></span>
+                                            <span class="card-title order-detail">Expected Delivery date: </span><span class="card-text"><%=order.expectedDeliveryDate%></span>
+                                            <br>
+                                            <span class="card-title order-detail">Shipping Fee: </span><span class="card-text"><%=order.shipping%></span>
+                                            <span class="card-title order-detail">Overall Price: </span><span class="card-text"><%=order.overall%></span>
+                                            <br>
+                                            <span class="card-title order-detail">First name: </span><span class="card-text"><%=user.firstName%></span>
+                                            <span class="card-title order-detail">Last name: </span><span class="card-text"><%=user.lastName%></span>
+                                            <span class="card-title order-detail">Shipping address </span><span class="card-text"><%=user.address.streetAddress%> <%=user.address.city%> <%=user.address.state%> (<%=user.address.zip%>)    </span>
+                                            <span class="card-title order-detail">Number: </span><span class="card-text"><%=user.number%></span>
+                                        </div>
                                     <%})%>
-                                    <span class="card-title order-detail">Purchase date: </span><span class="card-text"><%=order.purchaseTime%></span>
-                                    <span class="card-title order-detail">Status: </span><span class="card-text"><%=order.status%></span>
-                                    <span class="card-title order-detail">Expected Delivery date: </span><span class="card-text"><%=order.expectedDeliveryDate%></span>
-                                    <br>
-                                    <span class="card-title order-detail">Shipping Fee: </span><span class="card-text"><%=order.shipping%></span>
-                                    <span class="card-title order-detail">Overall Price: </span><span class="card-text"><%=order.overall%></span>
-                                    <br>
-                                    <span class="card-title order-detail">First name: </span><span class="card-text"><%=user.firstName%></span>
-                                    <span class="card-title order-detail">Last name: </span><span class="card-text"><%=user.lastName%></span>
-                                    <span class="card-title order-detail">Shipping address </span><span class="card-text"><%=user.address.streetAddress%> <%=user.address.city%> <%=user.address.state%> (<%=user.address.zip%>)    </span>
-                                    <span class="card-title order-detail">Number: </span><span class="card-text"><%=user.number%></span>
-                                </div>
+                                <%}%>
                             </div>
                         </div>
                     </div>

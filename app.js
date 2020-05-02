@@ -86,17 +86,17 @@ var products = [
 
 
 // Insert orders
-var order1 = {purchaseTime:"2018-11-13T20:20:39+00:00",status:"Processing",expectedDeliveryDate:"2018-11-13",products:[
-  {productName:"High waist mom jeans",productId:"ABC1234567890",price:29.9,amount:1,net:29.9},
-  {productName:"Two-color cloth",productId:"JKL1234567890",price:10.0,amount:1,net:10.0}
-],shipping:0,overall:39.9,user_id:"5eabfd72dab1a342de212ba2"
-};
+// var order1 = {purchaseTime:"2018-11-13T20:20:39+00:00",status:"Processing",expectedDeliveryDate:"2018-11-13",products:[
+//   {productName:"High waist mom jeans",productId:"ABC1234567890",price:29.9,amount:1,net:29.9},
+//   {productName:"Two-color cloth",productId:"JKL1234567890",price:10.0,amount:1,net:10.0}
+// ],shipping:0,overall:39.9,user_id:"5eabfd72dab1a342de212ba2"
+// };
 
-var order2 = {purchaseTime:"2018-11-19T20:20:39+00:00",status:"Delivering",expectedDeliveryDate:"2018-11-20",products:[
-  {productName:"High waist mom jeans",productId:"ABC1234567890",price:29.9,amount:1,net:29.9},
-  {productName:"Two-color cloth",productId:"JKL1234567890",price:10.0,amount:1,net:10.0}
-],shipping:0,overall:39.9,user_id:"5eabfd72dab1a342de212ba2"
-};
+// var order2 = {purchaseTime:"2018-11-19T20:20:39+00:00",status:"Delivering",expectedDeliveryDate:"2018-11-20",products:[
+//   {productName:"High waist mom jeans",productId:"ABC1234567890",price:29.9,amount:1,net:29.9},
+//   {productName:"Two-color cloth",productId:"JKL1234567890",price:10.0,amount:1,net:10.0}
+// ],shipping:0,overall:39.9,user_id:"5eabfd72dab1a342de212ba2"
+// };
 
 // db.orders.deleteMany({})
 // .then((result)=>{
@@ -105,7 +105,7 @@ var order2 = {purchaseTime:"2018-11-19T20:20:39+00:00",status:"Delivering",expec
 // })
 // .then(()=>{
 //     // console.log("Validation succeeded!");
-//     return db.orders.insertOne(order1);
+//     return db.orders.insertMany([order1,order2]);
 //   })
 // .then((result)=>{
 //   // console.log(result.ops);
@@ -114,9 +114,6 @@ var order2 = {purchaseTime:"2018-11-19T20:20:39+00:00",status:"Delivering",expec
 //   console.log(err);
 // })
 
-db.orders.insertOne(order2)
-.then(console.log("Insert succeeded"))
-.catch(err=>console.log(err));
 
 
 // ====================
@@ -234,9 +231,10 @@ app.post("/register",(req,res)=>{
 app.get("/profile",(req,res)=>{
   if(req.session.user){
     // The user has one/multiple order before
-    db.orders.findOne({user_id:req.session.user._id})
-    .then((foundOrder)=>{
-      res.render("user/profile",{product:products[2],order:foundOrder},);
+    db.orders.find({user_id:req.session.user._id}).toArray()
+    .then((foundOrders)=>{
+      console.log(foundOrders);
+      res.render("user/profile",{product:products[2],orders:foundOrders},);
     })
     .catch(err=>console.log);
   }
