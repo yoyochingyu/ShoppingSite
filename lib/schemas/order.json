@@ -1,7 +1,7 @@
 {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "type":"object",
-    "required": ["purchaseTime","status", "expectedDeliveryDate", "products","shipping","overall"],
+    "required": ["purchaseTime","status", "expectedDeliveryDate", "products","shipping","overall","user_id"],
     "properties": {
         "purchaseTime":{
             "format": "date-time"
@@ -47,6 +47,9 @@
         },
         "overall":{
             "type":"number"
+        },
+        "user_id":{
+            "type":"string"
         }
     }
 }

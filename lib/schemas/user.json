@@ -46,13 +46,6 @@
       },
       "subscribe":{
         "type":"string"
-      },
-      "orders":{
-        "type":"array",
-        "items":{
-          "type":"string",
-          "default":[]
-        }
       }
   }
 }

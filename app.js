@@ -77,23 +77,26 @@ var products = [
 // seed();
 
 
-// Create user
-// db.users.deleteOne({firstName:"test"})
+// Delete  user
+// db.users.deleteOne({firstName:"admin"})
 // .then((result)=>{
 //   console.log("Deleted User Amount:"+result.result.n);
-
 // })
 // .catch((err)=>{console.log(err)});
 
 
-
-
-
 // Insert orders
-// var order1 = {purchaseTime:"2018-11-13T20:20:39+00:00",status:"Processing",expectedDeliveryDate:"2018-11-13",products:[
-//   {productName:"High waist mom jeans",productId:"ABC1234567890",price:29.9,amount:1,net:29.9}
-// ],shipping:0,overall:29.9
-// };
+var order1 = {purchaseTime:"2018-11-13T20:20:39+00:00",status:"Processing",expectedDeliveryDate:"2018-11-13",products:[
+  {productName:"High waist mom jeans",productId:"ABC1234567890",price:29.9,amount:1,net:29.9},
+  {productName:"Two-color cloth",productId:"JKL1234567890",price:10.0,amount:1,net:10.0}
+],shipping:0,overall:39.9,user_id:"5eabfd72dab1a342de212ba2"
+};
+
+var order2 = {purchaseTime:"2018-11-19T20:20:39+00:00",status:"Delivering",expectedDeliveryDate:"2018-11-20",products:[
+  {productName:"High waist mom jeans",productId:"ABC1234567890",price:29.9,amount:1,net:29.9},
+  {productName:"Two-color cloth",productId:"JKL1234567890",price:10.0,amount:1,net:10.0}
+],shipping:0,overall:39.9,user_id:"5eabfd72dab1a342de212ba2"
+};
 
 // db.orders.deleteMany({})
 // .then((result)=>{
@@ -101,15 +104,19 @@ var products = [
 //   return test(orderSchema,order1);
 // })
 // .then(()=>{
-//     console.log("Validation succeeded!");
+//     // console.log("Validation succeeded!");
 //     return db.orders.insertOne(order1);
 //   })
 // .then((result)=>{
-//   console.log(result.ops);
+//   // console.log(result.ops);
 // })
 // .catch((err)=>{
 //   console.log(err);
 // })
+
+db.orders.insertOne(order2)
+.then(console.log("Insert succeeded"))
+.catch(err=>console.log(err));
 
 
 // ====================
@@ -205,10 +212,10 @@ app.post("/register",(req,res)=>{
   var inputUser = req.body;
   test(userSchema,inputUser)
   .then(()=>{
-    console.log("Validation succeeds!");
+    console.log("Register Validation succeeds!");
      // Hash password
      let saltRounds = 12;
-    bcrypt.hash(inputUser.password,saltRounds)
+    return bcrypt.hash(inputUser.password,saltRounds);
   })
   .then((hash)=>{
     inputUser.password = hash;
@@ -226,7 +233,12 @@ app.post("/register",(req,res)=>{
 
 app.get("/profile",(req,res)=>{
   if(req.session.user){
-    res.render("user/profile",{product:products[2]});
+    // The user has one/multiple order before
+    db.orders.findOne({user_id:req.session.user._id})
+    .then((foundOrder)=>{
+      res.render("user/profile",{product:products[2],order:foundOrder},);
+    })
+    .catch(err=>console.log);
   }
   else{
     res.redirect("/login");
@@ -244,3 +256,4 @@ app.listen(3000,()=>{
 });
 
 });   
+
