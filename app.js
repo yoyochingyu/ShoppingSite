@@ -66,31 +66,28 @@ app.use(bodyParser.urlencoded({extended:true}));
     store: new redisStore({client:redisClient})
   }));
 
-// Session
+// User Session(every route)
 app.use((req,res,next)=>{
-  // User session
-  // 第一次拜訪網站/session data到期，沒有user欄位（undefined)
+  // if there's no user field in session data(first time visits/session data expires)=>set user field to null, so that in "views" we can identify login/logout with null/value
   if(req.session.user == undefined){
-    req.session.user = null; //設置user欄位，assign null
+    req.session.user = null; 
   }
-  // logout/保持登入狀態/第一次拜訪
+  // pass session data to "views"
   res.locals.user = req.session.user;
+  next();
+});
 
-  // Cart Session
-  // send from add to cart button only（因為每個route都會go through這個）
-  if(req.body.cart != undefined){
-    // 非登入狀態，寫到session當中
-    if(req.session.user  == null){
-      if(req.session.cart == undefined || req.session.cart==null){
-        req.session.cart=new Array(req.body.cart);
-      }
-      else{
-        req.session.cart.push(req.body.cart);
-      }
+// Cart session(cart route only)
+app.use("/cart",(req,res,next)=>{
+  // if user doesn't exists(not login)=>create cart session
+  if(req.session.user  == null){
+    if(req.session.cart == undefined || req.session.cart==null){
+      req.session.cart=new Array(req.body.cart);
     }
-    // console.log(req.session.cart); //if登入=>undefined
+    else{
+      req.session.cart.push(req.body.cart);
+    }
   }
-  
   next();
 });
 
