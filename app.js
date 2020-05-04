@@ -13,7 +13,10 @@ const express = require("express"),
         redis = require('redis'),
         redisClient = redis.createClient(),
         redisStore = require('connect-redis')(session);
-        
+const exitHook = require('exit-hook');
+exitHook(() => {
+  console.log('Exiting');
+});
 
 // db connection
 const url = 'mongodb://localhost:27017';
@@ -62,6 +65,34 @@ app.use(bodyParser.urlencoded({extended:true}));
     secret:'Odessy is the best game in the world!',
     store: new redisStore({client:redisClient})
   }));
+
+// Session
+app.use((req,res,next)=>{
+  // User session
+  // 第一次拜訪網站/session data到期，沒有user欄位（undefined)
+  if(req.session.user == undefined){
+    req.session.user = null; //設置user欄位，assign null
+  }
+  // logout/保持登入狀態/第一次拜訪
+  res.locals.user = req.session.user;
+
+  // Cart Session
+  // send from add to cart button only（因為每個route都會go through這個）
+  if(req.body.cart != undefined){
+    // 非登入狀態，寫到session當中
+    if(req.session.user  == null){
+      if(req.session.cart == undefined || req.session.cart==null){
+        req.session.cart=new Array(req.body.cart);
+      }
+      else{
+        req.session.cart.push(req.body.cart);
+      }
+    }
+    // console.log(req.session.cart); //if登入=>undefined
+  }
+  
+  next();
+});
 
 
 
@@ -119,18 +150,6 @@ var products = [
 // ====================
 // Product Route
 // ====================
-
-// Session
-app.use((req,res,next)=>{
-  // 第一次拜訪網站/session data到期，沒有user欄位（undefined)
-  if(req.session.user == undefined){
-    req.session.user = null; //設置user欄位，assign null
-  }
-  // logout/保持登入狀態/第一次拜訪
-  res.locals.user = req.session.user;
-  next();
-});
-
 // Landing Page
 app.get("/",(req,res)=>{
   res.render("landing");
@@ -173,6 +192,23 @@ app.get("/register",(req,res)=>{
   res.render("user/register");
 });
 
+app.post("/cart",(req,res)=>{
+  let input = req.body.cart;
+  let returnUrl = "/products/"+input.productId;
+
+   // 登入狀態=>更新db，寫入user session
+   if(req.session.user!=null){
+    db.users.findOneAndUpdate({email:req.session.user.email},{$push:{cart:input}},{returnOriginal:false})
+    .then((updateResult)=>{
+      let updatedUser = updateResult.value;
+      // console.log("Cart after update: "+updatedUser.cart); //成功錄進mongo
+      req.session.user = updatedUser; // update session(為何不能即時更新進redis-cli???)
+    })
+    .catch(err=>console.log(err));
+  }
+  res.redirect(returnUrl);
+});
+
 app.post("/login",(req,res)=>{
   let inputEmail = req.body.inputEmail;
   let inputPassword = req.body.inputPassword;
@@ -190,7 +226,23 @@ app.post("/login",(req,res)=>{
         // console.log("isUser:"+match);
         if(match){
           // res.send("Login successfully!");
-          req.session.user = foundUser;  //set session data in redis !??<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+          // update user with cart
+          if(req.session.cart!=undefined && req.session.cart!=null){
+            db.users.findOneAndUpdate({email:inputEmail},{$push:{cart:{$each:req.session.cart}}},{returnOriginal:false})
+            .then((updateResult)=>{
+              let updated = updateResult.value;
+              console.log(updated);
+              req.session.user=foundUser;
+              // req.session.user=updated;
+              // req.session.cart = undefined;
+              console.log("5");
+            })
+            .catch(err=>console.log(err));
+          }
+          else{
+            req.session.user=foundUser;
+            console.log("4");
+          }
           res.redirect("/products");
         }
         else{
@@ -249,9 +301,13 @@ app.get("/logout",(req,res)=>{
 });
 
 
+
 app.listen(3000,()=>{
     console.log("Server has started!");
 });
 
 });   
+
+
+ 
 

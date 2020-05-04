@@ -17,7 +17,6 @@
       "required": ["streetAddress", "city", "state","zip"]
     }
   },
-  
   "properties": {
       "firstName":{
         "type":"string"
@@ -46,6 +45,37 @@
       },
       "subscribe":{
         "type":"string"
+      },
+      "cart":{
+        "type":"array",
+        "default":[],
+        "items":{
+          "type":"object",
+          "required": ["productName","productId","img","price","size","amount"],
+          "properties": {
+            "productName":{
+              "type":"string",
+              "minLength":2
+            },
+            "productId":{
+                "type":"string",
+                "pattern": "^[A-Z]{3}[0-9]{10}$"
+            },
+            "img":{
+                "type":"string",
+                "format":"uri-reference"
+            },
+            "price":{
+                "type":"number"
+            },
+            "size":{
+              "type":"number"
+            },
+            "amount":{
+              "type":"number"
+            }
+          }
+        }
       }
-  }
-}
+     } 
+    }

@@ -11,30 +11,48 @@
               <p class="card-text text-muted mb-0">Description</p>
               <p class="card-text showcard mb-0"><%=product.description%></p>
               <p class="card-text" style="font-size: 3em">$ <%=product.price%></p>
-              <p class="card-text text-muted mb-1">Select a size</p>
-              <ul class="list-group list-group-horizontal mb-3">
-                <li class="list-group-item">S</li>
-                <li class="list-group-item">M</li>
-                <li class="list-group-item">L</li>
-              </ul>
-              <p class="card-text text-muted">Select quality</p>
-              <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                  <button type="button" class="btn btn-secondary">-</button>
+
+              <form method="POST" action="/cart">
+                <input type = "hidden" name = "cart[productName]" value = "<%=product.productName%>" />
+                <input type = "hidden" name = "cart[productId]" value = "<%=product.productId%>" />
+                <input type = "hidden" name = "cart[img]" value = "<%=product.img%>" />
+
+                <p class="card-text text-muted mb-1" >Select a size</p>
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                  <label class="btn btn-secondary">
+                    <input type="radio" name="cart[size]" value="S" required> S
+                  </label>
+                  <label class="btn btn-secondary">
+                    <input type="radio" name="cart[size]" value="M"> M
+                  </label>
+                  <label class="btn btn-secondary">
+                    <input type="radio" name="cart[size]" value="L"> L
+                  </label>
                 </div>
-                <input type="text" class="form-control text-center"  value=1 maxlength="3" >
-                <div class="input-group-append">
-                  <button type="button" class="btn btn-secondary">+</button>
+                <p class="card-text text-muted">Select quantity</p>
+                <div class="form-group">
+                  <select class="mb-3 form-control" required  style="width:50%" name="cart[amount]">
+                    <option value="">Choose...</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                  </select>
                 </div>
-              </div>
-              <button type="button" class="btn btn-outline-danger"><i class="far fa-heart"></i> Wishlist</button>
-              <button type="button" class="btn btn-outline-dark"><i class="fas fa-shopping-cart"></i> Add to cart</button>
+              
+
+                <button type="button" class="btn btn-outline-danger"><i class="far fa-heart"></i> Wishlist</button>
+                <button type="submit" class="btn btn-outline-dark"><i class="fas fa-shopping-cart"></i> Add to cart</button>
+              </form>
               <p class="card-text text-muted mb-0 text-right">Product_Id <%=product.productId%></p>
             </div>
           </div>
         </div>
       </div>
 </div>
-
+<script>
+  $('h2').text()
+</script>
 
 <%-include("../partials/footer")%>
