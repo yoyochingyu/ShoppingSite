@@ -196,17 +196,21 @@ app.post("/cart",(req,res)=>{
   let input = req.body.cart;
   let returnUrl = "/products/"+input.productId;
 
-   // 登入狀態=>更新db，寫入user session
+   // if user exists(login)=> update db(1 product)
    if(req.session.user!=null){
     db.users.findOneAndUpdate({email:req.session.user.email},{$push:{cart:input}},{returnOriginal:false})
     .then((updateResult)=>{
+      // set session data into redis-store
       let updatedUser = updateResult.value;
-      // console.log("Cart after update: "+updatedUser.cart); //成功錄進mongo
-      req.session.user = updatedUser; // update session(為何不能即時更新進redis-cli???)
+      req.session.user = updatedUser;
+      res.redirect(returnUrl); 
     })
     .catch(err=>console.log(err));
   }
-  res.redirect(returnUrl);
+  // if user doesn't exists=>redirect(has been handled in middleware)
+  else{
+    res.redirect(returnUrl); 
+  }
 });
 
 app.post("/login",(req,res)=>{
@@ -226,24 +230,22 @@ app.post("/login",(req,res)=>{
         // console.log("isUser:"+match);
         if(match){
           // res.send("Login successfully!");
-          // update user with cart
+
+          // if there's something inside cart =>update cart into user db
           if(req.session.cart!=undefined && req.session.cart!=null){
             db.users.findOneAndUpdate({email:inputEmail},{$push:{cart:{$each:req.session.cart}}},{returnOriginal:false})
             .then((updateResult)=>{
-              let updated = updateResult.value;
-              console.log(updated);
-              req.session.user=foundUser;
-              // req.session.user=updated;
-              // req.session.cart = undefined;
-              console.log("5");
+              req.session.user = updateResult.value;  //set session data 
+              req.session.cart=undefined;
+              res.redirect("/products");
             })
             .catch(err=>console.log(err));
           }
+          // if there's nothing inside cart : normal login
           else{
             req.session.user=foundUser;
-            console.log("4");
+            res.redirect("/products");
           }
-          res.redirect("/products");
         }
         else{
           res.send("Wrong Password!");
