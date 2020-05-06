@@ -72,12 +72,32 @@ app.use((req,res,next)=>{
   if(req.session.user == undefined){
     req.session.user = null; 
   }
-  // pass session data to "views"
+   // if there's no cart field in session data(first time visits/session data expires)=>set cart field to null, so that in "views" we can use forEach to render products
+  if(req.session.cart==undefined){
+    req.session.cart=null;
+  }
+
+
+  // pass user/cart session to "views"
   res.locals.user = req.session.user;
+  res.locals.cart=req.session.cart;
+  
+  // pass cart session to "views"
+  // if login=>pass req.session.user.cart to "views"
+  if(req.session.user!=null){
+    if(req.session.user.cart!=undefined && req.session.user.cart!=null){ //user.cart有可能會undefined嘛？
+      res.locals.cart =req.session.user.cart;
+    }
+  }else{
+  // if not login=>pass req.session.cart to "views"
+  if(req.session.cart!=undefined && req.session.cart!=null){
+    res.locals.cart = req.session.cart;
+  }
+}   
   next();
 });
 
-// Cart session(cart route only)
+// Cart session(cart route only)(for not login only)
 app.use("/cart",(req,res,next)=>{
   // if user doesn't exists(not login)=>create cart session
   if(req.session.user  == null){
@@ -90,8 +110,6 @@ app.use("/cart",(req,res,next)=>{
   }
   next();
 });
-
-
 
 
 // app.db=db;

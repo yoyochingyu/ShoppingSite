@@ -17,16 +17,24 @@
              <nav class="pushy pushy-right">
                 <div class="pushy-content">
                     <div class="card">
-                        <div class="row no-gutters">
-                            <div class="col-md-5">
-                                <img  class="card-img" alt="https://miro.medium.com/max/880/0*H3jZONKqRuAAeHnG.jpg" >
-                            </div>
-                            <div class="col-md-7">
-                                <div class="card-body">
-                                  <h2 class="card-title text-center mt-4">Someproduct</h2>
+                        <h1 class="text-center mt-3">Cart</h1>
+                        <%if(cart){%>
+                            <%cart.forEach((product)=>{%>
+                                <div class="row no-gutters">
+                                    <div class="col-md-5">
+                                        <img  src="<%=product.img%>" class="card-img" alt="https://miro.medium.com/max/880/0*H3jZONKqRuAAeHnG.jpg" >
+                                    </div>
+                                    <div class="col-md-7">
+                                        <div class="card-body">
+                                        <h5 class="card-title mt-4"><%=product.productName%></h5>
+                                        <p class="card-text"><%=product.productId%></p>
+                                        <p class="card-text"><b>Size:</b><%=product.size%>      <b>Amount:</b><%=product.amount%></p>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
+                                <hr>
+                            <%})%>
+                        <%}%>
                     </div>
                 </div>
             </nav>
