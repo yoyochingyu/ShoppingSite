@@ -1,21 +1,23 @@
 <%-include("../partials/header")%>
 <div class="container-fluid push">
     <!-- Using grid -->
-    <div class="row">
-        <%products.forEach((product)=>{%>
-        <div class="col-lg-3 col-sm-6">
-                <a href = "/products/<%=product.productId%>" class="anchor">
-                    <div class="card text-center" >  
-                        <img src="<%=product.img%>" class="card-img-top" alt="https://miro.medium.com/max/880/0*H3jZONKqRuAAeHnG.jpg" style="height: 208px ">
-                        <div class="card-body">
-                          <h5 class="card-title"><%=product.productName%></h5>
-                          <p class="card-text"><%=product.description%></p>
-                          <a href="/products/<%=product.id%>" class="btn btn-primary">Purchase</a>
-                        </div>
-                    </div>
-                </a>
+    <div class="container">
+        <div class="row">
+            <%products.forEach((product)=>{%>
+                <div class="col-lg-4 col-sm-6">
+                        <a href = "/products/<%=product.productId%>" class="anchor">
+                            <div class="card text-center" >  
+                                <img src="<%=product.img%>" class="card-img-top" alt="讀取失敗QQ">
+                                <div class="card-body">
+                                <h5 class="card-title"><%=product.productName%></h5>
+                                <p class="card-text"><%=product.description%></p>
+                                <a href="/products/<%=product.id%>" class="btn btn-primary">Purchase</a>
+                                </div>
+                            </div>
+                        </a>
+                </div>
+            <%});%>
         </div>
-    <%});%>
     </div>
 </div>
 <%-include("../partials/footer")%>

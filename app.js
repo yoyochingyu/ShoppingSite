@@ -12,7 +12,8 @@ const express = require("express"),
         session = require("express-session"),
         redis = require('redis'),
         redisClient = redis.createClient(),
-        redisStore = require('connect-redis')(session);
+        redisStore = require('connect-redis')(session),
+        methodOverride = require("method-override");
 const exitHook = require('exit-hook');
 exitHook(() => {
   console.log('Exiting');
@@ -47,6 +48,7 @@ MongoClient.connect(url,{ useNewUrlParser: true, useUnifiedTopology: true },(err
   // APP CONFIG
 app.set("view engine","ejs");
 app.use(express.static("public"));
+app.use(methodOverride('_method'));
 app.use(bodyParser.urlencoded({extended:true}));
   // Redis connection
   redisClient.on('connect',()=>{
@@ -226,6 +228,10 @@ app.post("/cart",(req,res)=>{
   else{
     res.redirect(returnUrl); 
   }
+});
+
+app.delete("/cart",(req,res)=>{
+  console.log("DELETE ROUTE!");
 });
 
 app.post("/login",(req,res)=>{

@@ -9,6 +9,7 @@
             <!-- font -->
             <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Anton&display=swap" >
             <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
+            <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,400;1,400;1,600;1,700&display=swap" rel="stylesheet">
             <link rel = "stylesheet" href = '/stylesheets/style.css' >
         </head>
 
@@ -29,6 +30,9 @@
                                         <h5 class="card-title mt-4"><%=product.productName%></h5>
                                         <p class="card-text"><%=product.productId%></p>
                                         <p class="card-text"><b>Size:</b><%=product.size%>      <b>Amount:</b><%=product.amount%></p>
+                                        <form method="POST" action="/cart?_method=DELETE">
+                                            <button type="submit" class="btn btn-danger">Delete</button>
+                                        </form>
                                         </div>
                                     </div>
                                 </div>
@@ -43,9 +47,10 @@
             
             <!-- Main -->
             <div class="main push">
-                <h1 class="text-center m-3"><a href="/products" class="anchor">ShoppingSite</a></h1>
+                <h1 class="text-center m-3"><a href="/products" class="anchor">Pickup <sup><i class="fab fa-pied-piper-hat"></i></sup></a></h1>
                 <!-- nav bar-collapse-->
                 <nav class="navbar navbar-expand-lg navbar-light bg-light mb-5">
+                    <div class="container">
                     <!-- <a class="navbar-brand" href="#">Navbar</a> -->
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -103,6 +108,7 @@
                             </li>
                         </ul>
                     </div>
+                </div>
                 </nav>
             </div>
     

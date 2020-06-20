@@ -1,5 +1,5 @@
 body{
-    font-family: 'Anton','Lato';
+    font-family:'Josefin Sans', 'Anton','Lato';
 
 }
 
@@ -12,10 +12,6 @@ h6{
 .navbar{
     margin-top: 50px;
 } */
-
-.card-text{
-    font-family: 'Lato';
-}
 
 .showcard{
     font-size: 1.2em;
@@ -58,8 +54,13 @@ h6{
 }
 .anchor{
     color:black;
+    font-style: italic;
+    font-weight: 600;
 }
 .anchor:hover{
     color:black;
     text-decoration: none;
+}
+.card-text{
+    font-family: 'Lato';
 }
