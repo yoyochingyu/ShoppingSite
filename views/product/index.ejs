@@ -6,12 +6,12 @@
             <%products.forEach((product)=>{%>
                 <div class="col-lg-4 col-sm-6">
                         <a href = "/products/<%=product.productId%>" class="anchor">
-                            <div class="card text-center" >  
+                            <div class="card text-center mt-4" >  
                                 <img src="<%=product.img%>" class="card-img-top" alt="讀取失敗QQ">
                                 <div class="card-body">
                                 <h5 class="card-title"><%=product.productName%></h5>
-                                <p class="card-text"><%=product.description%></p>
-                                <a href="/products/<%=product.id%>" class="btn btn-primary">Purchase</a>
+                                <p class="card-text description"><%=product.description.substring(0,85)%>...</p>
+                                <a href="/products/<%=product.id%>" class="btn btn-primary mt-2">Purchase</a>
                                 </div>
                             </div>
                         </a>

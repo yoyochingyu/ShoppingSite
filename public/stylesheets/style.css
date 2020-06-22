@@ -64,3 +64,9 @@ h6{
 .card-text{
     font-family: 'Lato';
 }
+.description{
+    text-align: left;
+}
+/* .card-img{
+
+} */
