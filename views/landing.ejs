@@ -1,5 +1,166 @@
-<%-include("partials/header")%>
-<h1>
-    LandingPage!
-</h1>
+<!DOCTYPE html>
+    <html>
+        <head>
+            <title>Pickup</title>
+            <link rel="shortcut icon" type="image/x-icon" href="logo.ico">
+            <!-- css -->
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha256-L/W5Wfqfa0sdBNIKN9cG6QA5F2qx4qICmU2VgLruv9Y=" crossorigin="anonymous" />
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" integrity="sha256-h20CPZ0QyXlBuAw7A+KluUYx/3pK+c7lYEpqLTlxjYQ=" crossorigin="anonymous" />
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pushy/1.3.0/css/pushy.min.css" integrity="sha256-LUnW723JjcFdxtSuLAhq1qgOR80p748NslLOMISHsGY=" crossorigin="anonymous" />
+            <!-- font -->
+            <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Anton&display=swap" >
+            <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
+            <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,400;1,400;1,600;1,700&display=swap" rel="stylesheet">
+            <link rel = "stylesheet" href = '/stylesheets/style.css' >
+            <style>
+                .pic {
+                   background: url("https://images.unsplash.com/photo-1505778276668-26b3ff7af103?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1043&q=80");
+                   background-size: cover;
+                   background-position: center; 
+               }
+               body,
+            html {
+                width: 100%;
+                height: 100%;
+                color: white;
+            }
+            .content{
+                padding-top: 25%;
+                text-align: center;
+                text-shadow: 0px 4px 3px rgba(0,0,0,0.4),
+                            0px 8px 13px rgba(0,0,0,0.2),
+                            0px 18px 23px rgba(0,0,0,0.4);
+            }
+            hr {
+                width: 400px;
+                border-top: 1px solid #f8f8f8;
+                border-bottom: 1px solid rgba(0,0,0,0.2);
+            }
+            .anchor{
+                color:black;
+                font-family: 'Kaushan Script';
+            }
+            .anchor:hover{
+                color:black;
+                text-decoration: none;
+            }
+            </style>
+        </head>
+
+        <body>
+             <!-- Pushy Sidebar -->
+             <nav class="pushy pushy-right">
+                <div class="pushy-content">
+                    <div class="card">
+                        <h1 class="text-center mt-3">Cart</h1>
+                        <%if(cart){%>
+                            <%cart.forEach((product)=>{%>
+                                <div class="row no-gutters">
+                                    <div class="col-md-5">
+                                        <img  src="<%=product.img%>" class="card-img" alt="https://miro.medium.com/max/880/0*H3jZONKqRuAAeHnG.jpg" >
+                                    </div>
+                                    <div class="col-md-7">
+                                        <div class="card-body">
+                                        <h5 class="card-title mt-4"><%=product.productName%></h5>
+                                        <p class="card-text"><%=product.productId%></p>
+                                        <p class="card-text"><b>Size:</b><%=product.size%>      <b>Amount:</b><%=product.amount%></p>
+                                        <form method="POST" action="/cart?_method=DELETE">
+                                            <button type="submit" class="btn btn-danger">Delete</button>
+                                        </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr>
+                            <%})%>
+                        <%}%>
+                    </div>
+                </div>
+            </nav>
+            <!-- Site Overlay -->
+            <div class="site-overlay"></div>
+            
+            <!-- Main -->
+            <div class="main push">
+                <h1 class="text-center m-3"><a href="/products" class="anchor">Pickup <sup><i class="fab fa-pied-piper-hat"></i></sup></a></h1>
+                <!-- nav bar-collapse-->
+                <nav class="navbar navbar-expand-lg navbar-light bg-light mb-5">
+                    <div class="container">
+                    <!-- <a class="navbar-brand" href="#">Navbar</a> -->
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                    </button>
+                
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav mr-auto">
+                            <li class="nav-item">
+                            <a class="nav-link" href="/products">Home <span class="sr-only">(current)</span></a>
+                            </li>
+                            <!-- dropdown menu -->
+                            <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Category
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <!-- <a class="dropdown-item text-muted" href="#">T-Shirt</a>
+                                <a class="dropdown-item text-muted" href="#">Short</a>
+                                <div class="dropdown-divider"></div> -->
+                                <a class="dropdown-item text-muted" href="/products">On Sale Products</a>
+                            </div>
+                            </li>
+
+                            <!-- <li class="nav-item">
+                                <a class="nav-link" href="#">About us</a>
+                            </li> -->
+                        </ul>
+
+                        <!-- right nav-bar -->
+                        <ul class="navbar-nav ml-auto">
+                            <!-- search form -->
+                            <!-- <form class="form-inline my-2 my-lg-0 ml-auto">
+                                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                            </form> -->
+                            <!-- user login -->
+                            <%if(!user){%>
+                            <li class="nav-item ml-3">
+                                <a class="nav-link" href="/login"><i class="fas fa-user-circle"></i> Login</a>
+                            </li>
+                            <li class="nav-item ml-3">
+                                <a class="nav-link" href="/register"><i class="fas fa-user-circle"></i> Register</a>
+                            </li>
+                            <%}else{%>
+                            <li class="nav-item ml-3">
+                                <a class="nav-link" href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                            </li>
+                            <li class="nav-item ml-3">
+                                <a class="nav-link" href="/profile"><i class="fas fa-address-card"></i> Profile</a>
+                            </li>
+                            <%}%>
+                            <!-- cart -->
+                            <li class="nav-item">
+                                <a class="nav-link menu-btn btn " href="#" type="button"><i class="fas fa-shopping-cart"></i> Cart</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                </nav>
+            </div>
+<div class="container pic">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="content">
+                <br>
+                <br>
+                <a href="/index"><button class="btn btn-default btn-lg mt-5"><h1 class="anchor" style="color:white; text-shadow: 0px 4px 3px rgba(0,0,0,0.4),
+                    0px 8px 13px rgba(0,0,0,0.2),
+                    0px 18px 23px rgba(0,0,0,0.4);">Pick Up </h1></button></a>
+                <br>
+                <br>
+                <br><br>
+                <br>
+                <br>
+            </div>
+        </div>
+    </div>
+</div>
 <%-include("partials/footer")%>
