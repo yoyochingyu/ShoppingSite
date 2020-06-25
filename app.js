@@ -244,7 +244,8 @@ app.delete("/cart",(req,res)=>{
     res.redirect("/products");
   }else{
     var removed = req.session.user.cart.splice(deleteIndex,1);
-    db.users.findOneAndUpdate({email:req.session.user.email},{$pull:{cart:removed}},(err,result)=>{
+    console.log(removed);
+    db.users.findOneAndUpdate({email:req.session.user.email},{$pull:{cart:removed[0]}},(err,result)=>{
       if(err){
         console.log(err);
       }
