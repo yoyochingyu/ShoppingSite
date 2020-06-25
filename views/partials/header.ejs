@@ -21,10 +21,10 @@
                     <div class="card">
                         <h1 class="text-center mt-3">Cart</h1>
                         <%if(cart){%>
-                            <%cart.forEach((product)=>{%>
+                            <%cart.forEach((product,i)=>{%>
                                 <div class="row no-gutters">
                                     <div class="col-md-5">
-                                        <img  src="<%=product.img%>" class="card-img" alt="https://miro.medium.com/max/880/0*H3jZONKqRuAAeHnG.jpg" >
+                                        <img src="<%=product.img%>" class="card-img" alt="Ooops not found!" >
                                     </div>
                                     <div class="col-md-7">
                                         <div class="card-body">
@@ -32,6 +32,7 @@
                                         <p class="card-text"><%=product.productId%></p>
                                         <p class="card-text"><b>Size:</b><%=product.size%>      <b>Amount:</b><%=product.amount%></p>
                                         <form method="POST" action="/cart?_method=DELETE">
+                                            <input type="hidden" name="deleteIndex" value="<%=i%>">
                                             <button type="submit" class="btn btn-danger">Delete</button>
                                         </form>
                                         </div>
@@ -68,9 +69,9 @@
                                 Category
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <!-- <a class="dropdown-item text-muted" href="#">T-Shirt</a>
-                                <a class="dropdown-item text-muted" href="#">Short</a>
-                                <div class="dropdown-divider"></div> -->
+                                <a class="dropdown-item text-muted" href="/category/outfit">Outfit</a>
+                                <a class="dropdown-item text-muted" href="/category/accessory">Accessory</a>
+                                <div class="dropdown-divider"></div>
                                 <a class="dropdown-item text-muted" href="/products">On Sale Products</a>
                             </div>
                             </li>
@@ -83,10 +84,10 @@
                         <!-- right nav-bar -->
                         <ul class="navbar-nav ml-auto">
                             <!-- search form -->
-                            <!-- <form class="form-inline my-2 my-lg-0 ml-auto">
-                                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                            <form class="form-inline my-2 my-lg-0 ml-auto" action="/search" method="POST">
+                                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="search" required>
                                 <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-                            </form> -->
+                            </form>
                             <!-- user login -->
                             <%if(!user){%>
                             <li class="nav-item ml-3">

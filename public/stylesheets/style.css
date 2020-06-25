@@ -20,6 +20,7 @@ h6{
 /* Change pusy width */
 .pushy{
     width: 400px; /* Changed the width to 400px */
+    background: white;
 }
 .pushy-left{
     transform: translate3d(-400px,0,0); /* Updated the values */

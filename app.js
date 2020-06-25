@@ -15,6 +15,7 @@ const express = require("express"),
         redisStore = require('connect-redis')(session),
         methodOverride = require("method-override");
 const exitHook = require('exit-hook');
+const e = require("express");
 exitHook(() => {
   console.log('Exiting');
 });
@@ -113,18 +114,6 @@ app.use("/cart",(req,res,next)=>{
   next();
 });
 
-
-// app.db=db;
-// Seeding
-var products = [
-  {productName:"High waist mom jeans",productId:"ABC1234567890",description:"High-rise, 5-pocket jeans with zipper fly fastening. Featuring a slightly wide fit that narrows at the ankle and turn-up hems.",img:"https://static.bershka.net/4/photos2/2020/V/0/1/p/0005/352/400/0005352400_1_1_3.jpg?t=1581504083565",price:29.9,createdBy:"2018-11-13"},
-  {productName:"Socks",productId:"DEF1234567890", description:"Great socks!",img:"https://scontent-tpe1-1.xx.fbcdn.net/v/t1.0-9/87384972_1385646941616951_1042036671773671424_o.jpg?_nc_cat=100&_nc_sid=8024bb&_nc_oc=AQnIGCoQAEsUGuZkk30rrxvCLHdVLDy7CvjtFD1EJYAmUUHnHYQ9HNJkyl-_R4Zs0Yw&_nc_ht=scontent-tpe1-1.xx&oh=a5be7fe8d9e97af1a56836cc05a5898a&oe=5EA9B299",price:35.9,createdBy:"2018-11-13"},
-  {productName:"Cloth",productId:"GHI0987654321",description:"Comfortable",img:"https://scontent-tpe1-1.xx.fbcdn.net/v/t1.0-9/p960x960/87397600_1383931691788476_5847767710611537920_o.jpg?_nc_cat=100&_nc_sid=8024bb&_nc_oc=AQkzOMBzMD01Lr0EIbTqEnnpWRbDyVmwPUaVqL_A6Uhr_c9Ty4AfKYWvun06unHwB4w&_nc_ht=scontent-tpe1-1.xx&_nc_tp=6&oh=fe9faea9b065f30bdfedb247bfe9e644&oe=5EA7E6EA",price:49.9,createdBy:"2018-11-13"},
-  {productName:"Two-color cloth",productId:"JKL1234567890",description:"Buy it or not",img:"https://scontent-tpe1-1.xx.fbcdn.net/v/t1.0-9/s960x960/86728222_1376296059218706_4688338866694782976_o.jpg?_nc_cat=104&_nc_sid=8024bb&_nc_oc=AQncGR8P7MTrhsiCGjOJpks_BTIm9UdJ5H8RsejWrs7tw4Cdp5_cMNnRXK06a2Q6jvg&_nc_ht=scontent-tpe1-1.xx&_nc_tp=7&oh=68e18d1a2508820d13b77fc09b729582&oe=5EA98C87",price:10.0,createdBy:"2018-11-13"},
-  {productName:"Wallet",productId:"MNO1234567890",description:"Place your cards inside",img:  "https://scontent-tpe1-1.xx.fbcdn.net/v/t1.0-9/83944175_1368630926651886_7148803726516420608_o.jpg?_nc_cat=106&_nc_sid=8024bb&_nc_oc=AQlRsrFbYyST9Slwak1bx7qxNNNJqbY3lovbXhujYAJ36io0858pu92Zs5LQ5iVShKc&_nc_ht=scontent-tpe1-1.xx&oh=ff0d1df67053688cd5c1d660b10cc643&oe=5EAA46FE",price:34.5,createdBy:"2018-11-13"}];
-// seed();
-
-
 // Delete  user
 // db.users.deleteOne({firstName:"admin"})
 // .then((result)=>{
@@ -134,17 +123,6 @@ var products = [
 
 
 // Insert orders
-// var order1 = {purchaseTime:"2018-11-13T20:20:39+00:00",status:"Processing",expectedDeliveryDate:"2018-11-13",products:[
-//   {productName:"High waist mom jeans",productId:"ABC1234567890",price:29.9,amount:1,net:29.9},
-//   {productName:"Two-color cloth",productId:"JKL1234567890",price:10.0,amount:1,net:10.0}
-// ],shipping:0,overall:39.9,user_id:"5eabfd72dab1a342de212ba2"
-// };
-
-// var order2 = {purchaseTime:"2018-11-19T20:20:39+00:00",status:"Delivering",expectedDeliveryDate:"2018-11-20",products:[
-//   {productName:"High waist mom jeans",productId:"ABC1234567890",price:29.9,amount:1,net:29.9},
-//   {productName:"Two-color cloth",productId:"JKL1234567890",price:10.0,amount:1,net:10.0}
-// ],shipping:0,overall:39.9,user_id:"5eabfd72dab1a342de212ba2"
-// };
 
 // db.orders.deleteMany({})
 // .then((result)=>{
@@ -179,7 +157,7 @@ app.get("/products",(req,res)=>{
       console.log(err);
     }
     else{
-      res.render("product/index",{products:products});
+      res.render("product/index",{products:products,category:null,search:null});
     }
   });
 });
@@ -196,6 +174,33 @@ app.get("/products/:id",(req,res)=>{
       res.render("product/show",{product:foundProduct});
     }
   });
+});
+
+// Search Route
+app.post("/search",(req,res)=>{
+  search = req.body.search;
+  db.products.find({$text:{$search:search}}).toArray((err,foundProducts)=>{
+    if(err){
+      console.log(err);
+    }
+    else{
+      // console.log(foundProducts);
+      res.render("product/index",{products:foundProducts,category:null,search:search});
+    }
+  });
+});
+
+// Category route
+app.get("/category/:detail",(req,res)=>{
+  detail = req.params.detail;
+  db.products.find({category:detail}).toArray((err,foundProducts)=>{
+    if(err){
+      console.log(err);
+    }
+    else{
+      res.render("product/index",{products:foundProducts,category:detail,search:null});
+    }
+  })
 });
 
 // ====================
@@ -232,6 +237,11 @@ app.post("/cart",(req,res)=>{
 
 app.delete("/cart",(req,res)=>{
   console.log("DELETE ROUTE!");
+//   deleteIndex = console.log(req.body.deleteIndex);
+//   if(req.session.user==null){
+//     req.session.cart.slice(deleteIndex,1);
+//   }
+  // res.redirect("/products");
 });
 
 app.post("/login",(req,res)=>{

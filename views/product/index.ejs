@@ -2,6 +2,11 @@
 <div class="container-fluid push">
     <!-- Using grid -->
     <div class="container">
+        <%if(category!=null){%>
+            <h4>Category: <b><i><%=detail%></i></b></h4>
+        <%}else if(search!=null){%>
+            <h4>Search Result: <b><i><%=search%></i></b></h4>
+        <%}%>
         <div class="row">
             <%products.forEach((product)=>{%>
                 <div class="col-lg-4 col-sm-6">
@@ -11,7 +16,7 @@
                                 <div class="card-body">
                                 <h5 class="card-title"><%=product.productName%></h5>
                                 <p class="card-text description"><%=product.description.substring(0,85)%>...</p>
-                                <a href="/products/<%=product.id%>" class="btn btn-primary mt-2">Purchase</a>
+                                <a href="/products/<%=product.productId%>" class="btn btn-primary mt-2">Detail</a>
                                 </div>
                             </div>
                         </a>

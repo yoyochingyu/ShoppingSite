@@ -1,0 +1,1 @@
+1. Search得用post才能獨到req.body?(記得input要設name)
