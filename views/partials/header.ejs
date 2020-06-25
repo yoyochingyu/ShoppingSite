@@ -24,27 +24,32 @@
                             <%if(cart.length==0){%>
                                 <hr>
                                 <h5 class="mx-auto">Time to PICK UP something!</h5>
-                            <%}%>
-                            <%cart.forEach((product,i)=>{%>
-                                <hr>
-                                <div class="row no-gutters">
-                                    <div class="col-md-5">
-                                        <img src="<%=product.img%>" class="card-img" alt="Ooops not found!" >
-                                    </div>
-                                    <div class="col-md-7">
-                                        <div class="card-body">
-                                        <h5 class="card-title mt-4"><%=product.productName%></h5>
-                                        <p class="card-text"><%=product.productId%></p>
-                                        <p class="card-text"><b>Size:</b><%=product.size%>      <b>Amount:</b><%=product.amount%></p>
-                                        <form method="POST" action="/cart?_method=DELETE">
-                                            <input type="hidden" name="deleteIndex" value="<%=i%>">
-                                            <button type="submit" class="btn btn-danger">Delete</button>
-                                        </form>
+                            <%}else{%>
+                                <%cart.forEach((product,i)=>{%>
+                                    <hr>
+                                    <div class="row no-gutters">
+                                        <div class="col-md-5">
+                                            <img src="<%=product.img%>" class="card-img" alt="Ooops not found!" >
+                                        </div>
+                                        <div class="col-md-7">
+                                            <div class="card-body">
+                                            <h5 class="card-title mt-4"><%=product.productName%></h5>
+                                            <p class="card-text"><%=product.productId%></p>
+                                            <p class="card-text"><b>Size:</b><%=product.size%>      <b>Amount:</b><%=product.amount%></p>
+                                            <form method="POST" action="/cart?_method=DELETE">
+                                                <input type="hidden" name="deleteIndex" value="<%=i%>">
+                                                <button type="submit" class="btn btn-danger">Delete</button>
+                                            </form>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            <%})%>
+                                <%})%>
+                                <form action="/purchase" method="POST">
+                                    <button type="submit" class="btn btn-outline-primary btn-lg mb-3">Purchase</button>
+                                </form>
+                            <%}%>
                         <%}else{%>
+                        <!-- While first time visit, cart=null -->
                             <hr>
                             <h5 class="mx-auto">Time to PICK UP something!</h5>
                         <%}%>

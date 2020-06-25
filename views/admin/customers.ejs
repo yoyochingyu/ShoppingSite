@@ -1,0 +1,14 @@
+<%-include("partials/header")%>
+<div class="container-fluid push">
+    <div class="card mb-3  mx-auto" style="width: 65em;" >
+        <ul class="list-group">
+            <%customers.forEach((customer)=>{%>
+                <li class="list-group-item pb-0">
+                    <p>User:<%=customer.firstName%> <%=customer.lastName%>  Email:<%=customer.email%></p>
+                </li>
+            <%})%>
+        </ul>
+    </div>
+</div>
+
+<%-include("partials/footer")%>

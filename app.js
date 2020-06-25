@@ -116,6 +116,7 @@ app.use("/cart",(req,res,next)=>{
   next();
 });
 
+
 // Delete  user
 // db.users.deleteOne({firstName:"admin"})
 // .then((result)=>{
@@ -255,6 +256,9 @@ app.delete("/cart",(req,res)=>{
     });
   }
 });
+app.post("/purchase",(req,res)=>{
+  res.send("Successfully purchase!");
+});
 
 app.post("/login",(req,res)=>{
   let inputEmail = req.body.inputEmail;
@@ -326,14 +330,16 @@ app.post("/register",(req,res)=>{
 });
 
 app.get("/profile",(req,res)=>{
+  var wishlistFixed = {productName:"A&F Stretch Denim Jacket",productId:"KSV7891356248",description:"Comfortable denim jacket in new stretch fabric and classic blue wash. Features logo shanks, pockets throughout and logo leather patch at back hem.",img:"https://drive.google.com/uc?export=download&id=1d9rQ2D3TR-e2JgrE1shLe_5L8msWkZVt",price:110,createdBy:"2013-11-18"};
+  console.log(wishlistFixed);
   if(req.session.user){
     // The user has one/multiple order before
     db.orders.find({user_id:req.session.user._id}).toArray()
     .then((foundOrders)=>{
-      console.log(foundOrders);
-      res.render("user/profile",{product:products[2],orders:foundOrders},);
+      // console.log(foundOrders);
+      res.render("user/profile",{product:wishlistFixed,orders:foundOrders});
     })
-    .catch(err=>console.log);
+    .catch(err=>console.log(err));
   }
   else{
     res.redirect("/login");
@@ -343,6 +349,17 @@ app.get("/profile",(req,res)=>{
 app.get("/logout",(req,res)=>{
   req.session.user = null;
   res.redirect("/products");
+});
+// ===============================
+// Admin Route
+// ===============================
+app.get("/admin/customers",(req,res)=>{
+  db.users.find({}).toArray()
+  .then((foundCustomers)=>{
+    // console.log(foundCustomers);
+    res.render("admin/customers",{customers:foundCustomers});
+  })
+  .catch(err=>console.log(err));
 });
 
 
