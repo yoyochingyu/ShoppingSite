@@ -108,7 +108,9 @@ app.use("/cart",(req,res,next)=>{
       req.session.cart=new Array(req.body.cart);
     }
     else{
-      req.session.cart.push(req.body.cart);
+      if(req.body.cart!=undefined && req.session.cart!=null){
+        req.session.cart.push(req.body.cart);
+      }
     }
   }
   next();
@@ -236,12 +238,21 @@ app.post("/cart",(req,res)=>{
 });
 
 app.delete("/cart",(req,res)=>{
-  console.log("DELETE ROUTE!");
-//   deleteIndex = console.log(req.body.deleteIndex);
-//   if(req.session.user==null){
-//     req.session.cart.slice(deleteIndex,1);
-//   }
-  // res.redirect("/products");
+  deleteIndex = req.body.deleteIndex;
+  if(req.session.user == null){
+    req.session.cart.splice(deleteIndex,1);
+    res.redirect("/products");
+  }else{
+    var removed = req.session.user.cart.splice(deleteIndex,1);
+    db.users.findOneAndUpdate({email:req.session.user.email},{$pull:{cart:removed}},(err,result)=>{
+      if(err){
+        console.log(err);
+      }
+      else{
+        res.redirect("/products");
+      }
+    });
+  }
 });
 
 app.post("/login",(req,res)=>{
