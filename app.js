@@ -411,23 +411,7 @@ app.get("/admin/products/new",(req,res)=>{
 
 app.post("/admin/products",(req,res)=>{
   let newProduct = req.body;
-  if(newProduct.sizeOption=='oneSize'){
-    delete newProduct.size;
-  }else if(newProduct.sizeOption=='cloth'){
-    delete newProduct.size['8'];
-    delete newProduct.size['8_5'];
-    delete newProduct.size['9'];
-    delete newProduct.size['9_5'];
-    delete newProduct.size['10'];
-    delete newProduct.size['10_5'];
-    delete newProduct.size['11'];
-    delete newProduct.amount;
-  }else{
-    delete newProduct.size.S;
-    delete newProduct.size.M;
-    delete newProduct.size.L;
-    delete newProduct.amount;
-  }
+  // console.log(newProduct);
   delete newProduct.sizeOption;
   
   newProduct = parsing(newProduct);

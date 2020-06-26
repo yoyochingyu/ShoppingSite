@@ -41,7 +41,7 @@
                     <span id="oneSize" style="display:none">
                             <p>
                                 <span class="card-text text-muted mb-0">Amount</span>
-                                <input type="number" name="amount">
+                                <input type="number" class="oneSize" name="amount">
                             </p>
                     </span>
                     
@@ -58,9 +58,9 @@
                             <tbody>
                                 <tr>
                                     <th scope="row" class="pr-0">Amount</th>
-                                    <td><input type="number" style="width: 3em" name="size[S]" min=0></td>
-                                    <td><input type="number" style="width: 3em" name="size[M]" min=0></td>
-                                    <td><input type="number" style="width: 3em" name="size[L]" min=0></td>
+                                    <td><input class="cloth" type="number" style="width: 3em" name="size[S]" min=0></td>
+                                    <td><input class="cloth" type="number" style="width: 3em" name="size[M]" min=0></td>
+                                    <td><input class="cloth" type="number" style="width: 3em" name="size[L]" min=0></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -83,13 +83,13 @@
                             <tbody>
                                 <tr>
                                     <th scope="row" class="pr-0">Amount</th>
-                                    <td><input type="number" style="width: 3em" name="size[8]" min=0></td>
-                                    <td><input type="number" style="width: 3em" name="size[8_5]" min=0></td>
-                                    <td><input type="number" style="width: 3em" name="size[9]"  min=0></td>
-                                    <td><input type="number" style="width: 3em" name="size[9_5]" min=0></td>
-                                    <td><input type="number" style="width: 3em" name="size[10]" min=0></td>
-                                    <td><input type="number" style="width: 3em" name="size[10_5]" min=0></td>
-                                    <td><input type="number" style="width: 3em" name="size[11]" min=0></td>
+                                    <td><input type="number" class="shoes" style="width: 3em" name="size[8]" min=0></td>
+                                    <td><input type="number" class="shoes" style="width: 3em" name="size[8_5]" min=0></td>
+                                    <td><input type="number" class="shoes" style="width: 3em" name="size[9]"  min=0></td>
+                                    <td><input type="number" class="shoes" style="width: 3em" name="size[9_5]" min=0></td>
+                                    <td><input type="number" class="shoes" style="width: 3em" name="size[10]" min=0></td>
+                                    <td><input type="number" class="shoes" style="width: 3em" name="size[10_5]" min=0></td>
+                                    <td><input type="number" class="shoes" style="width: 3em" name="size[11]" min=0></td>
                                     
                                 </tr>
                             </tbody>
@@ -109,18 +109,32 @@
 <script>
     function myFunction(){
         let oneSize = document.getElementById('oneSize');
+        let cloth = document.getElementById('cloth');
+        let shoes = document.getElementById('shoes');
         if(document.getElementById('r1').checked){
             oneSize.style.display = "block";
             cloth.style.display = "none";
             shoes.style.display = "none";
+            $("input.oneSize").attr("disabled",false);
+            $("input.cloth").attr("disabled",true);
+            $("input.shoes").attr("disabled",true);
+            // cloth.attr("disabled",true);
+            // shoes.attr("disabled",true);
+            
         }else if(document.getElementById('r2').checked){
             oneSize.style.display = "none";
             cloth.style.display = "block";
             shoes.style.display = "none";
+            $("input.oneSize").attr("disabled",true);
+            $("input.cloth").attr("disabled",false);
+            $("input.shoes").attr("disabled",true);
         }else{
             oneSize.style.display = "none";
             cloth.style.display = "none";
             shoes.style.display = "block";
+            $("input.oneSize").attr("disabled",true);
+            $("input.cloth").attr("disabled",true);
+            $("input.shoes").attr("disabled",false);
         }
     }
 </script>
