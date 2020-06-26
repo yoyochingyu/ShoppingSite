@@ -1,0 +1,127 @@
+<%-include("../partials/header")%>
+<div class="container-fluid">
+    <div class="card mb-3  mx-auto" style="width: 65em;" >
+        <div class="row no-gutters">
+          <div class="col-md-5">
+            <img src="https://shoppingsitepickup.s3.us-east-2.amazonaws.com/default.jpg" class="card-img mt-4 ml-1" alt="Ooops! There must be some mistake!">
+          </div>
+          <div class="col-md-7">
+            <div class="card-body">
+                <form method="POST" action="/admin/products">
+                    <p>
+                        <span class="card-text text-muted mb-0">Product Name:</span>
+                        <input type="text" name="productName" required>
+                    </p>
+                    <p>
+                        <span class="card-text text-muted mb-0">Product ID:</span>
+                        <input type="text" name="productId" required>
+                    </p>
+                    <p class="card-text text-muted mb-0">Description</p>
+                        <textarea name="description" required></textarea>
+                    <p>
+                        <span class="card-text text-muted mb-0">Price</span>
+                        <input type="number" name="price" required>
+                    </p>
+                    <p>
+                        <span class="card-text text-muted mb-0">Image URL</span>
+                        <input type="string" name="img" required>
+                    </p>
+                    <p>
+                        <span class="card-text text-muted mb-0">Category : </span>
+                        <input type="radio" name="category" value="outfit" required> Outfit
+                        <input type="radio" name="category" value="accessory"> Accessory
+                    </p>
+
+                    <p class="card-text text-muted">Size options : 
+                        <input type="radio" name="sizeOption" id="r1" value="oneSize" onclick="myFunction()" > One-Size  
+                        <input type="radio" name="sizeOption" id="r2" value="cloth" onclick="myFunction()"> Cloth  
+                        <input type="radio" name="sizeOption" id="r3" value="shoes" onclick="myFunction()" > Shoes
+                    </p>
+
+                    <span id="oneSize" style="display:none">
+                            <p>
+                                <span class="card-text text-muted mb-0">Amount</span>
+                                <input type="number" name="amount">
+                            </p>
+                    </span>
+                    
+                    <span id="cloth" style="display:none">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">S</th>
+                                    <th scope="col">M</th>
+                                    <th scope="col">L</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th scope="row" class="pr-0">Amount</th>
+                                    <td><input type="number" style="width: 3em" name="size[S]" min=0></td>
+                                    <td><input type="number" style="width: 3em" name="size[M]" min=0></td>
+                                    <td><input type="number" style="width: 3em" name="size[L]" min=0></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </span>
+                    
+                    <span id="shoes" style="display:none">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">8</th>
+                                    <th scope="col">8.5</th>
+                                    <th scope="col">9</th>
+                                    <th scope="col">9.5</th>
+                                    <th scope="col">10</th>
+                                    <th scope="col">10.5</th>
+                                    <th scope="col">11</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th scope="row" class="pr-0">Amount</th>
+                                    <td><input type="number" style="width: 3em" name="size[8]" min=0></td>
+                                    <td><input type="number" style="width: 3em" name="size[8_5]" min=0></td>
+                                    <td><input type="number" style="width: 3em" name="size[9]"  min=0></td>
+                                    <td><input type="number" style="width: 3em" name="size[9_5]" min=0></td>
+                                    <td><input type="number" style="width: 3em" name="size[10]" min=0></td>
+                                    <td><input type="number" style="width: 3em" name="size[10_5]" min=0></td>
+                                    <td><input type="number" style="width: 3em" name="size[11]" min=0></td>
+                                    
+                                </tr>
+                            </tbody>
+                        </table>
+                    </span>
+                    
+                    <button type="submit" class="btn btn-dark"><i class="fas fa-save"></i> Save Modification</button>                
+                </form>
+            </div>
+          </div>
+        </div>
+      </div>
+</div>
+
+
+
+<script>
+    function myFunction(){
+        let oneSize = document.getElementById('oneSize');
+        if(document.getElementById('r1').checked){
+            oneSize.style.display = "block";
+            cloth.style.display = "none";
+            shoes.style.display = "none";
+        }else if(document.getElementById('r2').checked){
+            oneSize.style.display = "none";
+            cloth.style.display = "block";
+            shoes.style.display = "none";
+        }else{
+            oneSize.style.display = "none";
+            cloth.style.display = "none";
+            shoes.style.display = "block";
+        }
+    }
+</script>
+<%-include("../partials/footer")%>

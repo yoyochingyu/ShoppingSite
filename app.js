@@ -38,6 +38,31 @@ function test(schema,data){
   });		
 };
 
+// Parse form string into number to pass test
+function parsing(updated){
+  if(updated.amount){
+    updated.amount = parseInt(updated.amount);
+  }
+  else{
+    if(updated.size.S){
+      updated.size.S = parseInt(updated.size.S);
+      updated.size.M = parseInt(updated.size.M);
+      updated.size.L = parseInt(updated.size.L);
+    }
+    if(updated.size["8"]){
+      updated.size["8"] = parseInt(updated.size["8"]);
+      updated.size["8_5"] = parseInt(updated.size["8_5"]);
+      updated.size["9"] = parseInt(updated.size["9"]);
+      updated.size["9_5"] = parseInt(updated.size["9_5"]);
+      updated.size["10"] = parseInt(updated.size["10"]);
+      updated.size["10_5"] = parseInt(updated.size["10_5"]);
+      updated.size["11"] = parseInt(updated.size["11"]);
+    }
+  }
+  updated.price = parseInt(updated.price);
+  return updated;
+}
+
 MongoClient.connect(url,{ useNewUrlParser: true, useUnifiedTopology: true },(err,client)=>{
   assert.equal(null,err);
   console.log("Connected successfully to Mongodb");
@@ -371,6 +396,7 @@ app.get("/admin/orders",(req,res)=>{
   .catch(err=>console.log(err));
 });
 
+// Index route: Show all products
 app.get("/admin/products",(req,res)=>{
   db.products.find({}).toArray()
   .then((foundProducts)=>{
@@ -378,7 +404,46 @@ app.get("/admin/products",(req,res)=>{
   })
   .catch(err=>console.log(err));
 });
+// New route : Show form for new
+app.get("/admin/products/new",(req,res)=>{
+  res.render("admin/products/new");
+});
 
+app.post("/admin/products",(req,res)=>{
+  let newProduct = req.body;
+  if(newProduct.sizeOption=='oneSize'){
+    delete newProduct.size;
+  }else if(newProduct.sizeOption=='cloth'){
+    delete newProduct.size['8'];
+    delete newProduct.size['8_5'];
+    delete newProduct.size['9'];
+    delete newProduct.size['9_5'];
+    delete newProduct.size['10'];
+    delete newProduct.size['10_5'];
+    delete newProduct.size['11'];
+    delete newProduct.amount;
+  }else{
+    delete newProduct.size.S;
+    delete newProduct.size.M;
+    delete newProduct.size.L;
+    delete newProduct.amount;
+  }
+  delete newProduct.sizeOption;
+  
+  newProduct = parsing(newProduct);
+  newProduct.lastModified = new Date().getTime();
+  test(productSchema,newProduct)
+  .then((result)=>{
+    // console.log(result);
+    db.products.insertOne(newProduct)
+  })
+  .then(()=>{
+    res.redirect("/admin/products");
+  })
+  .catch(err=>console.log(err));
+});
+
+// Edit route: Show form for update
 app.get("/admin/products/:id",(req,res)=>{
   let productId = req.params.id;
   db.products.findOne({productId:productId})
@@ -388,34 +453,15 @@ app.get("/admin/products/:id",(req,res)=>{
   .catch(err=>console.log(err));
 });
 
+// Update Route: Handle update
 app.put("/admin/products",(req,res)=>{
   let productId = req.body.productId;
   let updated = req.body;
 
   // Parse string into number to pass test
-  if(updated.amount){
-    updated.amount = parseInt(updated.amount);
-  }
-  else{
-    if(updated.size.S){
-      updated.size.S = parseInt(updated.size.S);
-      updated.size.M = parseInt(updated.size.M);
-      updated.size.L = parseInt(updated.size.L);
-    }
-    if(updated.size[8]){
-      updated.size[8] = parseInt(updated.size[8]);
-      updated.size[8.5] = parseInt(updated.size[8.5]);
-      updated.size[9] = parseInt(updated.size[9]);
-      updated.size[9.5] = parseInt(updated.size[9.5]);
-      updated.size[10] = parseInt(updated.size[10]);
-      updated.size[10.5] = parseInt(updated.size[10.5]);
-      updated.size[11] = parseInt(updated.size[11]);
-    }
-  }
-  updated.price = parseInt(updated.price);
+  updated = parsing(updated);
   updated.lastModified = new Date().getTime();
-  // console.log(updated);
-  
+
   // Test and update mongo
   test(productSchema,updated)
   .then((result)=>{

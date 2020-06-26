@@ -1,5 +1,5 @@
 <%-include("../partials/header")%>
-<div class="container-fluid push">
+<div class="container-fluid">
     <div class="card mb-3  mx-auto" style="width: 65em;" >
         <div class="row no-gutters">
           <div class="col-md-5">
@@ -17,9 +17,7 @@
                         <input type="text" name="productId" value="<%=product.productId%>" required>
                     </p>
                     <p class="card-text text-muted mb-0">Description</p>
-                        <textarea name="description" required>
-                            <%=product.description%>
-                        </textarea>
+                        <textarea name="description" required><%=product.description%></textarea>
                     <p>
                         <span class="card-text text-muted mb-0">Price</span>
                         <input type="number" name="price" value="<%=product.price%>" required>
@@ -27,6 +25,11 @@
                     <p>
                         <span class="card-text text-muted mb-0">Image URL</span>
                         <input type="string" name="img" value="<%=product.img%>" required>
+                    </p>
+                    <p>
+                        <span class="card-text text-muted mb-0">Category : </span>
+                        <input type="radio" name="category" value="outfit" required> Outfit
+                        <input type="radio" name="category" value="accessory"> Accessory
                     </p>
 
                     <%if(product.size == undefined){%>
@@ -49,9 +52,9 @@
                             <tbody>
                                 <tr>
                                     <th scope="row" class="pr-0">Amount</th>
-                                    <td><input type="number" style="width: 3em" name="size[S]" value="<%=product.size.S%>" min=0></td>
-                                    <td><input type="number" style="width: 3em" name="size[M]" value="<%=product.size.M%>" min=0></td>
-                                    <td><input type="number" style="width: 3em" name="size[L]" value="<%=product.size.L%>" min=0></td>
+                                    <td><input type="number" style="width: 3em" name="size[S]" value="<%=product.size.S%>" min=0 required></td>
+                                    <td><input type="number" style="width: 3em" name="size[M]" value="<%=product.size.M%>" min=0 required></td>
+                                    <td><input type="number" style="width: 3em" name="size[L]" value="<%=product.size.L%>" min=0 required></td>
                                 </tr>
                             </tbody>
                         <%}else{%>
@@ -70,13 +73,13 @@
                             <tbody>
                                 <tr>
                                     <th scope="row" class="pr-0">Amount</th>
-                                    <td><input type="number" style="width: 3em" name="size[8]" value="<%=product.size[8]%>" min=0></td>
-                                    <td><input type="number" style="width: 3em" name="size[8.5]" value="<%=product.size[8.5]%>" min=0></td>
-                                    <td><input type="number" style="width: 3em" name="size[9]" value="<%=product.size[9]%>" min=0></td>
-                                    <td><input type="number" style="width: 3em" name="size[9.5]" value="<%=product.size[9.5]%>" min=0></td>
-                                    <td><input type="number" style="width: 3em" name="size[10]" value="<%=product.size[10]%>" min=0></td>
-                                    <td><input type="number" style="width: 3em" name="size[10.5]" value="<%=product.size[10.5]%>" min=0></td>
-                                    <td><input type="number" style="width: 3em" name="size[11]" value="<%=product.size[11]%>" min=0></td>
+                                    <td><input type="number" style="width: 3em" name="size[8]" value="<%=product.size['8']%>" min=0  required></td>
+                                    <td><input type="number" style="width: 3em" name="size[8_5]" value="<%=product.size['8_5']%>" min=0  required></td>
+                                    <td><input type="number" style="width: 3em" name="size[9]" value="<%=product.size['9']%>" min=0 required></td>
+                                    <td><input type="number" style="width: 3em" name="size[9_5]" value="<%=product.size['9_5']%>" min=0 required></td>
+                                    <td><input type="number" style="width: 3em" name="size[10]" value="<%=product.size['10']%>" min=0 required></td>
+                                    <td><input type="number" style="width: 3em" name="size[10_5]" value="<%=product.size['10_5']%>" min=0 required></td>
+                                    <td><input type="number" style="width: 3em" name="size[11]" value="<%=product.size['11']%>" min=0 required></td>
                                     
                                 </tr>
                             </tbody>
@@ -96,3 +99,4 @@
       </div>
 </div>
 <%-include("../partials/footer")%>
+

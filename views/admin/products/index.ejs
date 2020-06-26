@@ -1,6 +1,9 @@
 <%-include("../partials/header")%>
 <div class="container-fluid push">
-    <h1>Products</h1>
+    <h1>
+        Products
+    </h1>
+    <span><a href="/admin/products/new" type="button" style="text-align: right;"><i class="fas fa-plus-circle"></i> Add new product</a></span>
     <div class="row">
         <%products.forEach((product)=>{%>
             <div class="col-lg-4 col-sm-6">
