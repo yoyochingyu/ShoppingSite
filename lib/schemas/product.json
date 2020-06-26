@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema#",
     "type":"object",
     "additionalProperties": false,
-    "required": ["productId","productName","description","img","price","createdBy"],
+    "required": ["productId","productName","description","img","price","lastModified"],
     "properties": {
         "productName":{
             "type":"string",
@@ -15,7 +15,7 @@
         "description":{
             "type":"string",
             "minLength": 10,
-            "maxLength": 150
+            "maxLength": 800
         },
         "img":{
             "type":"string",
@@ -24,8 +24,25 @@
         "price":{
             "type":"number"
         },
-        "createdBy":{
-            "format": "date"
-        }
+        "lastModified":{
+            "format": "date-time"
+        },
+        "amount":{
+            "type":"number"
+        },
+        "size":{
+            "type":"object",
+            "properties": {
+                "S":{
+                    "type":"number"
+                },
+                "M":{
+                    "type":"number"
+                },
+                "L":{
+                    "type":"number"
+                }
+            }
+        } 
     }
 }

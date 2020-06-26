@@ -16,6 +16,7 @@ const express = require("express"),
         methodOverride = require("method-override");
 const exitHook = require('exit-hook');
 const e = require("express");
+const { parse } = require("path");
 exitHook(() => {
   console.log('Exiting');
 });
@@ -358,6 +359,72 @@ app.get("/admin/customers",(req,res)=>{
   .then((foundCustomers)=>{
     // console.log(foundCustomers);
     res.render("admin/customers",{customers:foundCustomers});
+  })
+  .catch(err=>console.log(err));
+});
+
+app.get("/admin/orders",(req,res)=>{
+  db.orders.find({}).toArray()
+  .then((foundOrders)=>{
+    res.render("admin/orders",{orders:foundOrders});
+  })
+  .catch(err=>console.log(err));
+});
+
+app.get("/admin/products",(req,res)=>{
+  db.products.find({}).toArray()
+  .then((foundProducts)=>{
+    res.render("admin/products/index",{products:foundProducts});
+  })
+  .catch(err=>console.log(err));
+});
+
+app.get("/admin/products/:id",(req,res)=>{
+  let productId = req.params.id;
+  db.products.findOne({productId:productId})
+  .then((foundProduct)=>{
+    res.render("admin/products/show",{product:foundProduct});
+  })
+  .catch(err=>console.log(err));
+});
+
+app.put("/admin/products",(req,res)=>{
+  let productId = req.body.productId;
+  let updated = req.body;
+
+  // Parse string into number to pass test
+  if(updated.amount){
+    updated.amount = parseInt(updated.amount);
+  }
+  else{
+    if(updated.size.S){
+      updated.size.S = parseInt(updated.size.S);
+      updated.size.M = parseInt(updated.size.M);
+      updated.size.L = parseInt(updated.size.L);
+    }
+    if(updated.size[8]){
+      updated.size[8] = parseInt(updated.size[8]);
+      updated.size[8.5] = parseInt(updated.size[8.5]);
+      updated.size[9] = parseInt(updated.size[9]);
+      updated.size[9.5] = parseInt(updated.size[9.5]);
+      updated.size[10] = parseInt(updated.size[10]);
+      updated.size[10.5] = parseInt(updated.size[10.5]);
+      updated.size[11] = parseInt(updated.size[11]);
+    }
+  }
+  updated.price = parseInt(updated.price);
+  updated.lastModified = new Date().getTime();
+  // console.log(updated);
+  
+  // Test and update mongo
+  test(productSchema,updated)
+  .then((result)=>{
+    // console.log(result);
+    db.products.replaceOne({productId:productId},updated)
+  })  
+  .then((updateResult)=>{
+    // console.log(updateResult.ops[0]);
+    res.redirect("/admin/products");
   })
   .catch(err=>console.log(err));
 });

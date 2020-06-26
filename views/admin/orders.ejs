@@ -1,0 +1,28 @@
+<%-include("partials/header")%>
+<div class="container-fluid push">
+    <h1>Orders</h1>
+    <div class="card mb-3  mx-auto" style="width: 65em;" >
+        <ul class="list-group">
+            <%orders.forEach((order)=>{%>
+                <li class="list-group-item pb-0">
+                    <p><%=order.purchaseTime%> <%=order.status%>  <%=order.expectedDeliveryDate%> </p>
+                    <p>
+                    <%order.products.forEach((product)=>{%>
+                        <%=product.productName%>
+                        <%=product.productId%>
+                        <%=product.price%>
+                        <%=product.amount%>
+                        <%=product.net%>
+
+                    <%})%>
+                    </p>
+                    <p><%=order.shipping%><%=order.overall%></p>
+                    <p><%=order.user_id%></p>
+                    <p></p>
+                </li>
+            <%})%>
+        </ul>
+    </div>
+</div>
+
+<%-include("partials/footer")%>

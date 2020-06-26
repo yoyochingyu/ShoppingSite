@@ -1,0 +1,98 @@
+<%-include("../partials/header")%>
+<div class="container-fluid push">
+    <div class="card mb-3  mx-auto" style="width: 65em;" >
+        <div class="row no-gutters">
+          <div class="col-md-5">
+            <img src="<%=product.img%>" class="card-img mt-4 ml-1" alt="Ooops! There must be some mistake!">
+          </div>
+          <div class="col-md-7">
+            <div class="card-body">
+                <form method="POST" action="/admin/products?_method=PUT">
+                    <p>
+                        <span class="card-text text-muted mb-0">Product Name:</span>
+                        <input type="text" name="productName" value="<%=product.productName%>" required>
+                    </p>
+                    <p>
+                        <span class="card-text text-muted mb-0">Product ID:</span>
+                        <input type="text" name="productId" value="<%=product.productId%>" required>
+                    </p>
+                    <p class="card-text text-muted mb-0">Description</p>
+                        <textarea name="description" required>
+                            <%=product.description%>
+                        </textarea>
+                    <p>
+                        <span class="card-text text-muted mb-0">Price</span>
+                        <input type="number" name="price" value="<%=product.price%>" required>
+                    </p>
+                    <p>
+                        <span class="card-text text-muted mb-0">Image URL</span>
+                        <input type="string" name="img" value="<%=product.img%>" required>
+                    </p>
+
+                    <%if(product.size == undefined){%>
+                        <p>
+                            <span class="card-text text-muted mb-0">Amount</span>
+                            <input type="number" name="amount" value="<%=product.amount%>" required>
+                        </p>
+                    <%}else{%>
+                    <p class="card-text text-muted mb-1" >Size Option</p>
+                    <table class="table">
+                        <%if(product.size.S!=undefined){%>
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">S</th>
+                                    <th scope="col">M</th>
+                                    <th scope="col">L</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th scope="row" class="pr-0">Amount</th>
+                                    <td><input type="number" style="width: 3em" name="size[S]" value="<%=product.size.S%>" min=0></td>
+                                    <td><input type="number" style="width: 3em" name="size[M]" value="<%=product.size.M%>" min=0></td>
+                                    <td><input type="number" style="width: 3em" name="size[L]" value="<%=product.size.L%>" min=0></td>
+                                </tr>
+                            </tbody>
+                        <%}else{%>
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">8</th>
+                                    <th scope="col">8.5</th>
+                                    <th scope="col">9</th>
+                                    <th scope="col">9.5</th>
+                                    <th scope="col">10</th>
+                                    <th scope="col">10.5</th>
+                                    <th scope="col">11</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th scope="row" class="pr-0">Amount</th>
+                                    <td><input type="number" style="width: 3em" name="size[8]" value="<%=product.size[8]%>" min=0></td>
+                                    <td><input type="number" style="width: 3em" name="size[8.5]" value="<%=product.size[8.5]%>" min=0></td>
+                                    <td><input type="number" style="width: 3em" name="size[9]" value="<%=product.size[9]%>" min=0></td>
+                                    <td><input type="number" style="width: 3em" name="size[9.5]" value="<%=product.size[9.5]%>" min=0></td>
+                                    <td><input type="number" style="width: 3em" name="size[10]" value="<%=product.size[10]%>" min=0></td>
+                                    <td><input type="number" style="width: 3em" name="size[10.5]" value="<%=product.size[10.5]%>" min=0></td>
+                                    <td><input type="number" style="width: 3em" name="size[11]" value="<%=product.size[11]%>" min=0></td>
+                                    
+                                </tr>
+                            </tbody>
+                        <%}%>
+                    </table>
+                    <%}%>
+                    <button type="button" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Delete Product</button>
+                    <button type="submit" class="btn btn-dark"><i class="fas fa-save"></i> Save Modification</button>
+                    <p class="mt-3">
+                        <span class="card-text text-muted mb-0">Last Modified:<%=product.lastModified%></span>
+                        <input type="hidden" name="lastModified" value="<%=product.lastModified%>">
+                    </p>
+                </form>
+            </div>
+          </div>
+        </div>
+      </div>
+</div>
+<%-include("../partials/footer")%>
