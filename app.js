@@ -404,11 +404,13 @@ app.get("/admin/products",(req,res)=>{
   })
   .catch(err=>console.log(err));
 });
-// New route : Show form for new
+// New route : Show new form
 app.get("/admin/products/new",(req,res)=>{
   res.render("admin/products/new");
 });
 
+
+// Create route: handle new route
 app.post("/admin/products",(req,res)=>{
   let newProduct = req.body;
   // console.log(newProduct);
@@ -427,21 +429,21 @@ app.post("/admin/products",(req,res)=>{
   .catch(err=>console.log(err));
 });
 
-// Edit route: Show form for update
+// Edit route: Show update form
 app.get("/admin/products/:id",(req,res)=>{
   let productId = req.params.id;
   db.products.findOne({productId:productId})
   .then((foundProduct)=>{
-    res.render("admin/products/show",{product:foundProduct});
+    res.render("admin/products/edit",{product:foundProduct});
   })
   .catch(err=>console.log(err));
 });
 
 // Update Route: Handle update
-app.put("/admin/products",(req,res)=>{
+app.put("/admin/products/:id",(req,res)=>{
   let productId = req.body.productId;
   let updated = req.body;
-
+  let returnURL = "/admin/products/"+productId;
   // Parse string into number to pass test
   updated = parsing(updated);
   updated.lastModified = new Date().getTime();
@@ -454,6 +456,17 @@ app.put("/admin/products",(req,res)=>{
   })  
   .then((updateResult)=>{
     // console.log(updateResult.ops[0]);
+
+    res.redirect(returnURL);
+  })
+  .catch(err=>console.log(err));
+});
+
+// Destroy route: Destroy specific product
+app.delete("/admin/products/:id",(req,res)=>{
+  let productId = req.params.id;
+  db.products.deleteOne({productId:productId})
+  .then(()=>{
     res.redirect("/admin/products");
   })
   .catch(err=>console.log(err));
