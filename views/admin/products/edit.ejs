@@ -33,9 +33,9 @@
                     </p>
                     <p>
                         <span class="card-text text-muted mb-0">Size Option : </span>
-                        <input type="radio" name="sizeOption" id = "oneSize" value="oneSize" required> One Size
-                        <input type="radio" name="sizeOption" id = "cloth" value="cloth"> Cloth
-                        <input type="radio" name="sizeOption" id = "shoes"value="shoes"> Shoes
+                        <input type="radio" name="sizeOption" value="oneSize"required> One Size
+                        <input type="radio" name="sizeOption" value="cloth"> Cloth
+                        <input type="radio" name="sizeOption" value="shoes"> Shoes
 
                     </p>
                     
@@ -43,55 +43,57 @@
                     <%if(product.sizeOption == 'oneSize'){%>
                         <p>
                             <span class="card-text text-muted mb-0">Amount</span>
-                            <input type="number" name="amount" value="<%=product.amount%>" required>
+                            <input type="number" name="size[F]" class="oneSize" value="<%=product.size['F']%>" required>
                         </p>
                     <%}else{%>
-                    <table class="table">
-                        <%if(product.sizeOption == 'cloth'){%>
-                            <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">S</th>
-                                    <th scope="col">M</th>
-                                    <th scope="col">L</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <th scope="row" class="pr-0">Amount</th>
-                                    <td><input type="number" style="width: 3em" name="size[S]" value="<%=product.size.S%>" min=0 required></td>
-                                    <td><input type="number" style="width: 3em" name="size[M]" value="<%=product.size.M%>" min=0 required></td>
-                                    <td><input type="number" style="width: 3em" name="size[L]" value="<%=product.size.L%>" min=0 required></td>
-                                </tr>
-                            </tbody>
+                        <%if(product.sizeOption == 'cloth'){%>        
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">S</th>
+                                        <th scope="col">M</th>
+                                        <th scope="col">L</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th scope="row" class="pr-0">Amount</th>
+                                        <td><input type="number" style="width: 3em" name="size[S]" value="<%=product.size.S%>" min=0 required></td>
+                                        <td><input type="number" style="width: 3em" name="size[M]" value="<%=product.size.M%>" min=0 required></td>
+                                        <td><input type="number" style="width: 3em" name="size[L]" value="<%=product.size.L%>" min=0 required></td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         <%}else{%>
-                            <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">8</th>
-                                    <th scope="col">8.5</th>
-                                    <th scope="col">9</th>
-                                    <th scope="col">9.5</th>
-                                    <th scope="col">10</th>
-                                    <th scope="col">10.5</th>
-                                    <th scope="col">11</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <th scope="row" class="pr-0">Amount</th>
-                                    <td><input type="number" style="width: 3em" name="size[8]" value="<%=product.size['8']%>" min=0  required></td>
-                                    <td><input type="number" style="width: 3em" name="size[8_5]" value="<%=product.size['8_5']%>" min=0  required></td>
-                                    <td><input type="number" style="width: 3em" name="size[9]" value="<%=product.size['9']%>" min=0 required></td>
-                                    <td><input type="number" style="width: 3em" name="size[9_5]" value="<%=product.size['9_5']%>" min=0 required></td>
-                                    <td><input type="number" style="width: 3em" name="size[10]" value="<%=product.size['10']%>" min=0 required></td>
-                                    <td><input type="number" style="width: 3em" name="size[10_5]" value="<%=product.size['10_5']%>" min=0 required></td>
-                                    <td><input type="number" style="width: 3em" name="size[11]" value="<%=product.size['11']%>" min=0 required></td>
-                                    
-                                </tr>
-                            </tbody>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">8</th>
+                                        <th scope="col">8.5</th>
+                                        <th scope="col">9</th>
+                                        <th scope="col">9.5</th>
+                                        <th scope="col">10</th>
+                                        <th scope="col">10.5</th>
+                                        <th scope="col">11</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th scope="row" class="pr-0">Amount</th>
+                                        <td><input type="number" style="width: 3em" name="size[8]" value="<%=product.size['8']%>" min=0  required></td>
+                                        <td><input type="number" style="width: 3em" name="size[8_5]" value="<%=product.size['8_5']%>" min=0  required></td>
+                                        <td><input type="number" style="width: 3em" name="size[9]" value="<%=product.size['9']%>" min=0 required></td>
+                                        <td><input type="number" style="width: 3em" name="size[9_5]" value="<%=product.size['9_5']%>" min=0 required></td>
+                                        <td><input type="number" style="width: 3em" name="size[10]" value="<%=product.size['10']%>" min=0 required></td>
+                                        <td><input type="number" style="width: 3em" name="size[10_5]" value="<%=product.size['10_5']%>" min=0 required></td>
+                                        <td><input type="number" style="width: 3em" name="size[11]" value="<%=product.size['11']%>" min=0 required></td>
+                                        
+                                    </tr>
+                                </tbody>
+                            </table>
                         <%}%>
-                    </table>
                     <%}%>
                     <p class="mt-3">
                         <span class="card-text text-muted mb-0">Last Modified:<%=product.lastModified%></span>
@@ -108,11 +110,34 @@
       </div>
 </div>
 
-<script>
-if(product.sizeOption == 'oneSize'){
-    alert('Yes')!
-}else{
-    alert('No!')
-}
+<script type="text/javascript">
+    window.onload = function(){
+        var sizeOption = '<%=product.sizeOption%>'
+        var category = '<%=product.category%>'
+        if(category == 'outfit'){
+            $("input[value=outfit]").prop("checked",true);
+            // alert("outfit!");
+        }else{
+            $("input[value=accessory]").prop("checked",true);
+            // alert("accessory!");
+        }
+
+        if(sizeOption == 'oneSize'){
+            $("input[value=oneSize]").prop("checked",true);
+            $("input[value=cloth]").prop("disabled",true);
+            $("input[value=shoes]").prop("disabled",true);
+        }else if(sizeOption == 'cloth'){
+            $("input[value=cloth]").prop("checked",true);
+            $("input[value=oneSize]").prop("disabled",true);
+            $("input[value=shoes]").prop("disabled",true);
+            // alert("Cloth!");
+        }else{
+            $("input[value=shoes]").prop("checked",true);
+            $("input[value=oneSize]").prop("disabled",true);
+            $("input[value=cloth]").prop("disabled",true);
+            // alert("Shoes!");
+        }
+        
+    }
 </script>
 <%-include("../partials/footer")%>

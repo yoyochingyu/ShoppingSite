@@ -90,7 +90,7 @@
 
   function checkAmount(){
     var sizeOption = '<%=product.sizeOption%>';
-    alert(sizeOption);
+    // alert(sizeOption);
     if(sizeOption == 'oneSize'){
       return checkOneSize();
     } 
@@ -100,16 +100,13 @@
     else if(sizeOption == 'shoes'){
       return checkShoes();
     }
-    // else if(sizeOption == 'oneSize'){
-    //   return checkOneSize();
-    // }
   }
   
 </script>
 
 <script>
   function checkOneSize(){
-    var inventory = <%=product.amount%>;
+    var inventory = <%=product.size['F']%>;
     return alertion(inventory);
   };
 </script>

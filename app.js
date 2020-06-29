@@ -40,14 +40,14 @@ function test(schema,data){
 
 // Parse form string into number to pass test
 function parsing(updated){
-  if(updated.amount){
-    updated.amount = parseInt(updated.amount);
+  if(updated.sizeOption == 'oneSize'){
+    updated.size['F'] = parseInt(updated.size['F']);
   }
   else{
-    if(updated.size.S){
-      updated.size.S = parseInt(updated.size.S);
-      updated.size.M = parseInt(updated.size.M);
-      updated.size.L = parseInt(updated.size.L);
+    if(updated.sizeOption = 'cloth'){
+      updated.size['S'] = parseInt(updated.size['S']);
+      updated.size['M']= parseInt(updated.size['M']);
+      updated.size['L']= parseInt(updated.size['L']);
     }
     if(updated.size["8"]){
       updated.size["8"] = parseInt(updated.size["8"]);
@@ -412,11 +412,9 @@ app.get("/admin/products/new",(req,res)=>{
 // Create route: handle new route
 app.post("/admin/products",(req,res)=>{
   let newProduct = req.body;
-  // console.log(newProduct);
-  delete newProduct.sizeOption;
-  
   newProduct = parsing(newProduct);
   newProduct.lastModified = new Date().getTime();
+  // console.log(newProduct);
   test(productSchema,newProduct)
   .then((result)=>{
     // console.log(result);

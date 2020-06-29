@@ -2,7 +2,7 @@
     "$schema": "http://json-schema.org/draft-07/schema#",
     "type":"object",
     "additionalProperties": false,
-    "required": ["productName","productId","description","img","price","lastModified","category","sizeOption"],
+    "required": ["productName","productId","description","img","price","lastModified","category","sizeOption","size"],
     "properties": {
         "productName":{
             "type":"string",
@@ -35,9 +35,6 @@
             "type":"string",
             "enum":["oneSize","cloth","shoes"]
         },
-        "amount":{
-            "type":"number"
-        },
         "size":{
             "type":"object",
             "properties": {
@@ -48,6 +45,30 @@
                     "type":"number"
                 },
                 "L":{
+                    "type":"number"
+                },
+                "8":{
+                    "type":"number"
+                },
+                "8_5":{
+                    "type":"number"
+                },
+                "9":{
+                    "type":"number"
+                },
+                "9_5":{
+                    "type":"number"
+                },
+                "10":{
+                    "type":"number"
+                },
+                "10_5":{
+                    "type":"number"
+                },
+                "11":{
+                    "type":"number"
+                },
+                "F":{
                     "type":"number"
                 }
             }

@@ -33,15 +33,15 @@
                     </p>
 
                     <p class="card-text text-muted">Size options : 
-                        <input type="radio" name="sizeOption" id="r1" value="oneSize" onclick="myFunction()" > One-Size  
-                        <input type="radio" name="sizeOption" id="r2" value="cloth" onclick="myFunction()"> Cloth  
-                        <input type="radio" name="sizeOption" id="r3" value="shoes" onclick="myFunction()" > Shoes
+                        <input type="radio" name="sizeOption" id="r1" value="oneSize" onclick="setQuantity()" > One-Size  
+                        <input type="radio" name="sizeOption" id="r2" value="cloth" onclick="setQuantity()"> Cloth  
+                        <input type="radio" name="sizeOption" id="r3" value="shoes" onclick="setQuantity()" > Shoes
                     </p>
 
                     <span id="oneSize" style="display:none">
                             <p>
                                 <span class="card-text text-muted mb-0">Amount</span>
-                                <input type="number" class="oneSize" name="amount">
+                                <input type="number" class="oneSize" name="size[F]">
                             </p>
                     </span>
                     
@@ -107,7 +107,8 @@
 
 
 <script>
-    function myFunction(){
+
+    function setQuantity(){
         let oneSize = document.getElementById('oneSize');
         let cloth = document.getElementById('cloth');
         let shoes = document.getElementById('shoes');
