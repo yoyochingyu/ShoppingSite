@@ -199,7 +199,6 @@ app.get("/products/:id",(req,res)=>{
       console.log(err);
     }
     else{
-      // console.log(foundProduct);
       res.render("product/show",{product:foundProduct});
     }
   });

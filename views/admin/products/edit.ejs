@@ -31,16 +31,23 @@
                         <input type="radio" name="category" value="outfit" required> Outfit
                         <input type="radio" name="category" value="accessory"> Accessory
                     </p>
+                    <p>
+                        <span class="card-text text-muted mb-0">Size Option : </span>
+                        <input type="radio" name="sizeOption" id = "oneSize" value="oneSize" required> One Size
+                        <input type="radio" name="sizeOption" id = "cloth" value="cloth"> Cloth
+                        <input type="radio" name="sizeOption" id = "shoes"value="shoes"> Shoes
 
-                    <%if(product.size == undefined){%>
+                    </p>
+                    
+
+                    <%if(product.sizeOption == 'oneSize'){%>
                         <p>
                             <span class="card-text text-muted mb-0">Amount</span>
                             <input type="number" name="amount" value="<%=product.amount%>" required>
                         </p>
                     <%}else{%>
-                    <p class="card-text text-muted mb-1" >Size Option</p>
                     <table class="table">
-                        <%if(product.size.S!=undefined){%>
+                        <%if(product.sizeOption == 'cloth'){%>
                             <thead>
                                 <tr>
                                     <th scope="col">#</th>
@@ -100,5 +107,12 @@
         </div>
       </div>
 </div>
-<%-include("../partials/footer")%>
 
+<script>
+if(product.sizeOption == 'oneSize'){
+    alert('Yes')!
+}else{
+    alert('No!')
+}
+</script>
+<%-include("../partials/footer")%>

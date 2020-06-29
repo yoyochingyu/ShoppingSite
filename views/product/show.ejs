@@ -12,44 +12,44 @@
               <p class="card-text showcard mb-0"><%=product.description%></p>
               <p class="card-text" style="font-size: 3em">$ <%=product.price%></p>
 
-              <form method="POST" action="/cart">
+              <form method="POST" action="/cart" onsubmit="checkAmount()">
                 <input type = "hidden" name = "cart[productName]" value = "<%=product.productName%>" />
                 <input type = "hidden" name = "cart[productId]" value = "<%=product.productId%>" />
                 <input type = "hidden" name = "cart[img]" value = "<%=product.img%>" />
-                <%if(product.size!=undefined){%>
+                <%if(product.sizeOption!='oneSize'){%>
                 <p class="card-text text-muted mb-1" >Select a size</p>
                 <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                  <%if(product.size.S!=undefined){%>
+                  <%if(product.sizeOption=='cloth'){%>
                     <label class="btn btn-secondary">
-                      <input type="radio" name="cart[size]" value="S" required> S
+                      <input type="radio" name="cart[size]" id = 'S' value="S" required> S
                     </label>
                     <label class="btn btn-secondary">
-                      <input type="radio" name="cart[size]" value="M"> M
+                      <input type="radio" name="cart[size]" id = 'M' value="M"> M
                     </label>
                     <label class="btn btn-secondary">
-                      <input type="radio" name="cart[size]" value="L"> L
+                      <input type="radio" name="cart[size]" id = 'L' value="L"> L
                     </label>
                   <%}else{%>
                     <label class="btn btn-secondary">
-                      <input type="radio" name="cart[size]" value="8" required> 8
+                      <input type="radio" name="cart[size]" id = '8' value="8" required> 8
                     </label>
                     <label class="btn btn-secondary">
-                      <input type="radio" name="cart[size]" value="8.5"> 8.5
+                      <input type="radio" name="cart[size]" id = '8_5' value="8.5"> 8.5
                     </label>
                     <label class="btn btn-secondary">
-                      <input type="radio" name="cart[size]" value="9"> 9
+                      <input type="radio" name="cart[size]" id = '9' value="9"> 9
                     </label>
                     <label class="btn btn-secondary">
-                      <input type="radio" name="cart[size]" value="9.5"> 9.5
+                      <input type="radio" name="cart[size]" id = '9_5' value="9.5"> 9.5
                     </label>
                     <label class="btn btn-secondary">
-                      <input type="radio" name="cart[size]" value="10"> 10
+                      <input type="radio" name="cart[size]" id = '10' value="10"> 10
                     </label>
                     <label class="btn btn-secondary">
-                      <input type="radio" name="cart[size]" value="10.5"> 10.5
+                      <input type="radio" name="cart[size]" id = '10_5' value="10.5"> 10.5
                     </label>
                     <label class="btn btn-secondary">
-                      <input type="radio" name="cart[size]" value="11"> 11
+                      <input type="radio" name="cart[size]" id = '11' value="11"> 11
                     </label>
                   <%}%>
                 </div>
@@ -77,7 +77,85 @@
       </div>
 </div>
 <script>
-  $('h2').text()
+  function alertion(inventory){
+    var purchaseAmount=$('select').val();
+    if(purchaseAmount>inventory){
+        alert("There's only "+inventory+" left in inventory.\n Please reselect amount.");
+        return false;
+      }else{
+        alert('Added into cart!');
+        return true;
+      }
+  }
+
+  function checkAmount(){
+    var sizeOption = '<%=product.sizeOption%>';
+    alert(sizeOption);
+    if(sizeOption == 'oneSize'){
+      return checkOneSize();
+    } 
+    else if(sizeOption=='cloth'){
+      return checkCloth();
+    }
+    else if(sizeOption == 'shoes'){
+      return checkShoes();
+    }
+    // else if(sizeOption == 'oneSize'){
+    //   return checkOneSize();
+    // }
+  }
+  
 </script>
+
+<script>
+  function checkOneSize(){
+    var inventory = <%=product.amount%>;
+    return alertion(inventory);
+  };
+</script>
+
+<script>
+  function checkCloth(){
+    if(document.getElementById('S').checked){
+        var inventory = <%=product.size['S']%>;
+        return alertion(inventory);
+      } else if(document.getElementById('M').checked){
+        var inventory = <%=product.size['M']%>;
+        return alertion(inventory);
+      }else if(document.getElementById('L').checked){
+        var inventory = <%=product.size['L']%>;
+        return alertion(inventory);
+      }
+  };
+</script>
+
+<script>
+  function checkShoes(){
+    if(document.getElementById('8').checked){
+      var inventory = <%=product.size["8"]%>;
+      return alertion(inventory); 
+    }else if(document.getElementById('8_5').checked){
+      var inventory = <%=product.size["8_5"]%>;
+      return alertion(inventory);
+    }else if(document.getElementById('9').checked){
+      var inventory = <%=product.size["9"]%>;
+      return alertion(inventory);
+    }else if(document.getElementById('9_5').checked){
+      var inventory = <%=product.size["9_5"]%>;
+      return alertion(inventory);
+    }else if(document.getElementById('10').checked){
+      var inventory = <%=product.size["10"]%>;
+      return alertion(inventory);
+    }else if(document.getElementById('10_5').checked){
+      var inventory = <%=product.size["10_5"]%>;
+      return alertion(inventory);
+    }else if(document.getElementById('11').checked){
+      var inventory = <%=product.size["11"]%>;
+      return alertion(inventory);
+    }
+  }
+</script>
+
+
 
 <%-include("../partials/footer")%>
