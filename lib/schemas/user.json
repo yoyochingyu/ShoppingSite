@@ -40,9 +40,6 @@
         "pattern":"^[0-9]{10}$"
       },
       "address":{"$ref":"#/definitions/address"},
-      "agree":{
-        "type":"string"
-      },
       "subscribe":{
         "type":"string"
       },

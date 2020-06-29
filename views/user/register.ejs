@@ -3,7 +3,7 @@
     <div class="card mx-auto" style="width: 50%;">
         <div class="card-body">
             <h2 class="card-title text-center">Register</h2>
-            <form action="/register" method="POST">
+            <form action="/register" method="POST" onsubmit="return agreePolicy()">
                 <div class="form-row">
                     <div class="form-group col-md-4.5">
                         <label for="firstName">First Name</label>
@@ -69,7 +69,7 @@
                 </div>
                 <div class="form-group">
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="agree" name="agree" value="true">
+                        <input class="form-check-input" type="checkbox" id="agree">
                         <label class="form-check-label" for="agree">
                             I agree to the <a href="#">Policy</a>
                         </label>
@@ -87,4 +87,16 @@
         </div>
     </div>
 </div>
+
+<script>
+    function agreePolicy(){
+        if(!document.getElementById('agree').checked){
+            alert('You have to agree with the policy to move on.');
+            return false;
+        }else{
+            alert('Register successfully!\nPlease login!');
+            return true;
+        }
+    }
+</script>
 <%-include("../partials/footer")%>

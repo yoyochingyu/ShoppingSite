@@ -350,13 +350,14 @@ app.post("/register",(req,res)=>{
   })
   .catch((err)=>{
     console.log(err);
+    alert("You've typed something wrong!");
     res.redirect("/register"); //加flash，提示輸入錯誤
   });
 });
 
 app.get("/profile",(req,res)=>{
   var wishlistFixed = {productName:"A&F Stretch Denim Jacket",productId:"KSV7891356248",description:"Comfortable denim jacket in new stretch fabric and classic blue wash. Features logo shanks, pockets throughout and logo leather patch at back hem.",img:"https://drive.google.com/uc?export=download&id=1d9rQ2D3TR-e2JgrE1shLe_5L8msWkZVt",price:110,createdBy:"2013-11-18"};
-  console.log(wishlistFixed);
+  // console.log(wishlistFixed);
   if(req.session.user){
     // The user has one/multiple order before
     db.orders.find({user_id:req.session.user._id}).toArray()
@@ -369,6 +370,28 @@ app.get("/profile",(req,res)=>{
   else{
     res.redirect("/login");
   }
+});
+
+// Update Profile
+app.put("/profile",(req,res)=>{
+  // console.log(req.body);
+  let inputUser = req.body;
+  test(userSchema,inputUser)
+  .then((result)=>{
+    // console.log(result);
+    db.users.findOneAndReplace({email:inputUser.email},inputUser,{returnOriginal:false},(err,result)=>{
+      if(err){
+        console.log(err);
+      }else{
+        let updatedUser = result.value;
+        // console.log(updatedUser);
+        req.session.user = updatedUser;
+        alert('Update successfully');
+        res.redirect("/profile");
+      }
+    })
+  })
+  .catch(err=>console.log(err));
 });
 
 app.get("/logout",(req,res)=>{
@@ -471,7 +494,7 @@ app.delete("/admin/products/:id",(req,res)=>{
 
 
 
-app.listen(3000,()=>{
+app.listen(4000,()=>{
     console.log("Server has started!");
 });
 
