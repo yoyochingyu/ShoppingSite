@@ -245,7 +245,7 @@ app.get("/register",(req,res)=>{
 app.post("/cart",(req,res)=>{
   let input = req.body.cart;
   let returnUrl = "/products/"+input.productId;
-
+  input.net = (input.price)*(input.amount);
    // if user exists(login)=> update db(1 product)
    if(req.session.user!=null){
     db.users.findOneAndUpdate({email:req.session.user.email},{$push:{cart:input}},{returnOriginal:false})
@@ -282,15 +282,22 @@ app.delete("/cart",(req,res)=>{
   }
 });
 app.get("/purchase",(req,res)=>{
-  res.render("user/purchase");
+  var netBeforeShipping = 0;
+  req.session.user.cart.forEach((product)=>{
+    netBeforeShipping+=product.net;
+  });
+  req.session.user.netBeforeShipping = netBeforeShipping;
+  // console.log(netBeforeShipping);
+  res.render("user/purchase",{netBeforeShipping:netBeforeShipping});
 });
 
 app.get("/purchase/info",(req,res)=>{
-  res.render("user/receiver");
+  res.render("user/receiver",{netBeforeShipping:req.session.user.netBeforeShipping});
 });
-app.post("/purchase/option",(req,res)=>{
-  
-  res.render("user/option");
+app.post("/purchase/success",(req,res)=>{
+  let input = req.body;
+  console.log(input);
+  // res.render("user/success");
 });
 
 app.post("/login",(req,res)=>{

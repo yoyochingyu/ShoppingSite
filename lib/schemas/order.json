@@ -42,6 +42,9 @@
             },
             "default":[]
         }, 
+        "netBeforeShipping":{
+            "type":"number"
+        },
         "shipping":{
             "type":"number"
         },
