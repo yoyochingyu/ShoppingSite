@@ -3,7 +3,7 @@
     <div class="card mb-3  mx-auto" style="width: 65em;" >
         <div class="row no-gutters">
           <div class="col-md-5">
-            <img src="<%=product.img%>" class="card-img mt-4 ml-1" alt="Ooops! There must be some mistake!">
+            <img src="<%=product.img%>" class="card-img mt-4 pl-3" alt="Ooops! There must be some mistake!">
           </div>
           <div class="col-md-7">
             <div class="card-body">
@@ -53,6 +53,8 @@
                     </label>
                   <%}%>
                 </div>
+                <%}else{%>
+                  <input type="hidden" name="cart[size]" value="F">
                 <%}%>
                 <p class="card-text text-muted">Select quantity</p>
                 <div class="form-group">

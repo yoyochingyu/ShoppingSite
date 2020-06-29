@@ -281,8 +281,16 @@ app.delete("/cart",(req,res)=>{
     });
   }
 });
-app.post("/purchase",(req,res)=>{
-  res.send("Successfully purchase!");
+app.get("/purchase",(req,res)=>{
+  res.render("user/purchase");
+});
+
+app.get("/purchase/info",(req,res)=>{
+  res.render("user/receiver");
+});
+app.post("/purchase/option",(req,res)=>{
+  
+  res.render("user/option");
 });
 
 app.post("/login",(req,res)=>{

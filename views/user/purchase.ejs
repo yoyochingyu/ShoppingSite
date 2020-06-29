@@ -1,0 +1,38 @@
+<%-include("../partials/header")%>
+<div class="container-fluid push">
+    <h3 style="width:900px" class="mx-auto mb-3">Step 1 : Confirm Cart Products</h3> 
+    <div class="progress mx-auto mb-3" style="width: 900px;height:30px">
+        <div class="progress-bar progress-bar-striped progress-bar-animated bg-info" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" style="width: 25%">Confirming Products</div>   
+    </div>
+    <div class="card mx-auto profile-card" >
+        <%cart.forEach((product)=>{%>
+            <!-- <hr> -->
+            <div class="card-body">
+                <div class="row no-gutters">
+                    <div class="col-lg-2">
+                        <img src="<%=product.img%>" class="card-img" alt="Ooops! There must be something wrong!">
+                    </div>
+                    <div class="col-lg-10 pl-4"> 
+                        <span class="card-title order-detail">Product name: </span> <span class="card-text"><a href = "/products/<%=product.productId%>" class="anchorNormal"><%=product.productName%></a></span>
+                        <br>
+                        <span class="card-title order-detail">Product ID: </span> <span class="card-text"><%=product.productId%></span>
+                        <br>
+                        <span class="card-title order-detail">Size: </span> <span class="card-text"><%=product.size%></span>
+                        <span class="card-title order-detail">Amount: </span> <span class="card-text"><%=product.amount%></span>
+                        <br>
+                        <br>
+                        <button class="btn btn-info"><a href = "/products/<%=product.productId%>" class="anchorInfo">Show Info</a></button>
+                        <button class="btn btn-danger">Delete</button>
+                    </div>
+                </div>
+            </div>    
+        <%})%>
+        <div class="card-body">
+            <a href = "/purchase/info" class="anchorInfo mt-3"><button class="btn btn-info" style="width: 100%;">Next</button></a>
+        </div>
+
+
+    </div>
+</div>
+
+<%-include("../partials/footer")%>

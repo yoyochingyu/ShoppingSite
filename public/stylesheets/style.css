@@ -62,6 +62,21 @@ h6{
     color:black;
     text-decoration: none;
 }
+.anchorNormal{
+    color:black;
+}
+.anchorNormal:hover{
+    color:black;
+    text-decoration: none;
+}
+.anchorInfo{
+    color:white;
+}
+.anchorInfo:hover{
+    color:white;
+    text-decoration: none;
+}
+
 .card-text{
     font-family: 'Lato';
 }
