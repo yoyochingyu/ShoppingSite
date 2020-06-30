@@ -17,6 +17,7 @@ const express = require("express"),
 const exitHook = require('exit-hook');
 const e = require("express");
 const { parse } = require("path");
+const { ObjectId } = require("mongodb");
 exitHook(() => {
   console.log('Exiting');
 });
@@ -40,11 +41,11 @@ function test(schema,data){
 
 // Parse form string into number to pass test
 function parsing(updated){
-  if(updated.sizeOption == 'oneSize'){
+  if(updated.size.F){
     updated.size['F'] = parseInt(updated.size['F']);
   }
   else{
-    if(updated.sizeOption = 'cloth'){
+    if(updated.size.S){
       updated.size['S'] = parseInt(updated.size['S']);
       updated.size['M']= parseInt(updated.size['M']);
       updated.size['L']= parseInt(updated.size['L']);
@@ -61,6 +62,43 @@ function parsing(updated){
   }
   updated.price = parseInt(updated.price);
   return updated;
+}
+
+// Process order
+function orderProcess(input,req,db){
+  input.user_id = req.session.user._id;
+  input.shippingInfo.address = input.address;
+  delete input.address;
+  input.purchaseTime =new Date().getTime();
+  if(input.shippingOption=='express'){
+    input.expectedDeliveryDate =input.purchaseTime+259200;
+  }else{
+    input.expectedDeliveryDate =input.purchaseTime+1209600;
+  }
+  input.netBeforeShipping = req.session.user.netBeforeShipping;
+  input.products = req.session.user.cart;
+  input.overall = parseInt(input.overall);
+  input.shipping = parseInt(input.shipping);
+  input.status = 'Processing';
+  input.products.forEach((product)=>{
+    parsing(product);
+    product.amount = parseInt(product.amount);
+    delete product.img;
+
+    // Decrease Inventory
+    let fieldName = `size.${product.size}`;
+    let update = {"$inc":{}};
+    update["$inc"][fieldName]=(-1)*(product.amount);
+    db.products.updateOne({productId:product.productName},update)
+    .then((updateResult)=>{
+      // console.log(updateResult.result);
+    })
+    .catch((err)=>{
+      console.log(err);
+      res.render("failure");
+    });
+  });
+
 }
 
 MongoClient.connect(url,{ useNewUrlParser: true, useUnifiedTopology: true },(err,client)=>{
@@ -287,17 +325,34 @@ app.get("/purchase",(req,res)=>{
     netBeforeShipping+=product.net;
   });
   req.session.user.netBeforeShipping = netBeforeShipping;
-  // console.log(netBeforeShipping);
-  res.render("user/purchase",{netBeforeShipping:netBeforeShipping});
+  res.render("purchase/cart",{netBeforeShipping:netBeforeShipping});
 });
 
 app.get("/purchase/info",(req,res)=>{
-  res.render("user/receiver",{netBeforeShipping:req.session.user.netBeforeShipping});
+  res.render("purchase/info",{netBeforeShipping:req.session.user.netBeforeShipping});
 });
+
 app.post("/purchase/success",(req,res)=>{
   let input = req.body;
-  console.log(input);
-  // res.render("user/success");
+  orderProcess(input,req,db);
+  
+  // Validate order, Insert order, clear cart
+  test(orderSchema,input)
+  .then((testResult)=>{
+    return db.orders.insertOne(input);
+  })
+  .then((insertResult)=>{
+    let queryId = ObjectId(`${input.user_id}`);
+    return db.users.updateOne({_id:queryId},{$unset:{cart:""}});
+  })
+  .then((updateResult)=>{
+    req.session.user.cart = null;
+    res.render("purchase/success");
+  })
+  .catch((err)=>{
+    console.log(err);
+    res.render("failure");
+  });
 });
 
 app.post("/login",(req,res)=>{

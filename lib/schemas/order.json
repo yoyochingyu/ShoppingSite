@@ -13,6 +13,32 @@
         "expectedDeliveryDate":{
             "format": "date"
         },
+        "shippingInfo":{
+            "type":"object",
+            "required": [],
+            "properties":{
+                "firstName":{
+                    "type":"string"
+                },
+                "lastName":{
+                    "type":"string"
+                },
+                "address": {
+                    "type": "object",
+                    "properties": {
+                        "streetAddress": { "type": "string" },
+                        "city":           { "type": "string" },
+                        "state":          { "type": "string" },
+                        "zip":{"type":"string","pattern":"^[0-9]{3}$"}
+                    },
+                    "required": ["streetAddress", "city", "state","zip"]
+                },
+                "number":{
+                    "type":"string",
+                    "pattern":"^[0-9]{10}$"
+                }
+            }
+        },
         "products":{
             "type":"array",
             "items": {
@@ -28,6 +54,10 @@
                         "type":"string",
                         "pattern": "^[A-Z]{3}[0-9]{10}$"
                     },
+                    "size":{
+                      "type":"string",
+                      "enum":["S","M","L","8","8_5","9","9_5","10","10_5","11","F"]  
+                    },
                     "price":{
                         "type":"number"
                     },
@@ -38,10 +68,17 @@
                         "type":"number"
                     }
                 }
-                
             },
             "default":[]
-        }, 
+        },
+        "billingOption":{
+            "type":"string",
+            "enum":["convenientStore"]
+        },
+        "shippingOption":{
+            "type":"string",
+            "enum":["free","express"]
+        },
         "netBeforeShipping":{
             "type":"number"
         },
