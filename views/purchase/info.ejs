@@ -58,7 +58,7 @@
             </div>
             <h3 class="mt-4">Billing</h3>
             <hr class="mt-0">
-            <h4>Net Before Shipping : $ <%=netBeforeShipping%></h4>
+            <h4>Net Before Shipping : $ <%=user.netBeforeShipping%></h4>
             <h4>Shipping & Handling Fee : <span id="shippingFee"></span></h4>
             <h4>Order total : <span id="overall"></span></h4>
             <input type="hidden" name="shipping" id="shippingInput">
@@ -74,7 +74,7 @@
 </div>
 <script>
     function shippingFunction(){
-        var netBeforeShipping = '<%=netBeforeShipping%>';
+        var netBeforeShipping = '<%=user.netBeforeShipping%>';
         var shippingFee=0;
         var overall = 0;
         if(document.getElementById('free').checked){

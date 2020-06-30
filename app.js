@@ -180,35 +180,6 @@ app.use("/cart",(req,res,next)=>{
   next();
 });
 
-
-// Delete  user
-// db.users.deleteOne({firstName:"admin"})
-// .then((result)=>{
-//   console.log("Deleted User Amount:"+result.result.n);
-// })
-// .catch((err)=>{console.log(err)});
-
-
-// Insert orders
-
-// db.orders.deleteMany({})
-// .then((result)=>{
-//   console.log("Deleted Order Amount:"+result.result.n);
-//   return test(orderSchema,order1);
-// })
-// .then(()=>{
-//     // console.log("Validation succeeded!");
-//     return db.orders.insertMany([order1,order2]);
-//   })
-// .then((result)=>{
-//   // console.log(result.ops);
-// })
-// .catch((err)=>{
-//   console.log(err);
-// })
-
-
-
 // ====================
 // Product Route
 // ====================
@@ -219,54 +190,53 @@ app.get("/",(req,res)=>{
 
 // Index Route
 app.get("/products",(req,res)=>{
-  db.products.find({}).toArray((err,products)=>{
-    if(err){
-      console.log(err);
-    }
-    else{
-      res.render("product/index",{products:products,category:null,search:null});
-    }
-  });
+  db.products.find({}).toArray()
+  .then((products)=>{
+    res.render("product/index",{products:products,category:null,search:null});
+  })
+  .catch((err)=>{
+    console.log(err);
+    res.render("failure");
+  });  
 });
 
 // Show Route
 app.get("/products/:id",(req,res)=>{
   let productId = req.params.id;
-  db.products.findOne({productId:productId},(err,foundProduct)=>{
-    if(err){
-      console.log(err);
-    }
-    else{
-      res.render("product/show",{product:foundProduct});
-    }
-  });
+  db.products.findOne({productId:productId})
+  .then((foundProduct)=>{
+    res.render("product/show",{product:foundProduct});
+  })
+  .catch((err)=>{
+    console.log(err);
+    res.render("failure");
+  })
 });
 
 // Search Route
 app.post("/search",(req,res)=>{
   search = req.body.search;
-  db.products.find({$text:{$search:search}}).toArray((err,foundProducts)=>{
-    if(err){
-      console.log(err);
-    }
-    else{
-      // console.log(foundProducts);
-      res.render("product/index",{products:foundProducts,category:null,search:search});
-    }
-  });
+  db.products.find({$text:{$search:search}}).toArray()
+  .then((foundProducts)=>{
+    res.render("product/index",{products:foundProducts,category:null,search:search});
+  })
+  .catch((err)=>{
+    console.log(err);
+    res.render("failure");
+  })
 });
 
 // Category route
 app.get("/category/:detail",(req,res)=>{
   detail = req.params.detail;
-  db.products.find({category:detail}).toArray((err,foundProducts)=>{
-    if(err){
-      console.log(err);
-    }
-    else{
-      res.render("product/index",{products:foundProducts,category:detail,search:null});
-    }
+  db.products.find({category:detail}).toArray()
+  .then((foundProducts)=>{
+    res.render("product/index",{products:foundProducts,category:detail,search:null});
   })
+  .catch((err)=>{
+    console.log(err);
+    res.render("failure");
+  });
 });
 
 // ====================
@@ -291,16 +261,14 @@ app.post("/cart",(req,res)=>{
       // set session data into redis-store
       let updatedUser = updateResult.value;
       req.session.user = updatedUser;
-      res.redirect(returnUrl); 
     })
     .catch(err=>console.log(err));
   }
   // if user doesn't exists=>redirect(has been handled in middleware)
-  else{
     res.redirect(returnUrl); 
-  }
 });
 
+// Delete cart
 app.delete("/cart",(req,res)=>{
   deleteIndex = req.body.deleteIndex;
   if(req.session.user == null){
@@ -319,40 +287,54 @@ app.delete("/cart",(req,res)=>{
     });
   }
 });
+
+// Purchase
 app.get("/purchase",(req,res)=>{
-  var netBeforeShipping = 0;
-  req.session.user.cart.forEach((product)=>{
-    netBeforeShipping+=product.net;
-  });
-  req.session.user.netBeforeShipping = netBeforeShipping;
-  res.render("purchase/cart",{netBeforeShipping:netBeforeShipping});
+  if(req.session.user==undefined ||req.session.user==null){
+    res.redirect("/login");
+  }else{
+    var netBeforeShipping = 0;
+    req.session.user.cart.forEach((product)=>{
+      netBeforeShipping+=product.net;
+    });
+    req.session.user.netBeforeShipping = netBeforeShipping;
+    res.render("purchase/cart",{netBeforeShipping:netBeforeShipping});
+  }
 });
 
 app.get("/purchase/info",(req,res)=>{
-  res.render("purchase/info",{netBeforeShipping:req.session.user.netBeforeShipping});
+  if(req.session.user==undefined ||req.session.user==null){
+    res.redirect("/login");
+  }else{
+    res.render("purchase/info");
+  }
 });
 
 app.post("/purchase/success",(req,res)=>{
-  let input = req.body;
-  orderProcess(input,req,db);
-  
-  // Validate order, Insert order, clear cart
-  test(orderSchema,input)
-  .then((testResult)=>{
-    return db.orders.insertOne(input);
-  })
-  .then((insertResult)=>{
-    let queryId = ObjectId(`${input.user_id}`);
-    return db.users.updateOne({_id:queryId},{$unset:{cart:""}});
-  })
-  .then((updateResult)=>{
-    req.session.user.cart = null;
-    res.render("purchase/success");
-  })
-  .catch((err)=>{
-    console.log(err);
-    res.render("failure");
-  });
+  if(req.session.user==undefined ||req.session.user==null){
+    res.redirect("/login");
+  }else{
+    let input = req.body;
+    orderProcess(input,req,db);
+    
+    // Validate order, Insert order, clear cart
+    test(orderSchema,input)
+    .then((testResult)=>{
+      return db.orders.insertOne(input);
+    })
+    .then((insertResult)=>{
+      let queryId = ObjectId(`${input.user_id}`);
+      return db.users.updateOne({_id:queryId},{$unset:{cart:""}});
+    })
+    .then((updateResult)=>{
+      req.session.user.cart = null;
+      res.render("purchase/success");
+    })
+    .catch((err)=>{
+      console.log(err);
+      res.render("failure");
+    });
+  }
 });
 
 app.post("/login",(req,res)=>{
@@ -444,24 +426,20 @@ app.get("/profile",(req,res)=>{
 
 // Update Profile
 app.put("/profile",(req,res)=>{
-  // console.log(req.body);
   let inputUser = req.body;
   test(userSchema,inputUser)
-  .then((result)=>{
-    // console.log(result);
-    db.users.findOneAndReplace({email:inputUser.email},inputUser,{returnOriginal:false},(err,result)=>{
-      if(err){
-        console.log(err);
-      }else{
-        let updatedUser = result.value;
-        // console.log(updatedUser);
-        req.session.user = updatedUser;
-        alert('Update successfully');
-        res.redirect("/profile");
-      }
-    })
+  .then((testResult)=>{
+    return db.users.findOneAndReplace({email:inputUser.email},inputUser,{returnOriginal:false});
   })
-  .catch(err=>console.log(err));
+  .then((updateResult)=>{
+    let updatedUser = updateResult.value;
+    req.session.user = updatedUser;
+    res.redirect("/profile");
+  })
+  .catch((err)=>{
+    console.log(err);
+    res.render("failure");
+  })
 });
 
 app.get("/logout",(req,res)=>{
@@ -474,10 +452,12 @@ app.get("/logout",(req,res)=>{
 app.get("/admin/customers",(req,res)=>{
   db.users.find({}).toArray()
   .then((foundCustomers)=>{
-    // console.log(foundCustomers);
     res.render("admin/customers",{customers:foundCustomers});
   })
-  .catch(err=>console.log(err));
+  .catch((err)=>{
+    console.log(err);
+    res.render("failure");
+  });
 });
 
 app.get("/admin/orders",(req,res)=>{
@@ -485,7 +465,10 @@ app.get("/admin/orders",(req,res)=>{
   .then((foundOrders)=>{
     res.render("admin/orders",{orders:foundOrders});
   })
-  .catch(err=>console.log(err));
+  .catch((err)=>{
+    console.log(err);
+    res.render("failure");
+  });
 });
 
 // Index route: Show all products
@@ -494,8 +477,12 @@ app.get("/admin/products",(req,res)=>{
   .then((foundProducts)=>{
     res.render("admin/products/index",{products:foundProducts});
   })
-  .catch(err=>console.log(err));
+  .catch((err)=>{
+    console.log(err);
+    res.render("failure");
+  });
 });
+
 // New route : Show new form
 app.get("/admin/products/new",(req,res)=>{
   res.render("admin/products/new");
@@ -507,16 +494,17 @@ app.post("/admin/products",(req,res)=>{
   let newProduct = req.body;
   newProduct = parsing(newProduct);
   newProduct.lastModified = new Date().getTime();
-  // console.log(newProduct);
   test(productSchema,newProduct)
-  .then((result)=>{
-    // console.log(result);
-    db.products.insertOne(newProduct)
+  .then((testResult)=>{
+    return db.products.insertOne(newProduct)
   })
-  .then(()=>{
+  .then((newProduct)=>{
     res.redirect("/admin/products");
   })
-  .catch(err=>console.log(err));
+  .catch((err)=>{
+    console.log(err);
+    res.render("failure");
+  });
 });
 
 // Edit route: Show update form
@@ -526,30 +514,32 @@ app.get("/admin/products/:id",(req,res)=>{
   .then((foundProduct)=>{
     res.render("admin/products/edit",{product:foundProduct});
   })
-  .catch(err=>console.log(err));
+  .catch((err)=>{
+    console.log(err);
+    res.render("failure");
+  });
 });
 
 // Update Route: Handle update
 app.put("/admin/products/:id",(req,res)=>{
-  let productId = req.body.productId;
   let updated = req.body;
-  let returnURL = "/admin/products/"+productId;
+  let productId = req.params.id;
   // Parse string into number to pass test
   updated = parsing(updated);
   updated.lastModified = new Date().getTime();
 
   // Test and update mongo
   test(productSchema,updated)
-  .then((result)=>{
-    // console.log(result);
-    db.products.replaceOne({productId:productId},updated)
+  .then((testResult)=>{
+    return db.products.replaceOne({productId:productId},updated)
   })  
   .then((updateResult)=>{
-    // console.log(updateResult.ops[0]);
-
-    res.redirect(returnURL);
+    res.redirect("/admin/products");
   })
-  .catch(err=>console.log(err));
+  .catch((err)=>{
+    console.log(err);
+    res.render("failure");
+  });
 });
 
 // Destroy route: Destroy specific product
@@ -559,7 +549,10 @@ app.delete("/admin/products/:id",(req,res)=>{
   .then(()=>{
     res.redirect("/admin/products");
   })
-  .catch(err=>console.log(err));
+  .catch((err)=>{
+    console.log(err);
+    res.render("failure");
+  });
 });
 
 

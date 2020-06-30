@@ -14,7 +14,7 @@
         },
         "description":{
             "type":"string",
-            "minLength": 10,
+            "minLength": 1,
             "maxLength": 800
         },
         "img":{

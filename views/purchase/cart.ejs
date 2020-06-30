@@ -5,7 +5,7 @@
         <div class="progress-bar progress-bar-striped progress-bar-animated bg-info" role="progressbar" aria-valuenow="33" aria-valuemin="0" aria-valuemax="100" style="width: 33%">Confirming Products</div>   
     </div>
     <div class="card mx-auto profile-card" >
-        <%cart.forEach((product)=>{%>
+        <%cart.forEach((product,i)=>{%>
             <!-- <hr> -->
             <div class="card-body">
                 <div class="row no-gutters">
@@ -25,7 +25,10 @@
                         
                         <br>
                         <button class="btn btn-info"><a href = "/products/<%=product.productId%>" class="anchorInfo">Show Info</a></button>
-                        <button class="btn btn-danger">Delete</button>
+                        <form method="POST" action="/cart?_method=DELETE" style="display: inline;">
+                            <input type="hidden" name="deleteIndex" value="<%=i%>">
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
                     </div>
                 </div>
             </div>    
