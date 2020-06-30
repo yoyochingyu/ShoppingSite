@@ -14,13 +14,14 @@ const express = require("express"),
         redisClient = redis.createClient(),
         redisStore = require('connect-redis')(session),
         methodOverride = require("method-override");
-const exitHook = require('exit-hook');
-const e = require("express");
-const { parse } = require("path");
+// const exitHook = require('exit-hook');
+// const e = require("express");
+// const { parse } = require("path");
 const { ObjectId } = require("mongodb");
-exitHook(() => {
-  console.log('Exiting');
-});
+// const { promises } = require("fs");
+// exitHook(() => {
+//   console.log('Exiting');
+// });
 
 // db connection
 const url = 'mongodb://localhost:27017';
@@ -89,9 +90,9 @@ function orderProcess(input,req,db){
     let fieldName = `size.${product.size}`;
     let update = {"$inc":{}};
     update["$inc"][fieldName]=(-1)*(product.amount);
-    db.products.updateOne({productId:product.productName},update)
+    db.products.updateOne({productId:product.productId},update)
     .then((updateResult)=>{
-      // console.log(updateResult.result);
+      console.log(updateResult.result);
     })
     .catch((err)=>{
       console.log(err);
@@ -261,11 +262,14 @@ app.post("/cart",(req,res)=>{
       // set session data into redis-store
       let updatedUser = updateResult.value;
       req.session.user = updatedUser;
+      res.redirect(returnUrl); 
     })
     .catch(err=>console.log(err));
-  }
-  // if user doesn't exists=>redirect(has been handled in middleware)
+  }else{
+    // if user doesn't exists=>redirect(has been handled in middleware)
     res.redirect(returnUrl); 
+  }
+  
 });
 
 // Delete cart
@@ -290,15 +294,32 @@ app.delete("/cart",(req,res)=>{
 
 // Purchase
 app.get("/purchase",(req,res)=>{
+  var netBeforeShipping = 0;
   if(req.session.user==undefined ||req.session.user==null){
     res.redirect("/login");
   }else{
-    var netBeforeShipping = 0;
-    req.session.user.cart.forEach((product)=>{
-      netBeforeShipping+=product.net;
+    var promises = [];
+    req.session.user.cart.forEach((cartProduct)=>{
+      promises.push(
+        db.products.findOne({productId:cartProduct.productId})
+        .then((foundProduct)=>{  
+          let cartSize = cartProduct.size;
+          // console.log(foundProduct.size[cartSize]);
+          let inventory = foundProduct.size[cartSize];
+          if(inventory<cartProduct.amount){
+            cartProduct.outOfStock = true;
+          }else{
+            cartProduct.outOfStock = false;
+            netBeforeShipping=netBeforeShipping+cartProduct.net;
+          }
+        })
+        .catch(err=>console.log(err))
+      );
     });
-    req.session.user.netBeforeShipping = netBeforeShipping;
-    res.render("purchase/cart",{netBeforeShipping:netBeforeShipping});
+    Promise.all(promises).then(()=>{
+      req.session.user.netBeforeShipping = netBeforeShipping;
+      res.render("purchase/cart");
+    });
   }
 });
 
@@ -562,7 +583,3 @@ app.listen(4000,()=>{
 });
 
 });   
-
-
- 
-
