@@ -109,6 +109,7 @@ MongoClient.connect(url,{ useNewUrlParser: true, useUnifiedTopology: true },(err
   db.products = db.collection('products');
   db.users = db.collection('users');
   db.orders = db.collection('orders');
+  db.admins = db.collection('admins');
 
 
   // APP CONFIG
@@ -145,10 +146,15 @@ app.use((req,res,next)=>{
     req.session.cart=null;
   }
 
+  if(req.session.admin==undefined){
+    req.session.admin=null;
+  }
+
 
   // pass user/cart session to "views"
   res.locals.user = req.session.user;
   res.locals.cart=req.session.cart;
+  res.locals.admin=req.session.admin;
   
   // pass cart session to "views"
   // if login=>pass req.session.user.cart to "views"
@@ -470,110 +476,210 @@ app.get("/logout",(req,res)=>{
 // ===============================
 // Admin Route
 // ===============================
+app.get("/admin/login",(req,res)=>{
+  res.render("admin/login");
+});
+
+// Block external register
+// app.get("/admin/register",(req,res)=>{
+//   res.render("admin/register");
+// });
+
+// app.post("/admin/register",(req,res)=>{
+//   var inputUser = req.body;
+//   // Hash password
+//   let saltRounds = 12;
+//   bcrypt.hash(inputUser.password,saltRounds)
+//   .then((hash)=>{
+//     inputUser.password = hash;
+//     return db.admins.insertOne(inputUser);
+//   })
+//   .then((result)=>{
+//     //  console.log(result.ops);
+//     res.redirect("/admin/products");
+//   })
+//   .catch((err)=>{
+//     console.log(err);
+//     res.redirect("/admin/register"); //加flash，提示輸入錯誤
+//   });
+// });
+
+
+app.post("/admin/login",(req,res)=>{
+  let inputEmail = req.body.inputEmail;
+  let inputPassword = req.body.inputPassword;
+  
+  // Define checkUser function
+  async function checkAdmin(inputEmail,inputPassword){
+    db.admins.findOne({email:inputEmail})
+    .then(async(foundAdmin)=>{
+      if(foundAdmin === null){
+        res.send("You don't have permission");
+        // res.redirect("/login");
+      }
+      else{
+        let match = await bcrypt.compare(inputPassword,foundAdmin.password);
+        // console.log("isUser:"+match);
+        if(match){
+          // res.send("Login successfully!");
+            console.log("Admin confirmed!");
+            req.session.admin=foundAdmin; //!!!!!!
+            res.redirect("/admin/products");
+        }
+        else{
+          res.send("Wrong Password!");
+        }
+      }
+    })
+    .catch((err)=>{
+      console.log(err);
+    });
+  }
+  checkAdmin(inputEmail,inputPassword);
+});
+
+app.get("/admin/logout",(req,res)=>{
+  req.session.admin = null;
+  res.redirect("/products");
+});
+
+
 app.get("/admin/customers",(req,res)=>{
-  db.users.find({}).toArray()
-  .then((foundCustomers)=>{
-    res.render("admin/customers",{customers:foundCustomers});
-  })
-  .catch((err)=>{
-    console.log(err);
-    res.render("failure");
-  });
+  if(req.session.admin==null){
+    res.redirect("/admin/login");
+  }else{
+    db.users.find({}).toArray()
+    .then((foundCustomers)=>{
+      res.render("admin/customers",{customers:foundCustomers});
+    })
+    .catch((err)=>{
+      console.log(err);
+      res.render("failure");
+    });
+  }
 });
 
 app.get("/admin/orders",(req,res)=>{
-  db.orders.find({}).toArray()
-  .then((foundOrders)=>{
-    res.render("admin/orders",{orders:foundOrders});
-  })
-  .catch((err)=>{
-    console.log(err);
-    res.render("failure");
-  });
+  if(req.session.admin==null){
+    res.redirect("/admin/login");
+  }else{
+    db.orders.find({}).toArray()
+    .then((foundOrders)=>{
+      res.render("admin/orders",{orders:foundOrders});
+    })
+    .catch((err)=>{
+      console.log(err);
+      res.render("failure");
+    });
+  }
 });
 
 // Index route: Show all products
 app.get("/admin/products",(req,res)=>{
-  db.products.find({}).toArray()
-  .then((foundProducts)=>{
-    res.render("admin/products/index",{products:foundProducts});
-  })
-  .catch((err)=>{
-    console.log(err);
-    res.render("failure");
-  });
+  if(req.session.admin==null){
+    res.redirect("/admin/login");
+  }else{
+    db.products.find({}).toArray()
+    .then((foundProducts)=>{
+      res.render("admin/products/index",{products:foundProducts});
+    })
+    .catch((err)=>{
+      console.log(err);
+      res.render("failure");
+    });
+  }
 });
 
 // New route : Show new form
 app.get("/admin/products/new",(req,res)=>{
-  res.render("admin/products/new");
+  if(req.session.admin==null){
+    res.redirect("/admin/login");
+  }else{
+    res.render("admin/products/new");
+  }
 });
 
 
 // Create route: handle new route
 app.post("/admin/products",(req,res)=>{
-  let newProduct = req.body;
-  newProduct = parsing(newProduct);
-  newProduct.lastModified = new Date().getTime();
-  test(productSchema,newProduct)
-  .then((testResult)=>{
-    return db.products.insertOne(newProduct)
-  })
-  .then((newProduct)=>{
-    res.redirect("/admin/products");
-  })
-  .catch((err)=>{
-    console.log(err);
-    res.render("failure");
-  });
+  if(req.session.admin==null){
+    res.redirect("/admin/login");
+  }else{
+    let newProduct = req.body;
+    newProduct = parsing(newProduct);
+    newProduct.lastModified = new Date().getTime();
+    test(productSchema,newProduct)
+    .then((testResult)=>{
+      return db.products.insertOne(newProduct)
+    })
+    .then((newProduct)=>{
+      res.redirect("/admin/products");
+    })
+    .catch((err)=>{
+      console.log(err);
+      res.render("failure");
+    });
+  }
 });
 
 // Edit route: Show update form
 app.get("/admin/products/:id",(req,res)=>{
-  let productId = req.params.id;
-  db.products.findOne({productId:productId})
-  .then((foundProduct)=>{
-    res.render("admin/products/edit",{product:foundProduct});
-  })
-  .catch((err)=>{
-    console.log(err);
-    res.render("failure");
-  });
+  if(req.session.admin==null){
+    res.redirect("/admin/login");
+  }else{
+    let productId = req.params.id;
+    db.products.findOne({productId:productId})
+    .then((foundProduct)=>{
+      res.render("admin/products/edit",{product:foundProduct});
+    })
+    .catch((err)=>{
+      console.log(err);
+      res.render("failure");
+    });
+  }
 });
 
 // Update Route: Handle update
 app.put("/admin/products/:id",(req,res)=>{
-  let updated = req.body;
-  let productId = req.params.id;
-  // Parse string into number to pass test
-  updated = parsing(updated);
-  updated.lastModified = new Date().getTime();
+  if(req.session.admin==null){
+    res.redirect("/admin/login");
+  }else{
+    let updated = req.body;
+    let productId = req.params.id;
+    // Parse string into number to pass test
+    updated = parsing(updated);
+    updated.lastModified = new Date().getTime();
 
-  // Test and update mongo
-  test(productSchema,updated)
-  .then((testResult)=>{
-    return db.products.replaceOne({productId:productId},updated)
-  })  
-  .then((updateResult)=>{
-    res.redirect("/admin/products");
-  })
-  .catch((err)=>{
-    console.log(err);
-    res.render("failure");
-  });
+    // Test and update mongo
+    test(productSchema,updated)
+    .then((testResult)=>{
+      return db.products.replaceOne({productId:productId},updated)
+    })  
+    .then((updateResult)=>{
+      res.redirect("/admin/products");
+    })
+    .catch((err)=>{
+      console.log(err);
+      res.render("failure");
+    });
+  }
 });
 
 // Destroy route: Destroy specific product
 app.delete("/admin/products/:id",(req,res)=>{
-  let productId = req.params.id;
-  db.products.deleteOne({productId:productId})
-  .then(()=>{
-    res.redirect("/admin/products");
-  })
-  .catch((err)=>{
-    console.log(err);
-    res.render("failure");
-  });
+  if(req.session.admin==null){
+    res.redirect("/admin/login");
+  }else{
+    let productId = req.params.id;
+    db.products.deleteOne({productId:productId})
+    .then(()=>{
+      res.redirect("/admin/products");
+    })
+    .catch((err)=>{
+      console.log(err);
+      res.render("failure");
+    });
+  }
 });
 
 

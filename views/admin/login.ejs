@@ -1,9 +1,9 @@
-<%-include("../partials/header")%>
+<%-include("partials/header")%>
 <div class="container-fluid push">
     <div class="card mx-auto" style="width: 30%;">
         <div class="card-body">
             <h2 class="card-title text-center">Login</h2>
-            <form method="POST" action="/login">
+            <form method="POST" action="/admin/login">
                 <div class="form-group">
                     <label for="inputEmail">Email</label>
                     <input type="email" class="form-control" id="inputEmail" name = "inputEmail" aria-describedby="emailHelp">
@@ -12,14 +12,9 @@
                     <label for="inputPassword">Password</label>
                     <input type="password" class="form-control" id="inputPassword" name="inputPassword">
                 </div>
-                <div class="form-group form-check">
-                    <input type="checkbox" class="form-check-input" id="inputRemember" name="inputRemember">
-                    <label class="form-check-label" for="inputRemember">Remember me </label>
-                    <a href="#" class="ml-3">Forget Password ?</a>
-                </div>
                 <button type="submit" class="btn btn-primary">Login</button>
             </form>
         </div>
     </div>
 </div>
-<%-include("../partials/footer")%>
+<%-include("partials/footer")%>
