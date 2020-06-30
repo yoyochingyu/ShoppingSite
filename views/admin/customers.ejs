@@ -1,11 +1,19 @@
 <%-include("partials/header")%>
 <div class="container-fluid push">
-    <h1>Customers</h1>
-    <div class="card mb-3  mx-auto" style="width: 65em;" >
+    <h3 style="width: 80%;" class="mx-auto mb-3">Customers</h3>
+    <div class="card mx-auto" style="width: 80%;" >
         <ul class="list-group">
-            <%customers.forEach((customer)=>{%>
-                <li class="list-group-item pb-0">
-                    <p>User:<%=customer.firstName%> <%=customer.lastName%>  Email:<%=customer.email%></p>
+            <%customers.forEach((customer,i)=>{%>
+                <li class="list-group-item">
+                    <!-- <div class="row"> -->
+                        <!-- <div class="col-lg-0.5"> -->
+                            <span class="card-title order-detail"><%=i+1%></span>&nbsp&nbsp
+                        <!-- </div> -->
+                        <!-- <div class="col-lg-10"> -->
+                            <span class="card-title order-detail">Customer: </span> <span class="card-text"><%=customer.firstName%>  <%=customer.lastName%></span>
+                            <span class="card-title order-detail">Email: </span><span class="card-text"><%=customer.email%></span>
+                        <!-- </div> -->
+                    <!-- </div> -->
                 </li>
             <%})%>
         </ul>

@@ -1,27 +1,75 @@
 <%-include("partials/header")%>
 <div class="container-fluid push">
-    <h1>Orders</h1>
-    <div class="card mb-3  mx-auto" style="width: 65em;" >
-        <ul class="list-group">
-            <%orders.forEach((order)=>{%>
-                <li class="list-group-item pb-0">
-                    <p><%=order.purchaseTime%> <%=order.status%>  <%=order.expectedDeliveryDate%> </p>
-                    <p>
-                    <%order.products.forEach((product)=>{%>
-                        <%=product.productName%>
-                        <%=product.productId%>
-                        <%=product.price%>
-                        <%=product.amount%>
-                        <%=product.net%>
+    <h3 style="width: 80%;" class="mx-auto mb-3">Orders</h3>
+    <div class="card mx-auto" style="width: 80%;">
+        <%orders.forEach((order)=>{%>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-4">
+                        <span class="card-title order-detail">Order ID: </span> <span class="card-text"><%=order._id%></span>
+                    </div>
+                    <div class="col-lg-4">
+                        <span class="card-title order-detail">Purchase Time: </span> <span class="card-text"><%=order.purchaseTime%></span>
+                    </div>
+                    <div class="col-lg-4">
+                        <span class="card-title order-detail">Expected Delivery Date: </span> <span class="card-text"><%=order.expectedDeliveryDate%></span>
+                    </div>
+                </div>
+                
+                <div class="row mt-2">
+                    <div class="col-lg-4">
+                        <span class="card-title order-detail">Status: </span> <span class="card-text"><%=order.status%></span>
+                    </div>
+                    <div class="col-lg-4">
+                        <span class="card-title order-detail">Shipping Option: </span><span class="card-text"><%=order.shippingOption%></span>
+                    </div>
+                    <div class="col-lg-4">
+                        <span class="card-title order-detail">Billing Option: </span><span class="card-text"><%=order.billingOption%></span>
+                    </div>
+                </div>
 
-                    <%})%>
-                    </p>
-                    <p><%=order.shipping%><%=order.overall%></p>
-                    <p><%=order.user_id%></p>
-                    <p></p>
-                </li>
-            <%})%>
-        </ul>
+                <div class="row mt-2">
+                    <div class="col-lg-4">
+                        <span class="card-title order-detail">Net Before Shipping: </span><span class="card-text"><%=order.netBeforeShipping%></span>
+                    </div>
+                    <div class="col-lg-4">
+                        <span class="card-title order-detail">Shipping Fee: </span><span class="card-text"><%=order.shipping%></span>
+                    </div>
+                    <div class="col-lg-4">
+                        <span class="card-title order-detail">Total: </span><span class="card-text"><%=order.overall%></span>
+                    </div>
+                </div>
+                <h5 class="card-title order-detail mt-4">Products: </h5>
+                <ul>
+                <%order.products.forEach((product)=>{%>
+                    <li>
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <span class="card-title order-detail">Product Name:</span><%=product.productName%>
+                            </div>
+                            <div class="col-lg-3">
+                                <span class="card-title order-detail">Product ID:</span><%=product.productId%>
+                            </div>
+                            <div class="col-lg-1">
+                                <span class="card-title order-detail">Size: </span><%=product.size%>
+                            </div>
+                            <div class="col-lg-1">
+                                <span class="card-title order-detail">Price: </span><%=product.price%>
+                            </div>
+                            <div class="col-lg-2">
+                                <span class="card-title order-detail">Amount: </span><%=product.amount%>
+                            </div>
+                            <div class="col-lg-1">
+                                <span class="card-title order-detail">Net: </span><%=product.net%>
+                            </div>
+                        </div>
+                    </li>    
+                <%})%>
+                </ul>
+                
+            </div> 
+            <hr>
+        <%})%>
     </div>
 </div>
 
