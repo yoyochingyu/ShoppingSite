@@ -6,7 +6,7 @@
             <div class="btn-group-vertical col-xs-2" role="group" aria-label="Profile tags">
                 <button type="button" class="btn btn-secondary"  data-toggle="collapse" data-target="#collapseProfile" aria-expanded="false" aria-controls="collapseProfile">Profile</button>
                 <button type="button" class="btn btn-secondary" data-toggle="collapse" data-target="#collapseOrders" aria-expanded="false" aria-controls="collapseOrders">Order History</button>
-                <button type="button" class="btn btn-secondary" data-toggle="collapse" data-target="#collapseWishList" aria-expanded="false" aria-controls="collapseWishList">WishList</button>
+                <!-- <button type="button" class="btn btn-secondary" data-toggle="collapse" data-target="#collapseWishList" aria-expanded="false" aria-controls="collapseWishList">WishList</button> -->
                 <button type="button" class="btn btn-secondary" data-toggle="collapse" data-target="#collapseDeleteAccount" aria-expanded="false" aria-controls="collapseDeleteAccount">Delete Account</button>
 
             </div>
@@ -129,23 +129,24 @@
                 </div><!--collapseOrder-->
 
                 <!-- WishList display-->
-                <div class="collapse" id="collapseWishList" data-parent="#accordionExample">
-                    <div class="card mx-auto profile-card" >
-                        <div class=" card-body">
-                            <div class="row no-gutters">
-                                <div class="col-xs-2">
-                                    <img src="<%=product.img%>" class="card-img" alt="https://miro.medium.com/max/880/0*H3jZONKqRuAAeHnG.jpg" style="width:100px;height:auto;">
-                                </div>
-                                <div class="col-xs-10 pl-2"> 
-                                    <span class="card-title order-detail">Product name: </span> <span class="card-text"><%=product.name%></span>
-                                    <br>
-                                    <span class="card-title order-detail">Product ID: </span> <span class="card-text">EAC4567865456789</span>
-                                    <form><button type="submit" class=" btn btn-danger" >Add to cart</button></form>
+                    <!-- <div class="collapse" id="collapseWishList" data-parent="#accordionExample">
+                        <div class="card mx-auto profile-card" >
+                            <div class=" card-body">
+                                <div class="row no-gutters">
+                                    <div class="col-xs-2">
+                                        <img src="<%=product.img%>" class="card-img" alt="https://miro.medium.com/max/880/0*H3jZONKqRuAAeHnG.jpg" style="width:100px;height:auto;">
+                                    </div>
+                                    <div class="col-xs-10 pl-2"> 
+                                        <span class="card-title order-detail">Product name: </span> <span class="card-text"><%=product.name%></span>
+                                        <br>
+                                        <span class="card-title order-detail">Product ID: </span> <span class="card-text">EAC4567865456789</span>
+                                        <form><button type="submit" class=" btn btn-danger" >Add to cart</button></form>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div><!--collapseWishList-->
+                    </div> -->
+                <!--collapseWishList-->
 
                 <!-- Delete Account Display -->
                 <div class="collapse" id="collapseDeleteAccount" data-parent="#accordionExample">
