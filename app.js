@@ -469,6 +469,17 @@ app.put("/profile",(req,res)=>{
   })
 });
 
+app.delete("/profile",(req,res)=>{
+  db.users.deleteOne({firstName:req.session.user.firstName})
+  .then((deleteResult)=>{
+    console.log(deleteResult.result);
+    req.session.user = null;
+    res.redirect("/products");
+  })
+  .catch(err=>console.log(err));
+  // res.send("DELETE!");
+});
+
 app.get("/logout",(req,res)=>{
   req.session.user = null;
   res.redirect("/products");

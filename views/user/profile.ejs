@@ -152,7 +152,9 @@
                     <div class="card mx-auto profile-card" >
                         <div class=" card-body">
                             <p>If you wish to delete your account, which will wipe all history orders, wishlist and products in your shopping cart, press the button</p>
-                              <form style="display:inline;"><input type="button" class="btn btn-danger"  value="Delete Account"></form>
+                              <form style="display:inline;" action = "/profile?_method=DELETE" method = "POST" onsubmit = "return confirm('ARE YOU SURE YOU WANT TO DELETE YOUR ACCOUNT?')">
+                                <button type="submit" class="btn btn-danger" name="delete" value="true">Delete Account</button>
+                            </form>
                         </div>
                     </div>
                 </div><!--collapseWishList-->
