@@ -192,7 +192,7 @@ app.use("/cart",(req,res,next)=>{
 // ====================
 // Landing Page
 app.get("/",(req,res)=>{
-  res.render("landing");
+  res.render("landing_1");
 });
 
 // Index Route
