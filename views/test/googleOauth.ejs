@@ -8,7 +8,12 @@
     <body>
         <h1>login page</h1>
         <!-- Sign in button -->
-        <div class="g-signin2" data-onsuccess="onSignIn"></div>
+        <div class="g-signin2" data-onsuccess="onSignIn">
+          <form action ="/login" method="POST">
+            <input type="hidden" name="oauth" id="oauth">
+            <button type="submit"></button>
+          </form>
+        </div>
         <!-- Sign out -->
         <a href="#" onclick="signOut();">Sign out</a>
         
@@ -17,11 +22,13 @@
         <script>
             function onSignIn(googleUser) {
                 var profile = googleUser.getBasicProfile();
+                var id_token = googleUser.getAuthResponse().id_token;
                 alert('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
                 alert('Name: ' + profile.getName());
                 alert('Image URL: ' + profile.getImageUrl());
                 alert('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
-                }
+                $('#oauth').val(id_token);
+            }
         </script>
 
         <!-- Signout function -->

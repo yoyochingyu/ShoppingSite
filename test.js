@@ -2,6 +2,14 @@ const express = require("express"),
       app = express(),
       {google} = require('googleapis');
 
+function onSignIn(googleUser) {
+var profile = googleUser.getBasicProfile();
+console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+console.log('Name: ' + profile.getName());
+console.log('Image URL: ' + profile.getImageUrl());
+console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+}
+
 app.set("view engine","ejs");
 // app.use(bodyParser.urlencoded({extended:true}));
 
@@ -33,6 +41,11 @@ app.get("/",(req,res)=>{
 app.get("/login",(req,res)=>{
     res.render("test/googleOauth");
 });
+
+app.post("/login",(req,res)=>{
+
+});
+
 app.get("/policy",(req,res)=>{
     res.render("test/policy");
 });
