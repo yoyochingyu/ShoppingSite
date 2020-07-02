@@ -42,15 +42,16 @@ app.get("/login",(req,res)=>{
     res.render("test/googleOauth",{url:url});
 });
 
-app.post("/login",(req,res)=>{
-    res.send('HI');
-});
+// app.post("/login",(req,res)=>{
+//     res.send('HI');
+// });
 
-app.get("/policy",(req,res)=>{
-    res.render("test/policy");
-});
+// app.get("/policy",(req,res)=>{
+//     res.render("test/policy");
+// });
 app.get("/authenticated",(req,res)=>{
-    res.send("Authenticated");
+    code = req.query.code;
+    res.send(code);
 });
 
 
