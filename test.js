@@ -51,7 +51,15 @@ app.get("/login",(req,res)=>{
 // });
 app.get("/authenticated",(req,res)=>{
     code = req.query.code;
-    res.send(code);
+    const {tokens} = await oauth2Client.getToken(code,(err,token)=>{
+        if(err){
+            res.send(err);
+        }else{
+            oauth2Client.setCredentials(tokens);
+        }
+    })
+    
+    // res.send(code);
 });
 
 
