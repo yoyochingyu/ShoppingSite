@@ -7,14 +7,13 @@
     </head>
     <body>
         <h1>login page</h1>
-        <h3>1</h3>
+        <h3>2</h3>
         <!-- Sign in button -->
-        <div class="g-signin2" data-onsuccess="onSignIn">
-          <form action ="/login" method="POST">
-            <input type="hidden" name="oauth" id="oauth">
-            <button type="submit"></button>
-          </form>
-        </div>
+        <a href="<%=url%>">Consent page
+          <div class="g-signin2" data-onsuccess="onSignIn"></div>
+        </a>
+
+        
         <!-- Sign out -->
         <a href="#" onclick="signOut();">Sign out</a>
         
