@@ -43,7 +43,7 @@ app.get("/login",(req,res)=>{
 });
 
 app.post("/login",(req,res)=>{
-
+    res.send('HI');
 });
 
 app.get("/policy",(req,res)=>{
