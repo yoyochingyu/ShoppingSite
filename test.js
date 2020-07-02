@@ -7,7 +7,7 @@ app.set("view engine","ejs");
 
 const YOUR_CLIENT_ID = '941696510446-2444frjglrq8i4laa2dak4fkv20ave0t.apps.googleusercontent.com',
         YOUR_CLIENT_SECRET = 'l4XrWuqbuT1nI6pL7FzyAbUS',
-        YOUR_REDIRECT_URL = ["https://testoauth-ching.herokuapp.com/authenticated"];
+        YOUR_REDIRECT_URL = "https://testoauth-ching.herokuapp.com/authenticated";
 
 const scopes = [
     'https://www.googleapis.com/auth/userinfo.email',
