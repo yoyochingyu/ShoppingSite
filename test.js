@@ -39,7 +39,7 @@ app.get("/",(req,res)=>{
     res.render("test/index",{url:url});
 });
 app.get("/login",(req,res)=>{
-    res.render("test/googleOauth");
+    res.render("test/googleOauth",{url:url});
 });
 
 app.post("/login",(req,res)=>{
