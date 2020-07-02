@@ -297,6 +297,23 @@ app.delete("/cart",(req,res)=>{
     });
   }
 });
+app.delete("/cart/clear",(req,res)=>{
+  if(req.session.user != null){
+    // If user has loginned
+    db.users.findOneAndUpdate({email:req.session.user.email},{$set:{cart:[]}},{returnOriginal:false})
+    .then((updateResult)=>{
+      req.session.user.cart = null;
+      res.redirect("/products");
+    })
+    .catch(err=>console.log(err));
+  }else{
+    req.session.cart = null;
+    res.redirect("/products");
+  }
+  
+  
+  // res.send("Clear all");
+})
 
 // Purchase
 app.get("/purchase",(req,res)=>{

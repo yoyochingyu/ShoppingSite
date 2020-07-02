@@ -44,8 +44,12 @@
                                         </div>
                                     </div>
                                 <%})%>
-                                <form action="/purchase" method="GET">
-                                    <button type="submit" class="btn btn-outline-primary btn-lg mb-3">Purchase</button>
+                                <hr>
+                                <form action="/purchase" method="GET" style="display: inline;">
+                                    <button type="submit" class="btn btn-primary btn-md mb-3">Purchase</button>
+                                </form>
+                                <form action = "/cart/clear?_method=DELETE" method="POST" style="display: inline;">
+                                    <button type="submit" class="btn btn-danger btn-md mb-3">Delete All</button>
                                 </form>
                             <%}%>
                         <%}else{%>
