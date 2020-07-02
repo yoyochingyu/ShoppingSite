@@ -5,9 +5,9 @@ const express = require("express"),
 app.set("view engine","ejs");
 // app.use(bodyParser.urlencoded({extended:true}));
 
-const YOUR_CLIENT_ID = '1032735084625-jvs02ge8mjsca6l7ll7f6or2j8fr9q34.apps.googleusercontent.com',
-        YOUR_CLIENT_SECRET = '1lMNz8cz21ReMFEwB_Xk6BFe',
-        YOUR_REDIRECT_URL = ["http://localhost:3000/oauth2callback","http://localhost:4000/oauth2callback","http://ec2-3-134-58-20.us-east-2.compute.amazonaws.com:4000/oauth2callback"];
+const YOUR_CLIENT_ID = '941696510446-2444frjglrq8i4laa2dak4fkv20ave0t.apps.googleusercontent.com',
+        YOUR_CLIENT_SECRET = 'l4XrWuqbuT1nI6pL7FzyAbUS',
+        YOUR_REDIRECT_URL = ["https://testoauth-ching.herokuapp.com/authenticated"];
 
 const scopes = [
     'https://www.googleapis.com/auth/userinfo.email',
@@ -32,6 +32,12 @@ app.get("/",(req,res)=>{
 });
 app.get("/login",(req,res)=>{
     res.render("user/googleOauth");
+});
+app.get("/policy",(req,res)=>{
+    res.render("policy");
+});
+app.get("/authenticated",(req,res)=>{
+    res.send("Authenticated");
 });
 
 
