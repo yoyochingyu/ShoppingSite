@@ -28,13 +28,13 @@ const url = oauth2Client.generateAuthUrl({
 });
 
 app.get("/",(req,res)=>{
-    res.send("homepage");
+    res.render("test/index",{url:url});
 });
 app.get("/login",(req,res)=>{
-    res.render("user/googleOauth");
+    res.render("test/googleOauth");
 });
 app.get("/policy",(req,res)=>{
-    res.render("policy");
+    res.render("test/policy");
 });
 app.get("/authenticated",(req,res)=>{
     res.send("Authenticated");
