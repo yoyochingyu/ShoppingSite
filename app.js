@@ -254,6 +254,10 @@ app.get("/login",(req,res)=>{
 });
 
 app.get("/register",(req,res)=>{
+  res.render("user/register-option");
+});
+
+app.get("/register/new",(req,res)=>{
   res.render("user/register");
 });
 
@@ -268,12 +272,12 @@ app.post("/cart",(req,res)=>{
       // set session data into redis-store
       let updatedUser = updateResult.value;
       req.session.user = updatedUser;
-      res.redirect(returnUrl); 
+      res.redirect("/products"); 
     })
     .catch(err=>console.log(err));
   }else{
     // if user doesn't exists=>redirect(has been handled in middleware)
-    res.redirect(returnUrl); 
+    res.redirect("/products"); 
   }
   
 });
@@ -326,14 +330,19 @@ app.get("/purchase",(req,res)=>{
       promises.push(
         db.products.findOne({productId:cartProduct.productId})
         .then((foundProduct)=>{  
-          let cartSize = cartProduct.size;
-          // console.log(foundProduct.size[cartSize]);
-          let inventory = foundProduct.size[cartSize];
-          if(inventory<cartProduct.amount){
-            cartProduct.outOfStock = true;
+          if(foundProduct!=null){
+            cartProduct.exist = true;
+            let cartSize = cartProduct.size;
+            // console.log(foundProduct.size[cartSize]);
+            let inventory = foundProduct.size[cartSize];
+            if(inventory<cartProduct.amount){
+              cartProduct.outOfStock = true;
+            }else{
+              cartProduct.outOfStock = false;
+              netBeforeShipping=netBeforeShipping+cartProduct.net;
+            }
           }else{
-            cartProduct.outOfStock = false;
-            netBeforeShipping=netBeforeShipping+cartProduct.net;
+            cartProduct.exist = false;
           }
         })
         .catch(err=>console.log(err))
@@ -342,7 +351,7 @@ app.get("/purchase",(req,res)=>{
     Promise.all(promises).then(()=>{
       req.session.user.netBeforeShipping = netBeforeShipping;
       res.render("purchase/cart");
-    });
+    })
   }
 });
 
