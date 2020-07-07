@@ -284,23 +284,26 @@ app.get("/register",(req,res)=>{
 });
 
 app.get("/register/new",async(req,res)=>{
-  let code = req.query.code;
-  const {tokens} = await oauth2Client.getToken(code);
-  oauth2Client.setCredentials(tokens);
-  // console.log(tokens);
-  request(`https://oauth2.googleapis.com/tokeninfo?id_token=${tokens.id_token}`,(err,response,body)=>{
-    if(err){
+  if(Object.keys(req.query).length==0){
+    // console.log("NEW USER");
+    res.render("user/register",{userInfo:null});
+  }else{
+    let code = req.query.code;
+    const {tokens} = await oauth2Client.getToken(code);
+    oauth2Client.setCredentials(tokens);
+    request(`https://oauth2.googleapis.com/tokeninfo?id_token=${tokens.id_token}`,(err,response,body)=>{
+      if(err){
         console.log(err);
-        res.redirect("/user/register")
-    }
-    else{
-      console.log(body.email);
-      console.log(body.given_name);
-      console.log(body.family_name);
-      res.send(body);
-    }
-  });
-  // res.render("user/register");
+        res.redirect("/register/new");
+      }
+      else{
+        let Jbody = JSON.parse(body);
+        // console.log(Jbody.email);
+        let userInfo = {firstName:Jbody.given_name,lastName:Jbody.family_name,email:Jbody.email};
+        res.render("user/register",{userInfo:userInfo});
+      }
+    });  
+  }
 });
 
 app.get("/policy",(req,res)=>{
@@ -372,7 +375,6 @@ app.post("/register",(req,res)=>{
   })
   .catch((err)=>{
     console.log(err);
-    alert("You've typed something wrong!");
     res.redirect("/register"); //加flash，提示輸入錯誤
   });
 });
