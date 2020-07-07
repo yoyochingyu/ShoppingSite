@@ -6,6 +6,7 @@
     </div>
     <div class="card mx-auto profile-card" >
         <%var outOfStock = false%>
+        <%var exist = true%>
         <%cart.forEach((product,i)=>{%>
             <!-- <hr> -->
             <div class="card-body">
@@ -24,6 +25,9 @@
                         <%if(product.outOfStock){%>
                             <span id="outOfStock"><b>(Out Of Stock! Please reselect amount or delete!)</b></span>
                         <%outOfStock = true;}%>
+                        <%if(!product.exist){%>
+                            <span id="exist"><b>(Product doesn't exist! Please delete!)</b></span>
+                        <%exist = false;}%>
                         <br>
                         <span class="card-title order-detail">Price: </span> <span class="card-text">$ <%=product.price%></span>&nbsp;&nbsp;
                         <span class="card-title order-detail">Net: </span> <span class="card-text">$ <%=product.net%></span>
@@ -50,8 +54,16 @@
 <script type="text/javascript">
     window.onload = function(){
         let outOfStock = '<%=outOfStock%>';
+        let exist = '<%=exist%>';
         if(outOfStock == 'true'){
             $("button.next").html('Out Of Stock');
+            $("button.next").prop("disabled",true);
+        }else{
+            $("button.next").html('Next');
+            $("button.next").prop("disabled",false);
+        }
+        if(exist == 'false'){
+            $("button.next").html("Product doesn't exist");
             $("button.next").prop("disabled",true);
         }else{
             $("button.next").html('Next');

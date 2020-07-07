@@ -43,7 +43,7 @@
                     <%if(product.sizeOption == 'oneSize'){%>
                         <p>
                             <span class="card-text text-muted mb-0">Amount</span>
-                            <input type="number" name="size[F]" class="oneSize" value="<%=product.size['F']%>" required>
+                            <input type="number" name="size[F]" class="oneSize" value="<%=product.size['F']%>" min=0 required>
                         </p>
                     <%}else{%>
                         <%if(product.sizeOption == 'cloth'){%>        

@@ -1,16 +1,12 @@
 const express = require("express"),
       app = express(),
-      {google} = require('googleapis');
+      {google} = require('googleapis'),
+      request = require("request"),
+      bodyParser = require("body-parser");
 
-function onSignIn(googleUser) {
-var profile = googleUser.getBasicProfile();
-console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
-console.log('Name: ' + profile.getName());
-console.log('Image URL: ' + profile.getImageUrl());
-console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
-}
 
 app.set("view engine","ejs");
+app.use(bodyParser.json());
 // app.use(bodyParser.urlencoded({extended:true}));
 
 const YOUR_CLIENT_ID = '941696510446-2444frjglrq8i4laa2dak4fkv20ave0t.apps.googleusercontent.com',
@@ -29,11 +25,20 @@ const oauth2Client = new google.auth.OAuth2(
     YOUR_REDIRECT_URL
   );
 
-
 const url = oauth2Client.generateAuthUrl({
     access_type: 'offline',
     scope: scopes
 });
+
+oauth2Client.on('tokens', (tokens) => {
+    if (tokens.refresh_token) {
+      // store the refresh_token in my database!
+      console.log(tokens.refresh_token);
+    }
+    console.log(tokens.access_token);
+  });
+
+
 
 app.get("/",(req,res)=>{
     res.render("test/index",{url:url});
@@ -42,25 +47,38 @@ app.get("/login",(req,res)=>{
     res.render("test/googleOauth",{url:url});
 });
 
-// app.post("/login",(req,res)=>{
-//     res.send('HI');
-// });
 
-// app.get("/policy",(req,res)=>{
-//     res.render("test/policy");
-// });
-app.get("/authenticated",(req,res)=>{
-    code = req.query.code;
-    const {tokens} = await oauth2Client.getToken(code,(err,token)=>{
-        if(err){
-            res.send(err);
-        }else{
-            oauth2Client.setCredentials(tokens);
-        }
-    })
-    
-    // res.send(code);
+app.get("/policy",(req,res)=>{
+    res.render("test/policy");
 });
+
+app.get("/authenticated",async(req,res)=>{
+    const code = req.query.code;
+    const {tokens} = await oauth2Client.getToken(code);
+    oauth2Client.setCredentials(tokens);
+    console.log(tokens);
+    request(`https://oauth2.googleapis.com/tokeninfo?id_token=${tokens.id_token}`,(err,response,body)=>{
+            if(err){
+                console.log(err);
+            }
+            else{
+                res.send(body);
+            }
+    });
+});
+
+app.post("/authenticated",(req,res)=>{
+    console.log(req.body);
+    res.send("HI");
+    // request(`https://oauth2.googleapis.com/tokeninfo?id_token=${tokens.id_token}`,(err,response,body)=>{
+    //         if(err){
+    //             console.log(err);
+    //         }
+    //         else{
+    //             res.send(body);
+    //         }
+    // });
+})
 
 
 app.listen(process.env.PORT || 3000,()=>{
