@@ -13,7 +13,10 @@ const express = require("express"),
         redis = require('redis'),
         redisClient = redis.createClient(),
         redisStore = require('connect-redis')(session),
-        methodOverride = require("method-override");
+        {google} = require('googleapis'),
+        request = require("request"),
+        methodOverride = require("method-override"),
+        dotenv = require('dotenv').config();
 // const exitHook = require('exit-hook');
 // const e = require("express");
 // const { parse } = require("path");
@@ -22,6 +25,25 @@ const { ObjectId } = require("mongodb");
 // exitHook(() => {
 //   console.log('Exiting');
 // });
+
+//Load .env
+const CLIENT_ID = process.env.GOOGLE_OAUTH_CLIENTID,
+      CLIENT_SECRET = process.env.GOOGLE_OAUTH_SECRET,
+      REDIRECT_URL = process.env.GOOGLE_OAUTH_REDIRECTURL;
+
+// Setup scope for google oauth
+const scopes = [
+  'https://www.googleapis.com/auth/userinfo.email',
+  'https://www.googleapis.com/auth/userinfo.profile',
+  'openid'
+];
+
+const oauth2Client = new google.auth.OAuth2(
+  CLIENT_ID,
+  CLIENT_SECRET,
+  REDIRECT_URL
+);
+
 
 // db connection
 const url = 'mongodb://localhost:27017';
@@ -254,140 +276,35 @@ app.get("/login",(req,res)=>{
 });
 
 app.get("/register",(req,res)=>{
-  res.render("user/register-option");
+  const consentUrl = oauth2Client.generateAuthUrl({
+    access_type: 'offline',
+    scope: scopes
+  });
+  res.render("user/register-option",{consentUrl:consentUrl});
 });
 
-app.get("/register/new",(req,res)=>{
-  res.render("user/register");
-});
-
-app.post("/cart",(req,res)=>{
-  let input = req.body.cart;
-  let returnUrl = "/products/"+input.productId;
-  input.net = (input.price)*(input.amount);
-   // if user exists(login)=> update db(1 product)
-   if(req.session.user!=null){
-    db.users.findOneAndUpdate({email:req.session.user.email},{$push:{cart:input}},{returnOriginal:false})
-    .then((updateResult)=>{
-      // set session data into redis-store
-      let updatedUser = updateResult.value;
-      req.session.user = updatedUser;
-      res.redirect("/products"); 
-    })
-    .catch(err=>console.log(err));
-  }else{
-    // if user doesn't exists=>redirect(has been handled in middleware)
-    res.redirect("/products"); 
-  }
-  
-});
-
-// Delete cart
-app.delete("/cart",(req,res)=>{
-  deleteIndex = req.body.deleteIndex;
-  if(req.session.user == null){
-    req.session.cart.splice(deleteIndex,1);
-    res.redirect("/products");
-  }else{
-    var removed = req.session.user.cart.splice(deleteIndex,1);
-    // console.log(removed);
-    db.users.findOneAndUpdate({email:req.session.user.email},{$pull:{cart:removed[0]}},(err,result)=>{
-      if(err){
+app.get("/register/new",async(req,res)=>{
+  let code = req.query.code;
+  const {tokens} = await oauth2Client.getToken(code);
+  oauth2Client.setCredentials(tokens);
+  // console.log(tokens);
+  request(`https://oauth2.googleapis.com/tokeninfo?id_token=${tokens.id_token}`,(err,response,body)=>{
+    if(err){
         console.log(err);
-      }
-      else{
-        res.redirect("/products");
-      }
-    });
-  }
-});
-app.delete("/cart/clear",(req,res)=>{
-  if(req.session.user != null){
-    // If user has loginned
-    db.users.findOneAndUpdate({email:req.session.user.email},{$set:{cart:[]}},{returnOriginal:false})
-    .then((updateResult)=>{
-      req.session.user.cart = null;
-      res.redirect("/products");
-    })
-    .catch(err=>console.log(err));
-  }else{
-    req.session.cart = null;
-    res.redirect("/products");
-  }
-  
-  
-  // res.send("Clear all");
-})
-
-// Purchase
-app.get("/purchase",(req,res)=>{
-  var netBeforeShipping = 0;
-  if(req.session.user==undefined ||req.session.user==null){
-    res.redirect("/login");
-  }else{
-    var promises = [];
-    req.session.user.cart.forEach((cartProduct)=>{
-      promises.push(
-        db.products.findOne({productId:cartProduct.productId})
-        .then((foundProduct)=>{  
-          if(foundProduct!=null){
-            cartProduct.exist = true;
-            let cartSize = cartProduct.size;
-            // console.log(foundProduct.size[cartSize]);
-            let inventory = foundProduct.size[cartSize];
-            if(inventory<cartProduct.amount){
-              cartProduct.outOfStock = true;
-            }else{
-              cartProduct.outOfStock = false;
-              netBeforeShipping=netBeforeShipping+cartProduct.net;
-            }
-          }else{
-            cartProduct.exist = false;
-          }
-        })
-        .catch(err=>console.log(err))
-      );
-    });
-    Promise.all(promises).then(()=>{
-      req.session.user.netBeforeShipping = netBeforeShipping;
-      res.render("purchase/cart");
-    })
-  }
+        res.redirect("/user/register")
+    }
+    else{
+      console.log(body.email);
+      console.log(body.given_name);
+      console.log(body.family_name);
+      res.send(body);
+    }
+  });
+  // res.render("user/register");
 });
 
-app.get("/purchase/info",(req,res)=>{
-  if(req.session.user==undefined ||req.session.user==null){
-    res.redirect("/login");
-  }else{
-    res.render("purchase/info");
-  }
-});
-
-app.post("/purchase/success",(req,res)=>{
-  if(req.session.user==undefined ||req.session.user==null){
-    res.redirect("/login");
-  }else{
-    let input = req.body;
-    orderProcess(input,req,db);
-    
-    // Validate order, Insert order, clear cart
-    test(orderSchema,input)
-    .then((testResult)=>{
-      return db.orders.insertOne(input);
-    })
-    .then((insertResult)=>{
-      let queryId = ObjectId(`${input.user_id}`);
-      return db.users.updateOne({_id:queryId},{$unset:{cart:""}});
-    })
-    .then((updateResult)=>{
-      req.session.user.cart = null;
-      res.render("purchase/success");
-    })
-    .catch((err)=>{
-      console.log(err);
-      res.render("failure");
-    });
-  }
+app.get("/policy",(req,res)=>{
+  res.render("user/policy");
 });
 
 app.post("/login",(req,res)=>{
@@ -510,6 +427,136 @@ app.get("/logout",(req,res)=>{
   req.session.user = null;
   res.redirect("/products");
 });
+
+
+app.post("/cart",(req,res)=>{
+  let input = req.body.cart;
+  let returnUrl = "/products/"+input.productId;
+  input.net = (input.price)*(input.amount);
+   // if user exists(login)=> update db(1 product)
+   if(req.session.user!=null){
+    db.users.findOneAndUpdate({email:req.session.user.email},{$push:{cart:input}},{returnOriginal:false})
+    .then((updateResult)=>{
+      // set session data into redis-store
+      let updatedUser = updateResult.value;
+      req.session.user = updatedUser;
+      res.redirect("/products"); 
+    })
+    .catch(err=>console.log(err));
+  }else{
+    // if user doesn't exists=>redirect(has been handled in middleware)
+    res.redirect("/products"); 
+  }
+  
+});
+
+// Delete cart
+app.delete("/cart",(req,res)=>{
+  deleteIndex = req.body.deleteIndex;
+  if(req.session.user == null){
+    req.session.cart.splice(deleteIndex,1);
+    res.redirect("/products");
+  }else{
+    var removed = req.session.user.cart.splice(deleteIndex,1);
+    // console.log(removed);
+    db.users.findOneAndUpdate({email:req.session.user.email},{$pull:{cart:removed[0]}},(err,result)=>{
+      if(err){
+        console.log(err);
+      }
+      else{
+        res.redirect("/products");
+      }
+    });
+  }
+});
+app.delete("/cart/clear",(req,res)=>{
+  if(req.session.user != null){
+    // If user has loginned
+    db.users.findOneAndUpdate({email:req.session.user.email},{$set:{cart:[]}},{returnOriginal:false})
+    .then((updateResult)=>{
+      req.session.user.cart = null;
+      res.redirect("/products");
+    })
+    .catch(err=>console.log(err));
+  }else{
+    req.session.cart = null;
+    res.redirect("/products");
+  }
+  // res.send("Clear all");
+})
+
+// Purchase
+app.get("/purchase",(req,res)=>{
+  var netBeforeShipping = 0;
+  if(req.session.user==undefined ||req.session.user==null){
+    res.redirect("/login");
+  }else{
+    var promises = [];
+    req.session.user.cart.forEach((cartProduct)=>{
+      promises.push(
+        db.products.findOne({productId:cartProduct.productId})
+        .then((foundProduct)=>{  
+          if(foundProduct!=null){
+            cartProduct.exist = true;
+            let cartSize = cartProduct.size;
+            // console.log(foundProduct.size[cartSize]);
+            let inventory = foundProduct.size[cartSize];
+            if(inventory<cartProduct.amount){
+              cartProduct.outOfStock = true;
+            }else{
+              cartProduct.outOfStock = false;
+              netBeforeShipping=netBeforeShipping+cartProduct.net;
+            }
+          }else{
+            cartProduct.exist = false;
+          }
+        })
+        .catch(err=>console.log(err))
+      );
+    });
+    Promise.all(promises).then(()=>{
+      req.session.user.netBeforeShipping = netBeforeShipping;
+      res.render("purchase/cart");
+    })
+  }
+});
+
+app.get("/purchase/info",(req,res)=>{
+  if(req.session.user==undefined ||req.session.user==null){
+    res.redirect("/login");
+  }else{
+    res.render("purchase/info");
+  }
+});
+
+app.post("/purchase/success",(req,res)=>{
+  if(req.session.user==undefined ||req.session.user==null){
+    res.redirect("/login");
+  }else{
+    let input = req.body;
+    orderProcess(input,req,db);
+    
+    // Validate order, Insert order, clear cart
+    test(orderSchema,input)
+    .then((testResult)=>{
+      return db.orders.insertOne(input);
+    })
+    .then((insertResult)=>{
+      let queryId = ObjectId(`${input.user_id}`);
+      return db.users.updateOne({_id:queryId},{$unset:{cart:""}});
+    })
+    .then((updateResult)=>{
+      req.session.user.cart = null;
+      res.render("purchase/success");
+    })
+    .catch((err)=>{
+      console.log(err);
+      res.render("failure");
+    });
+  }
+});
+
+
 // ===============================
 // Admin Route
 // ===============================
