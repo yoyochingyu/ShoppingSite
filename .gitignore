@@ -1,7 +1,7 @@
 node_modules/
 previousSrc/
 Picture/
-test/
+views/test/
 .env
 dump.rdb
 0501.md
