@@ -1,13 +1,8 @@
 const express = require("express"),
         router = express.Router();
-
-// Landing Page
-router.get("/",(req,res)=>{
-    res.render("landing");
-  });
   
 // Index Route
-router.get("/products",(req,res)=>{
+router.get("/",(req,res)=>{
     let db = req.app.db;
     db.products.find({}).toArray() 
     .then((products)=>{
@@ -20,7 +15,7 @@ router.get("/products",(req,res)=>{
 });
 
 // Show Route
-router.get("/products/:id",(req,res)=>{
+router.get("/:id",(req,res)=>{
     let db = req.app.db;
     let productId = req.params.id;
     db.products.findOne({productId:productId})

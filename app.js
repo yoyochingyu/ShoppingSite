@@ -18,7 +18,7 @@ const express = require("express"),
       methodOverride = require("method-override"),
       dotenv = require('dotenv').config();
 
-const indexRoutes = require("./routes/index"),
+const productRoutes = require("./routes/product"),
       userRoutes  = require("./routes/user"),
       adminRoutes = require("./routes/admin");
 
@@ -250,7 +250,12 @@ app.use("/cart",(req,res,next)=>{
 
 app.db = db;
 
-app.use(indexRoutes);
+// Landing Page
+app.get("/",(req,res)=>{
+  res.render("landing");
+});
+
+app.use("/products",productRoutes);
 
 // ====================
 // User Route
