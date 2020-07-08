@@ -30,28 +30,18 @@ const consentUrl = oauth2Client.generateAuthUrl({
   scope: scopes
 });
 
+/********************** */
+/** Routes */
+/********************** */
 
-router.get("/login",(req,res)=>{
-    res.render("user/login",{consentUrl:consentUrl});
-});
-
-router.get("/register",(req,res)=>{
-    res.render("user/register-option",{consentUrl:consentUrl});
-});
-
-router.get("/register/new",async(req,res)=>{
-    let db = req.app.db;
-    // New User form
-    if(Object.keys(req.query).length==0){
-        res.render("user/register",{userInfo:null});
-    }else{
-        // Google Oauth login
-        authenticateGoogle(req,res,db); 
-    }
-});
-
+// Show policy
 router.get("/policy",(req,res)=>{
     res.render("user/policy");
+});
+
+// Login Route
+router.get("/login",(req,res)=>{
+    res.render("user/login",{consentUrl:consentUrl});
 });
 
 router.post("/login",(req,res)=>{
@@ -104,6 +94,22 @@ router.post("/login",(req,res)=>{
     checkUser(inputEmail,inputPassword);
 });
 
+// Register route
+router.get("/register",(req,res)=>{
+    res.render("user/register-option",{consentUrl:consentUrl});
+});
+
+router.get("/register/new",async(req,res)=>{
+    let db = req.app.db;
+    // New User form
+    if(Object.keys(req.query).length==0){
+        res.render("user/register",{userInfo:null});
+    }else{
+        // Google Oauth login
+        authenticateGoogle(req,res,db); 
+    }
+});
+
 router.post("/register",(req,res)=>{
     let db = req.app.db;    
     var inputUser = req.body;
@@ -128,6 +134,7 @@ router.post("/register",(req,res)=>{
     });
 });
 
+// Show Profile
 router.get("/profile",(req,res)=>{
     let db = req.app.db;
     var wishlistFixed = {productName:"A&F Stretch Denim Jacket",productId:"KSV7891356248",description:"Comfortable denim jacket in new stretch fabric and classic blue wash. Features logo shanks, pockets throughout and logo leather patch at back hem.",img:"https://drive.google.com/uc?export=download&id=1d9rQ2D3TR-e2JgrE1shLe_5L8msWkZVt",price:110,createdBy:"2013-11-18"};
@@ -171,6 +178,7 @@ router.put("/profile",(req,res)=>{
     }
 });
 
+// Delete account
 router.delete("/profile",(req,res)=>{
     let db = req.app.db;
     db.users.deleteOne({firstName:req.session.user.firstName})
@@ -185,12 +193,13 @@ router.delete("/profile",(req,res)=>{
     });
 });
 
+// Logout
 router.get("/logout",(req,res)=>{
   req.session.user = null;
   res.redirect("/products");
 });
 
-
+// Add to cart
 router.post("/cart",(req,res)=>{
     let db = req.app.db;
     let input = req.body.cart;
@@ -212,7 +221,7 @@ router.post("/cart",(req,res)=>{
     }
 });
 
-// Delete cart
+// Delete specific cart product
 router.delete("/cart",(req,res)=>{
     let db = req.app.db;
   deleteIndex = req.body.deleteIndex;
@@ -234,6 +243,7 @@ router.delete("/cart",(req,res)=>{
   }
 });
 
+// Delete all cart products
 router.delete("/cart/clear",(req,res)=>{
     let db = req.app.db;
   if(req.session.user != null){
