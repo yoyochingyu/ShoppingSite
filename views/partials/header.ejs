@@ -3,6 +3,8 @@
         <head>
             <title>Pickup</title>
             <link rel="shortcut icon" type="image/x-icon" href="https://shoppingsitepickup.s3.us-east-2.amazonaws.com/logo.ico">
+            <!-- Google singin button -->
+            <meta name="google-signin-client_id" content="<%=CLIENT_ID%>">
             <!-- css -->
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha256-L/W5Wfqfa0sdBNIKN9cG6QA5F2qx4qICmU2VgLruv9Y=" crossorigin="anonymous" />
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" integrity="sha256-h20CPZ0QyXlBuAw7A+KluUYx/3pK+c7lYEpqLTlxjYQ=" crossorigin="anonymous" />
@@ -12,6 +14,7 @@
             <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
             <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,400;1,400;1,600;1,700&display=swap" rel="stylesheet">
             <link rel = "stylesheet" href = '/stylesheets/style.css' >
+            <script src="https://apis.google.com/js/platform.js" async defer></script>
         </head>
 
         <body>
@@ -45,11 +48,11 @@
                                     </div>
                                 <%})%>
                                 <hr>
-                                <form action="/purchase" method="GET" style="display: inline;">
-                                    <button type="submit" class="btn btn-primary btn-md mb-3">Purchase</button>
+                                <form action="/purchase" method="GET" style="display: inline;"class="text-center">
+                                    <button type="submit" class="btn btn-outline-primary mb-2" style="width:80%">Purchase</button>
                                 </form>
-                                <form action = "/cart/clear?_method=DELETE" method="POST" style="display: inline;">
-                                    <button type="submit" class="btn btn-danger btn-md mb-3">Delete All</button>
+                                <form action = "/cart/clear?_method=DELETE" method="POST" style="display: inline" class="text-center">
+                                    <button type="submit" class="btn btn-outline-danger mb-2" style="width:80%">Delete All</button>
                                 </form>
                             <%}%>
                         <%}else{%>

@@ -44,7 +44,7 @@
                     <div class="form-group col-md-6">
                         <label for="email">Email</label>
                         <%if(userInfo){%>
-                            <input type="email" class="form-control" id="email" name="email" value = "<%=userInfo.email%>" required>
+                            <input type="email" class="form-control" id="email" name="email" value = "<%=userInfo.email%>" readonly="readonly" required>
                         <%}else{%>
                             <input type="email" class="form-control" id="email" name="email" required>
                         <%}%>
@@ -60,7 +60,7 @@
                             <input type="text" class="form-control" id="streetAddress" placeholder="1234 Main St" name="address[streetAddress]" required>
                         </div>
                         <div class="form-group col-md-6">
-                            <label for="number">Number</label>
+                            <label for="number">Number (10 Numbers)</label>
                             <input type="text" class="form-control" id="number" placeholder="0920294010" name="number" required>
                         </div>
                     </div>
@@ -68,15 +68,15 @@
                 <div class="form-row">
                     <div class="form-group col-md-6">
                         <label for="city">City</label>
-                        <input type="text" class="form-control" id="city" name="address[city]" required>
+                        <input type="text" class="form-control" id="city" name="address[city]" placeholder="Taipei" required>
                     </div>
                     <div class="form-group col-md-4">
                         <label for="state">State</label>
-                        <input type="text" class="form-control" id="state" name="address[state]" required>
+                        <input type="text" class="form-control" id="state" name="address[state]" placeholder="Taiwan" required>
                     </div>
                     <div class="form-group col-md-2">
-                        <label for="zip">Zip</label>
-                        <input type="text" class="form-control" id="zip" name="address[zip]" required>
+                        <label for="zip">Zip (3 numbers)</label>
+                        <input type="text" class="form-control" id="zip" name="address[zip]" placeholder="105" required>
                     </div>
                 </div>
                 <div class="form-group">
