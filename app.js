@@ -1,6 +1,6 @@
 const express = require("express"),
       app        = express();
-      // seed = require("./seed.js"), 
+      seedDB = require("./seed.js"), 
       MongoClient = require('mongodb').MongoClient,
       assert = require('assert'),
       productSchema = require("./lib/schemas/product.json"),
@@ -111,7 +111,9 @@ MongoClient.connect(url,{ useNewUrlParser: true, useUnifiedTopology: true },(err
   db.orders = db.collection('orders');
   db.admins = db.collection('admins');
   
+  
   app.db = db;
+  seedDB(db);
   app.use("/",productRoutes);
   app.use("/",userRoutes);
   app.use("/",adminRoutes);
