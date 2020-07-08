@@ -253,79 +253,82 @@ router.delete("/cart/clear",(req,res)=>{
 // Purchase Route:Step 1 - Confirm cart
 router.get("/purchase",(req,res)=>{
     let db = req.app.db;
-  var netBeforeShipping = 0;
-  if(req.session.user==undefined ||req.session.user==null){
-    res.redirect("/login");
-  }else{
-    var promises = [];
-    req.session.user.cart.forEach((cartProduct)=>{
-      promises.push(
-        db.products.findOne({productId:cartProduct.productId})
-        .then((foundProduct)=>{  
-          if(foundProduct!=null){
-            cartProduct.exist = true;
-            let cartSize = cartProduct.size;
-            // console.log(foundProduct.size[cartSize]);
-            let inventory = foundProduct.size[cartSize];
-            if(inventory<cartProduct.amount){
-              cartProduct.outOfStock = true;
+    var netBeforeShipping = 0;
+    if(req.session.user==undefined ||req.session.user==null){
+        res.redirect("/login");
+    }else{
+        var promises = [];
+        req.session.user.cart.forEach((cartProduct)=>{
+        promises.push(
+            db.products.findOne({productId:cartProduct.productId})
+            .then((foundProduct)=>{  
+            if(foundProduct!=null){
+                cartProduct.exist = true;
+                let cartSize = cartProduct.size;
+                // console.log(foundProduct.size[cartSize]);
+                let inventory = foundProduct.size[cartSize];
+                if(inventory<cartProduct.amount){
+                cartProduct.outOfStock = true;
+                }else{
+                cartProduct.outOfStock = false;
+                netBeforeShipping=netBeforeShipping+cartProduct.net;
+                }
             }else{
-              cartProduct.outOfStock = false;
-              netBeforeShipping=netBeforeShipping+cartProduct.net;
+                cartProduct.exist = false;
             }
-          }else{
-            cartProduct.exist = false;
-          }
+            })
+            .catch(err=>console.log(err))
+        );
+        });
+        Promise.all(promises).then(()=>{
+        req.session.user.netBeforeShipping = netBeforeShipping;
+        res.render("purchase/cart");
         })
-        .catch(err=>console.log(err))
-      );
-    });
-    Promise.all(promises).then(()=>{
-      req.session.user.netBeforeShipping = netBeforeShipping;
-      res.render("purchase/cart");
-    })
-  }
+    }
 });
 
 // Purchase Route:Step 2 - Confirm Info
 router.get("/purchase/info",(req,res)=>{
-  if(req.session.user==undefined ||req.session.user==null){
-    res.redirect("/login");
-  }else{
-    res.render("purchase/info");
-  }
+    if(req.session.user==undefined ||req.session.user==null){
+        res.redirect("/login");
+    }else{
+        res.render("purchase/info");
+    }
 });
 
 // Purchase Route:Step 3 - Order placed
 router.post("/purchase/success",(req,res)=>{
     let db = req.app.db;
-  if(req.session.user==undefined ||req.session.user==null){
-    res.redirect("/login");
-  }else{
-    let input = req.body;
-    orderProcess(input,req,db);
-    
-    // Validate order, Insert order, clear cart
-    test(orderSchema,input)
-    .then((testResult)=>{
-      return db.orders.insertOne(input);
-    })
-    .then((insertResult)=>{
-      let queryId = ObjectId(`${input.user_id}`);
-      return db.users.updateOne({_id:queryId},{$unset:{cart:""}});
-    })
-    .then((updateResult)=>{
-      req.session.user.cart = null;
-      res.render("purchase/success");
-    })
-    .catch((err)=>{
-      console.log(err);
-      res.render("failure");
-    });
+    if(req.session.user==undefined ||req.session.user==null){
+        res.redirect("/login");
+    }else{
+        let input = req.body;
+        orderProcess(input,req,db);
+        
+        // Validate order, Insert order, clear cart
+        test(orderSchema,input)
+        .then((testResult)=>{
+            return db.orders.insertOne(input);
+        })
+        .then((insertResult)=>{
+            let queryId = ObjectId(`${input.user_id}`);
+            return db.users.updateOne({_id:queryId},{$unset:{cart:""}});
+        })
+        .then((updateResult)=>{
+            req.session.user.cart = null;
+            res.render("purchase/success");
+        })
+        .catch((err)=>{
+            console.log(err);
+            res.render("failure");
+        });
   }
 });
 
-/**Function */
+/** ******** */
+/** Function */
+/** ******** */
+
 // Google authenticate
 async function authenticateGoogle(req,res,db){
     let code = req.query.code;
