@@ -1,5 +1,0 @@
-/login
-<login form>
-<input  aria-describedby="emailHelp"> //email
-<div class="form-group form-check"> Remember me+forget
-
