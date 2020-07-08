@@ -3,7 +3,6 @@ const express = require("express"),
       // seed = require("./seed.js"), 
       MongoClient = require('mongodb').MongoClient,
       assert = require('assert'),
-      Ajv = require("ajv"),
       productSchema = require("./lib/schemas/product.json"),
       userSchema  = require("./lib/schemas/user.json"),
       orderSchema  = require("./lib/schemas/order.json"),
@@ -22,44 +21,13 @@ const productRoutes = require("./routes/product"),
       userRoutes  = require("./routes/user"),
       adminRoutes = require("./routes/admin");
 
-// const exitHook = require('exit-hook');
-// const e = require("express");
-// const { parse } = require("path");
-const { ObjectId } = require("mongodb");
-// const { promises } = require("fs");
-// exitHook(() => {
-//   console.log('Exiting');
-// });
-
-//Load .env
-const CLIENT_ID = process.env.GOOGLE_OAUTH_CLIENTID,
-      CLIENT_SECRET = process.env.GOOGLE_OAUTH_SECRET,
-      REDIRECT_URL = process.env.GOOGLE_OAUTH_REDIRECTURL;
-
-// Setup scope for google oauth
-const scopes = [
-  'https://www.googleapis.com/auth/userinfo.email',
-  'https://www.googleapis.com/auth/userinfo.profile',
-  'openid'
-];
-
-const oauth2Client = new google.auth.OAuth2(
-  CLIENT_ID,
-  CLIENT_SECRET,
-  REDIRECT_URL
-);
-
-const consentUrl = oauth2Client.generateAuthUrl({
-  access_type: 'offline',
-  scope: scopes
-});
 
 
 // db connection
 const url = 'mongodb://localhost:27017';
 const dbName = 'shoppingSite';
 // Setup ajv
-var ajv = new Ajv({allErrors:true}); // Create Ajv instance(returns an obj)
+
 
 // Testing with ajv
 function test(schema,data){		
@@ -97,68 +65,9 @@ function parsing(updated){
   return updated;
 }
 
-// Process order
-function orderProcess(input,req,db){
-  input.user_id = req.session.user._id;
-  input.shippingInfo.address = input.address;
-  delete input.address;
-  input.purchaseTime =new Date().getTime();
-  if(input.shippingOption=='express'){
-    input.expectedDeliveryDate =input.purchaseTime+259200;
-  }else{
-    input.expectedDeliveryDate =input.purchaseTime+1209600;
-  }
-  input.netBeforeShipping = req.session.user.netBeforeShipping;
-  input.products = req.session.user.cart;
-  input.overall = parseInt(input.overall);
-  input.shipping = parseInt(input.shipping);
-  input.status = 'Processing';
-  input.products.forEach((product)=>{
-    parsing(product);
-    product.amount = parseInt(product.amount);
-    delete product.img;
 
-    // Decrease Inventory
-    let fieldName = `size.${product.size}`;
-    let update = {"$inc":{}};
-    update["$inc"][fieldName]=(-1)*(product.amount);
-    db.products.updateOne({productId:product.productId},update)
-    .then((updateResult)=>{
-      console.log(updateResult.result);
-    })
-    .catch((err)=>{
-      console.log(err);
-      res.render("failure");
-    });
-  });
 
-}
 
-async function authenticateGoogle(req,res,db){
-  let code = req.query.code;
-  let {tokens} = await oauth2Client.getToken(code);
-  oauth2Client.setCredentials(tokens);
-  request(`https://oauth2.googleapis.com/tokeninfo?id_token=${tokens.id_token}`,(err,response,body)=>{
-    if(err){
-      console.log(err);
-      res.redirect("/register/new");
-    }
-    else{
-      let Jbody = JSON.parse(body);
-      db.users.findOne({email:Jbody.email})
-      .then((foundResult)=>{
-        if(foundResult==null){
-          let userInfo = {firstName:Jbody.given_name,lastName:Jbody.family_name,email:Jbody.email};
-          res.render("user/register",{userInfo:userInfo});    
-        }else{
-          req.session.user = foundResult;
-          res.redirect("/products");
-        }
-      })
-      .catch(err=>console.log(err));
-    }
-  }); 
-}
 
 MongoClient.connect(url,{ useNewUrlParser: true, useUnifiedTopology: true },(err,client)=>{
   assert.equal(null,err);
@@ -228,7 +137,6 @@ app.use((req,res,next)=>{
     res.locals.cart = req.session.cart;
   }
 }   
-  res.locals.CLIENT_ID = CLIENT_ID;
   next();
 });
 
@@ -255,280 +163,8 @@ app.get("/",(req,res)=>{
   res.render("landing");
 });
 
-app.use("/products",productRoutes);
-
-// ====================
-// User Route
-// ====================
-app.get("/login",(req,res)=>{
-    res.render("user/login",{consentUrl:consentUrl});
-});
-
-app.get("/register",(req,res)=>{
-  res.render("user/register-option",{consentUrl:consentUrl});
-});
-
-app.get("/register/new",async(req,res)=>{
-  if(Object.keys(req.query).length==0){
-    // console.log("NEW USER");
-    res.render("user/register",{userInfo:null});
-  }else{
-    authenticateGoogle(req,res,db); //function call
-  }
-});
-
-app.get("/policy",(req,res)=>{
-  res.render("user/policy");
-});
-
-app.post("/login",(req,res)=>{
-  let inputEmail = req.body.inputEmail;
-  let inputPassword = req.body.inputPassword;
-  
-  // Define checkUser function
-  async function checkUser(inputEmail,inputPassword){
-    db.users.findOne({email:inputEmail})
-    .then(async(foundUser)=>{
-      if(foundUser === null){
-        res.send("User not found!");
-        // res.redirect("/login");
-      }
-      else{
-        let match = await bcrypt.compare(inputPassword,foundUser.password);
-        // console.log("isUser:"+match);
-        if(match){
-          // res.send("Login successfully!");
-
-          // if there's something inside cart =>update cart into user db
-          if(req.session.cart!=undefined && req.session.cart!=null){
-            db.users.findOneAndUpdate({email:inputEmail},{$push:{cart:{$each:req.session.cart}}},{returnOriginal:false})
-            .then((updateResult)=>{
-              req.session.user = updateResult.value;  //set session data 
-              req.session.cart=undefined;
-              res.redirect("/products");
-            })
-            .catch(err=>console.log(err));
-          }
-          // if there's nothing inside cart : normal login
-          else{
-            req.session.user=foundUser;
-            res.redirect("/products");
-          }
-        }
-        else{
-          res.send("Wrong Password!");
-        }
-      }
-    })
-    .catch((err)=>{
-      console.log(err);
-    });
-  }
-  checkUser(inputEmail,inputPassword);
-});
-
-app.post("/register",(req,res)=>{
-  var inputUser = req.body;
-  test(userSchema,inputUser)
-  .then(()=>{
-    console.log("Register Validation succeeds!");
-     // Hash password
-     let saltRounds = 12;
-    return bcrypt.hash(inputUser.password,saltRounds);
-  })
-  .then((hash)=>{
-    inputUser.password = hash;
-    return db.users.insertOne(inputUser);
-  })
-  .then((result)=>{
-    //  console.log(result.ops);
-  res.redirect("/products");
-  })
-  .catch((err)=>{
-    console.log(err);
-    res.redirect("/register"); //加flash，提示輸入錯誤
-  });
-});
-
-app.get("/profile",(req,res)=>{
-  var wishlistFixed = {productName:"A&F Stretch Denim Jacket",productId:"KSV7891356248",description:"Comfortable denim jacket in new stretch fabric and classic blue wash. Features logo shanks, pockets throughout and logo leather patch at back hem.",img:"https://drive.google.com/uc?export=download&id=1d9rQ2D3TR-e2JgrE1shLe_5L8msWkZVt",price:110,createdBy:"2013-11-18"};
-  // console.log(wishlistFixed);
-  if(req.session.user){
-    // The user has one/multiple order before
-    db.orders.find({user_id:req.session.user._id}).toArray()
-    .then((foundOrders)=>{
-      // console.log(foundOrders);
-      res.render("user/profile",{product:wishlistFixed,orders:foundOrders});
-    })
-    .catch(err=>console.log(err));
-  }
-  else{
-    res.redirect("/login");
-  }
-});
-
-// Update Profile
-app.put("/profile",(req,res)=>{
-  let inputUser = req.body;
-  test(userSchema,inputUser)
-  .then((testResult)=>{
-    return db.users.findOneAndReplace({email:inputUser.email},inputUser,{returnOriginal:false});
-  })
-  .then((updateResult)=>{
-    let updatedUser = updateResult.value;
-    req.session.user = updatedUser;
-    res.redirect("/profile");
-  })
-  .catch((err)=>{
-    console.log(err);
-    res.render("failure");
-  })
-});
-
-app.delete("/profile",(req,res)=>{
-  db.users.deleteOne({firstName:req.session.user.firstName})
-  .then((deleteResult)=>{
-    console.log(deleteResult.result);
-    req.session.user = null;
-    res.redirect("/products");
-  })
-  .catch(err=>console.log(err));
-  // res.send("DELETE!");
-});
-
-app.get("/logout",(req,res)=>{
-  req.session.user = null;
-  res.redirect("/products");
-});
-
-
-app.post("/cart",(req,res)=>{
-  let input = req.body.cart;
-  let returnUrl = "/products/"+input.productId;
-  input.net = (input.price)*(input.amount);
-   // if user exists(login)=> update db(1 product)
-   if(req.session.user!=null){
-    db.users.findOneAndUpdate({email:req.session.user.email},{$push:{cart:input}},{returnOriginal:false})
-    .then((updateResult)=>{
-      // set session data into redis-store
-      let updatedUser = updateResult.value;
-      req.session.user = updatedUser;
-      res.redirect("/products"); 
-    })
-    .catch(err=>console.log(err));
-  }else{
-    // if user doesn't exists=>redirect(has been handled in middleware)
-    res.redirect("/products"); 
-  }
-  
-});
-
-// Delete cart
-app.delete("/cart",(req,res)=>{
-  deleteIndex = req.body.deleteIndex;
-  if(req.session.user == null){
-    req.session.cart.splice(deleteIndex,1);
-    res.redirect("/products");
-  }else{
-    var removed = req.session.user.cart.splice(deleteIndex,1);
-    // console.log(removed);
-    db.users.findOneAndUpdate({email:req.session.user.email},{$pull:{cart:removed[0]}},(err,result)=>{
-      if(err){
-        console.log(err);
-      }
-      else{
-        res.redirect("/products");
-      }
-    });
-  }
-});
-app.delete("/cart/clear",(req,res)=>{
-  if(req.session.user != null){
-    // If user has loginned
-    db.users.findOneAndUpdate({email:req.session.user.email},{$set:{cart:[]}},{returnOriginal:false})
-    .then((updateResult)=>{
-      req.session.user.cart = null;
-      res.redirect("/products");
-    })
-    .catch(err=>console.log(err));
-  }else{
-    req.session.cart = null;
-    res.redirect("/products");
-  }
-  // res.send("Clear all");
-})
-
-// Purchase
-app.get("/purchase",(req,res)=>{
-  var netBeforeShipping = 0;
-  if(req.session.user==undefined ||req.session.user==null){
-    res.redirect("/login");
-  }else{
-    var promises = [];
-    req.session.user.cart.forEach((cartProduct)=>{
-      promises.push(
-        db.products.findOne({productId:cartProduct.productId})
-        .then((foundProduct)=>{  
-          if(foundProduct!=null){
-            cartProduct.exist = true;
-            let cartSize = cartProduct.size;
-            // console.log(foundProduct.size[cartSize]);
-            let inventory = foundProduct.size[cartSize];
-            if(inventory<cartProduct.amount){
-              cartProduct.outOfStock = true;
-            }else{
-              cartProduct.outOfStock = false;
-              netBeforeShipping=netBeforeShipping+cartProduct.net;
-            }
-          }else{
-            cartProduct.exist = false;
-          }
-        })
-        .catch(err=>console.log(err))
-      );
-    });
-    Promise.all(promises).then(()=>{
-      req.session.user.netBeforeShipping = netBeforeShipping;
-      res.render("purchase/cart");
-    })
-  }
-});
-
-app.get("/purchase/info",(req,res)=>{
-  if(req.session.user==undefined ||req.session.user==null){
-    res.redirect("/login");
-  }else{
-    res.render("purchase/info");
-  }
-});
-
-app.post("/purchase/success",(req,res)=>{
-  if(req.session.user==undefined ||req.session.user==null){
-    res.redirect("/login");
-  }else{
-    let input = req.body;
-    orderProcess(input,req,db);
-    
-    // Validate order, Insert order, clear cart
-    test(orderSchema,input)
-    .then((testResult)=>{
-      return db.orders.insertOne(input);
-    })
-    .then((insertResult)=>{
-      let queryId = ObjectId(`${input.user_id}`);
-      return db.users.updateOne({_id:queryId},{$unset:{cart:""}});
-    })
-    .then((updateResult)=>{
-      req.session.user.cart = null;
-      res.render("purchase/success");
-    })
-    .catch((err)=>{
-      console.log(err);
-      res.render("failure");
-    });
-  }
-});
-
+app.use("/",productRoutes);
+app.use("/",userRoutes);
 
 // ===============================
 // Admin Route

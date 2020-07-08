@@ -2,7 +2,7 @@ const express = require("express"),
         router = express.Router();
   
 // Index Route
-router.get("/",(req,res)=>{
+router.get("/products",(req,res)=>{
     let db = req.app.db;
     db.products.find({}).toArray() 
     .then((products)=>{
@@ -15,7 +15,7 @@ router.get("/",(req,res)=>{
 });
 
 // Show Route
-router.get("/:id",(req,res)=>{
+router.get("/products/:id",(req,res)=>{
     let db = req.app.db;
     let productId = req.params.id;
     db.products.findOne({productId:productId})
@@ -33,7 +33,7 @@ router.get("/:id",(req,res)=>{
 });
 
 // Search Route
-router.post("/search",(req,res)=>{
+router.post("/products/search",(req,res)=>{
     let db = req.app.db;
     search = req.body.search;
     db.products.find({$text:{$search:search}}).toArray()
@@ -47,7 +47,7 @@ router.post("/search",(req,res)=>{
 });
 
 // Category route
-router.get("/category/:detail",(req,res)=>{
+router.get("/products/category/:detail",(req,res)=>{
     let db = req.app.db;
     detail = req.params.detail;
     db.products.find({category:detail}).toArray()
