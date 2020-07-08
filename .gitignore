@@ -4,4 +4,8 @@ Picture/
 test/
 .env
 dump.rdb
-.gitignore
+0501.md
+developLog.md
+dev_progress.ods
+question.md
+test.js

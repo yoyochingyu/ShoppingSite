@@ -27,58 +27,44 @@ const productRoutes = require("./routes/product"),
 const url = 'mongodb://localhost:27017';
 const dbName = 'shoppingSite';
 
+// Redis connection
+redisClient.on('connect',()=>{
+  console.log('Redis server has started!');
+});
+redisClient.on("error",(err)=>{
+  console.log(err);
+});
 
-MongoClient.connect(url,{ useNewUrlParser: true, useUnifiedTopology: true },(err,client)=>{
-  assert.equal(null,err);
-  console.log("Connected successfully to Mongodb");
-  const db = client.db(dbName);
-  db.products = db.collection('products');
-  db.users = db.collection('users');
-  db.orders = db.collection('orders');
-  db.admins = db.collection('admins');
-
-
-  // APP CONFIG
+// APP CONFIG
 app.set("view engine","ejs");
 app.use(express.static(__dirname + "/public"));
 app.use(methodOverride('_method'));
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());
-  // Redis connection
-  redisClient.on('connect',()=>{
-    console.log('Redis server has started!');
-  })
-  redisClient.on("error",(err)=>{
-    console.log(err);
-  });
 
-  // Session settings
-  app.use(session({
-    cookie:{maxAge:1000*60*60*24*3}, // 3 days
-    name:'shoppingSiteCookie', 
-    resave:false,
-    saveUninitialized:false,
-    secret:'Odessy is the best game in the world!',
-    store: new redisStore({client:redisClient})
-  }));
+// Session settings
+app.use(session({
+  cookie:{maxAge:1000*60*60*24*3}, // 3 days
+  name:'shoppingSiteCookie', 
+  resave:false,
+  saveUninitialized:false,
+  secret:'Odessy is the best game in the world!',
+  store: new redisStore({client:redisClient})
+}));
 
 // User Session(every route)
 app.use((req,res,next)=>{
-  
   // if there's no user field in session data(first time visits/session data expires)=>set user field to null, so that in "views" we can identify login/logout with null/value
   if(req.session.user == undefined){
     req.session.user = null; 
   }
-   // if there's no cart field in session data(first time visits/session data expires)=>set cart field to null, so that in "views" we can use forEach to render products
+  // if there's no cart field in session data(first time visits/session data expires)=>set cart field to null, so that in "views" we can use forEach to render products
   if(req.session.cart==undefined){
     req.session.cart=null;
   }
-
   if(req.session.admin==undefined){
     req.session.admin=null;
   }
-
-
   // pass user/cart session to "views"
   res.locals.user = req.session.user;
   res.locals.cart=req.session.cart;
@@ -95,7 +81,7 @@ app.use((req,res,next)=>{
   if(req.session.cart!=undefined && req.session.cart!=null){
     res.locals.cart = req.session.cart;
   }
-}   
+  }   
   next();
 });
 
@@ -115,26 +101,35 @@ app.use("/cart",(req,res,next)=>{
   next();
 });
 
-app.db = db;
 
-// Landing Page
-app.get("/",(req,res)=>{
-  res.render("landing");
-});
+MongoClient.connect(url,{ useNewUrlParser: true, useUnifiedTopology: true },(err,client)=>{
+  assert.equal(null,err);
+  console.log("Connected successfully to Mongodb");
+  const db = client.db(dbName);
+  db.products = db.collection('products');
+  db.users = db.collection('users');
+  db.orders = db.collection('orders');
+  db.admins = db.collection('admins');
+  
+  app.db = db;
+  app.use("/",productRoutes);
+  app.use("/",userRoutes);
+  app.use("/",adminRoutes);
 
-app.use("/",productRoutes);
-app.use("/",userRoutes);
-app.use("/",adminRoutes);
+  // Landing Page
+  app.get("/",(req,res)=>{
+    res.render("landing");
+  });
 
-
-app.get("*",(req,res)=>{
-  res.status(404);
-  res.render("404");
-});
+  // 404 Route
+  app.get("*",(req,res)=>{
+    res.status(404);
+    res.render("404");
+  });
+  
+});   
 
 
 app.listen(4000,()=>{
-    console.log("Server has started!");
+  console.log("Server has started!");
 });
-
-});   
