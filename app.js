@@ -1,22 +1,27 @@
 const express = require("express"),
-        app        = express();
-        // seed = require("./seed.js"), 
-        MongoClient = require('mongodb').MongoClient,
-        assert = require('assert'),
-        Ajv = require("ajv"),
-        productSchema = require("./lib/schemas/product.json"),
-        userSchema  = require("./lib/schemas/user.json"),
-        orderSchema  = require("./lib/schemas/order.json"),
-        bcrypt = require("bcrypt"),
-        bodyParser = require("body-parser"),
-        session = require("express-session"),
-        redis = require('redis'),
-        redisClient = redis.createClient(),
-        redisStore = require('connect-redis')(session),
-        {google} = require('googleapis'),
-        request = require("request"),
-        methodOverride = require("method-override"),
-        dotenv = require('dotenv').config();
+      app        = express();
+      // seed = require("./seed.js"), 
+      MongoClient = require('mongodb').MongoClient,
+      assert = require('assert'),
+      Ajv = require("ajv"),
+      productSchema = require("./lib/schemas/product.json"),
+      userSchema  = require("./lib/schemas/user.json"),
+      orderSchema  = require("./lib/schemas/order.json"),
+      bcrypt = require("bcrypt"),
+      bodyParser = require("body-parser"),
+      session = require("express-session"),
+      redis = require('redis'),
+      redisClient = redis.createClient(),
+      redisStore = require('connect-redis')(session),
+      {google} = require('googleapis'),
+      request = require("request"),
+      methodOverride = require("method-override"),
+      dotenv = require('dotenv').config();
+
+const indexRoutes = require("./routes/index"),
+      userRoutes  = require("./routes/user"),
+      adminRoutes = require("./routes/admin");
+
 // const exitHook = require('exit-hook');
 // const e = require("express");
 // const { parse } = require("path");
@@ -167,7 +172,7 @@ MongoClient.connect(url,{ useNewUrlParser: true, useUnifiedTopology: true },(err
 
   // APP CONFIG
 app.set("view engine","ejs");
-app.use(express.static("public"));
+app.use(express.static(__dirname + "/public"));
 app.use(methodOverride('_method'));
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());
@@ -191,6 +196,7 @@ app.use(bodyParser.json());
 
 // User Session(every route)
 app.use((req,res,next)=>{
+  
   // if there's no user field in session data(first time visits/session data expires)=>set user field to null, so that in "views" we can identify login/logout with null/value
   if(req.session.user == undefined){
     req.session.user = null; 
@@ -242,64 +248,9 @@ app.use("/cart",(req,res,next)=>{
   next();
 });
 
-// ====================
-// Product Route
-// ====================
-// Landing Page
-app.get("/",(req,res)=>{
-  res.render("landing");
-});
+app.db = db;
 
-// Index Route
-app.get("/products",(req,res)=>{
-  db.products.find({}).toArray()
-  .then((products)=>{
-    res.render("product/index",{products:products,category:null,search:null});
-  })
-  .catch((err)=>{
-    console.log(err);
-    res.render("failure");
-  });  
-});
-
-// Show Route
-app.get("/products/:id",(req,res)=>{
-  let productId = req.params.id;
-  db.products.findOne({productId:productId})
-  .then((foundProduct)=>{
-    res.render("product/show",{product:foundProduct});
-  })
-  .catch((err)=>{
-    console.log(err);
-    res.render("failure");
-  })
-});
-
-// Search Route
-app.post("/search",(req,res)=>{
-  search = req.body.search;
-  db.products.find({$text:{$search:search}}).toArray()
-  .then((foundProducts)=>{
-    res.render("product/index",{products:foundProducts,category:null,search:search});
-  })
-  .catch((err)=>{
-    console.log(err);
-    res.render("failure");
-  })
-});
-
-// Category route
-app.get("/category/:detail",(req,res)=>{
-  detail = req.params.detail;
-  db.products.find({category:detail}).toArray()
-  .then((foundProducts)=>{
-    res.render("product/index",{products:foundProducts,category:detail,search:null});
-  })
-  .catch((err)=>{
-    console.log(err);
-    res.render("failure");
-  });
-});
+app.use(indexRoutes);
 
 // ====================
 // User Route
