@@ -18,11 +18,10 @@
                    background-size: cover;
                    background-position: center; 
                }
-               body,
-            html {
+               body,html {
                 width: 100%;
                 height: 100%;
-                color: white;
+                color: black;
             }
             .content{
                 padding-top: 25%;
@@ -47,8 +46,8 @@
         </head>
 
         <body>
-             <!-- Pushy Sidebar -->
-             <nav class="pushy pushy-right">
+            <!-- Pushy Sidebar -->
+            <nav class="pushy pushy-right">
                 <div class="pushy-content">
                     <div class="card">
                         <h1 class="text-center mt-3">Cart</h1>
@@ -76,8 +75,12 @@
                                         </div>
                                     </div>
                                 <%})%>
-                                <form action="/purchase" method="GET">
-                                    <button type="submit" class="btn btn-outline-primary btn-lg mb-3">Purchase</button>
+                                <hr>
+                                <form action="/purchase" method="GET" style="display: inline;"class="text-center">
+                                    <button type="submit" class="btn btn-outline-primary mb-2" style="width:80%">Purchase</button>
+                                </form>
+                                <form action = "/cart/clear?_method=DELETE" method="POST" style="display: inline" class="text-center">
+                                    <button type="submit" class="btn btn-outline-danger mb-2" style="width:80%">Delete All</button>
                                 </form>
                             <%}%>
                         <%}else{%>
@@ -90,7 +93,7 @@
             </nav>
             <!-- Site Overlay -->
             <div class="site-overlay"></div>
-            
+
             <!-- Main -->
             <div class="main push">
                 <h1 class="text-center m-3"><a href="/products" class="anchor">Pickup <sup><i class="fab fa-pied-piper-hat"></i></sup></a></h1>
@@ -113,8 +116,8 @@
                                 Category
                             </a>
                             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item text-muted" href="/category/outfit">Outfit</a>
-                                <a class="dropdown-item text-muted" href="/category/accessory">Accessory</a>
+                                <a class="dropdown-item text-muted" href="/products/category/outfit">Outfit</a>
+                                <a class="dropdown-item text-muted" href="/products/category/accessory">Accessory</a>
                                 <div class="dropdown-divider"></div>
                                 <a class="dropdown-item text-muted" href="/products">On Sale Products</a>
                             </div>
@@ -157,7 +160,7 @@
                 </div>
                 </nav>
             </div>
-            <div class="container pic">
+            <div class="container pic push">
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="content">

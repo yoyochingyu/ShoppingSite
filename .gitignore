@@ -1,5 +1,11 @@
 node_modules/
 previousSrc/
 Picture/
-test/
+views/test/
 .env
+dump.rdb
+0501.md
+developLog.md
+dev_progress.ods
+question.md
+test.js

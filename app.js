@@ -1,4 +1,5 @@
 const express = require("express"),
+<<<<<<< HEAD
         app        = express();
         // seed = require("./seed.js"), 
         MongoClient = require('mongodb').MongoClient,
@@ -25,6 +26,31 @@ const { ObjectId } = require("mongodb");
 // exitHook(() => {
 //   console.log('Exiting');
 // });
+=======
+      app        = express();
+      seedDB = require("./seed.js"), 
+      MongoClient = require('mongodb').MongoClient,
+      assert = require('assert'),
+      productSchema = require("./lib/schemas/product.json"),
+      userSchema  = require("./lib/schemas/user.json"),
+      orderSchema  = require("./lib/schemas/order.json"),
+      bcrypt = require("bcrypt"),
+      bodyParser = require("body-parser"),
+      session = require("express-session"),
+      redis = require('redis'),
+      redisClient = redis.createClient(),
+      redisStore = require('connect-redis')(session),
+      {google} = require('googleapis'),
+      request = require("request"),
+      methodOverride = require("method-override"),
+      dotenv = require('dotenv').config();
+
+const productRoutes = require("./routes/product"),
+      userRoutes  = require("./routes/user"),
+      adminRoutes = require("./routes/admin");
+
+
+>>>>>>> master
 
 //Load .env
 const CLIENT_ID = process.env.GOOGLE_OAUTH_CLIENTID,
@@ -53,6 +79,7 @@ const consentUrl = oauth2Client.generateAuthUrl({
 // db connection
 const url = 'mongodb://localhost:27017';
 const dbName = 'shoppingSite';
+<<<<<<< HEAD
 // Setup ajv
 var ajv = new Ajv({allErrors:true}); // Create Ajv instance(returns an obj)
 
@@ -163,14 +190,24 @@ MongoClient.connect(url,{ useNewUrlParser: true, useUnifiedTopology: true },(err
   db.users = db.collection('users');
   db.orders = db.collection('orders');
   db.admins = db.collection('admins');
+=======
+>>>>>>> master
 
+// Redis connection
+redisClient.on('connect',()=>{
+  console.log('Redis server has started!');
+});
+redisClient.on("error",(err)=>{
+  console.log(err);
+});
 
-  // APP CONFIG
+// APP CONFIG
 app.set("view engine","ejs");
-app.use(express.static("public"));
+app.use(express.static(__dirname + "/public"));
 app.use(methodOverride('_method'));
 app.use(bodyParser.urlencoded({extended:true}));
 app.use(bodyParser.json());
+<<<<<<< HEAD
   // Redis connection
   redisClient.on('connect',()=>{
     console.log('Redis server has started!');
@@ -188,6 +225,18 @@ app.use(bodyParser.json());
     secret:'Odessy is the best game in the world!',
     store: new redisStore({client:redisClient})
   }));
+=======
+
+// Session settings
+app.use(session({
+  cookie:{maxAge:1000*60*60*24*3}, // 3 days
+  name:'shoppingSiteCookie', 
+  resave:false,
+  saveUninitialized:false,
+  secret:'Odessy is the best game in the world!',
+  store: new redisStore({client:redisClient})
+}));
+>>>>>>> master
 
 // User Session(every route)
 app.use((req,res,next)=>{
@@ -195,16 +244,13 @@ app.use((req,res,next)=>{
   if(req.session.user == undefined){
     req.session.user = null; 
   }
-   // if there's no cart field in session data(first time visits/session data expires)=>set cart field to null, so that in "views" we can use forEach to render products
+  // if there's no cart field in session data(first time visits/session data expires)=>set cart field to null, so that in "views" we can use forEach to render products
   if(req.session.cart==undefined){
     req.session.cart=null;
   }
-
   if(req.session.admin==undefined){
     req.session.admin=null;
   }
-
-
   // pass user/cart session to "views"
   res.locals.user = req.session.user;
   res.locals.cart=req.session.cart;
@@ -221,8 +267,12 @@ app.use((req,res,next)=>{
   if(req.session.cart!=undefined && req.session.cart!=null){
     res.locals.cart = req.session.cart;
   }
+<<<<<<< HEAD
 }   
   res.locals.CLIENT_ID = CLIENT_ID;
+=======
+  }   
+>>>>>>> master
   next();
 });
 
@@ -242,6 +292,7 @@ app.use("/cart",(req,res,next)=>{
   next();
 });
 
+<<<<<<< HEAD
 // ====================
 // Product Route
 // ====================
@@ -605,11 +656,37 @@ app.get("/admin/login",(req,res)=>{
 //   });
 // });
 
+=======
 
-app.post("/admin/login",(req,res)=>{
-  let inputEmail = req.body.inputEmail;
-  let inputPassword = req.body.inputPassword;
+MongoClient.connect(url,{ useNewUrlParser: true, useUnifiedTopology: true },(err,client)=>{
+  assert.equal(null,err);
+  console.log("Connected successfully to Mongodb");
+  const db = client.db(dbName);
+  db.products = db.collection('products');
+  db.users = db.collection('users');
+  db.orders = db.collection('orders');
+  db.admins = db.collection('admins');
   
+  
+  app.db = db;
+  seedDB(db);
+  app.use("/",productRoutes);
+  app.use("/",userRoutes);
+  app.use("/",adminRoutes);
+
+  // Landing Page
+  app.get("/",(req,res)=>{
+    res.render("landing");
+  });
+>>>>>>> master
+
+  // 404 Route
+  app.get("*",(req,res)=>{
+    res.status(404);
+    res.render("404");
+  });
+  
+<<<<<<< HEAD
   // Define checkUser function
   async function checkAdmin(inputEmail,inputPassword){
     db.admins.findOne({email:inputEmail})
@@ -789,10 +866,11 @@ app.get("*",(req,res)=>{
   res.status(404);
   res.render("404");
 });
+=======
+});   
+>>>>>>> master
 
 
 app.listen(4000,()=>{
-    console.log("Server has started!");
+  console.log("Server has started!");
 });
-
-});   
