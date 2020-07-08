@@ -3,3 +3,5 @@ previousSrc/
 Picture/
 test/
 .env
+dump.rdb
+.gitignore
