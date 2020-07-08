@@ -4,14 +4,13 @@
         <title>TEST GOOGLE OAUTH</title>
         <meta name="google-signin-client_id" content="941696510446-2444frjglrq8i4laa2dak4fkv20ave0t.apps.googleusercontent.com">
         <script src="https://apis.google.com/js/platform.js" async defer></script>
-        <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
     </head>
     <body>
         <h1>login page</h1>
         <h3>3</h3>
         <!-- Sign in button -->
         
-          <div class="g-signin2" data-onsuccess="onSignIn"  data-redirecturi="/policy"></div>
+          <div class="g-signin2" data-onsuccess="onSignIn"></div>
 
         
         <!-- Sign out -->
@@ -28,6 +27,7 @@
                 console.log('Image URL: ' + profile.getImageUrl());
                 console.log('Email: ' + profile.getEmail());
                 console.log('Id_token: ' + id_token); 
+                // ajax
                 $.ajax({
                   type: "POST",
                   url: '/authenticated',
@@ -40,17 +40,17 @@
                   contentType:"application/json",
                 });
             }
+        </script>
 
-            // Signout function 
-        
+        <!-- Signout function -->
+        <script>
             function signOut() {
               var auth2 = gapi.auth2.getAuthInstance();
               auth2.signOut().then(function () {
                 console.log('User signed out.');
               });
             }
-
-        </script>
+          </script>
 
     </body>
 </html>

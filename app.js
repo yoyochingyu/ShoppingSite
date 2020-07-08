@@ -44,6 +44,11 @@ const oauth2Client = new google.auth.OAuth2(
   REDIRECT_URL
 );
 
+const consentUrl = oauth2Client.generateAuthUrl({
+  access_type: 'offline',
+  scope: scopes
+});
+
 
 // db connection
 const url = 'mongodb://localhost:27017';
@@ -51,7 +56,7 @@ const dbName = 'shoppingSite';
 // Setup ajv
 var ajv = new Ajv({allErrors:true}); // Create Ajv instance(returns an obj)
 
-//Testing
+// Testing with ajv
 function test(schema,data){		
   return new Promise((resolve,reject)=>{		
     var valid = ajv.validate(schema,data); //Validate data using passed schema (it will be compiled and cached)(return boolean)		
@@ -124,6 +129,32 @@ function orderProcess(input,req,db){
 
 }
 
+async function authenticateGoogle(req,res,db){
+  let code = req.query.code;
+  let {tokens} = await oauth2Client.getToken(code);
+  oauth2Client.setCredentials(tokens);
+  request(`https://oauth2.googleapis.com/tokeninfo?id_token=${tokens.id_token}`,(err,response,body)=>{
+    if(err){
+      console.log(err);
+      res.redirect("/register/new");
+    }
+    else{
+      let Jbody = JSON.parse(body);
+      db.users.findOne({email:Jbody.email})
+      .then((foundResult)=>{
+        if(foundResult==null){
+          let userInfo = {firstName:Jbody.given_name,lastName:Jbody.family_name,email:Jbody.email};
+          res.render("user/register",{userInfo:userInfo});    
+        }else{
+          req.session.user = foundResult;
+          res.redirect("/products");
+        }
+      })
+      .catch(err=>console.log(err));
+    }
+  }); 
+}
+
 MongoClient.connect(url,{ useNewUrlParser: true, useUnifiedTopology: true },(err,client)=>{
   assert.equal(null,err);
   console.log("Connected successfully to Mongodb");
@@ -139,6 +170,7 @@ app.set("view engine","ejs");
 app.use(express.static("public"));
 app.use(methodOverride('_method'));
 app.use(bodyParser.urlencoded({extended:true}));
+app.use(bodyParser.json());
   // Redis connection
   redisClient.on('connect',()=>{
     console.log('Redis server has started!');
@@ -190,6 +222,7 @@ app.use((req,res,next)=>{
     res.locals.cart = req.session.cart;
   }
 }   
+  res.locals.CLIENT_ID = CLIENT_ID;
   next();
 });
 
@@ -272,14 +305,10 @@ app.get("/category/:detail",(req,res)=>{
 // User Route
 // ====================
 app.get("/login",(req,res)=>{
-    res.render("user/login");
+    res.render("user/login",{consentUrl:consentUrl});
 });
 
 app.get("/register",(req,res)=>{
-  const consentUrl = oauth2Client.generateAuthUrl({
-    access_type: 'offline',
-    scope: scopes
-  });
   res.render("user/register-option",{consentUrl:consentUrl});
 });
 
@@ -288,21 +317,7 @@ app.get("/register/new",async(req,res)=>{
     // console.log("NEW USER");
     res.render("user/register",{userInfo:null});
   }else{
-    let code = req.query.code;
-    const {tokens} = await oauth2Client.getToken(code);
-    oauth2Client.setCredentials(tokens);
-    request(`https://oauth2.googleapis.com/tokeninfo?id_token=${tokens.id_token}`,(err,response,body)=>{
-      if(err){
-        console.log(err);
-        res.redirect("/register/new");
-      }
-      else{
-        let Jbody = JSON.parse(body);
-        // console.log(Jbody.email);
-        let userInfo = {firstName:Jbody.given_name,lastName:Jbody.family_name,email:Jbody.email};
-        res.render("user/register",{userInfo:userInfo});
-      }
-    });  
+    authenticateGoogle(req,res,db); //function call
   }
 });
 
@@ -566,7 +581,7 @@ app.get("/admin/login",(req,res)=>{
   res.render("admin/login");
 });
 
-// Block external register
+/* Block external register*/
 // app.get("/admin/register",(req,res)=>{
 //   res.render("admin/register");
 // });
@@ -629,6 +644,9 @@ app.get("/admin/logout",(req,res)=>{
   res.redirect("/products");
 });
 
+app.get("/admin",(req,res)=>{
+  res.redirect("/admin/login");
+})
 
 app.get("/admin/customers",(req,res)=>{
   if(req.session.admin==null){

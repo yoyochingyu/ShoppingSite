@@ -3,6 +3,11 @@
     <div class="card mx-auto" style="width: 30%;">
         <div class="card-body">
             <h2 class="card-title text-center">Login</h2>
+
+            <!-- Google signin button self-made -->
+            <a href="<%=consentUrl%>"><button type="button" class="btn btn-outline-primary mt-3" style="width: 100%;text-align: center;"><i class="fab fa-google"></i> Login with google</button></a>
+            <hr >
+            <!-- Regular login form -->
             <form method="POST" action="/login">
                 <div class="form-group">
                     <label for="inputEmail">Email</label>
