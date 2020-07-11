@@ -28,10 +28,16 @@ function seedDB(db){
     })
     .catch(err=>console.log(err))
 
-    db.products.dropIndexes({})
-    .then(()=>{
-        return db.products.createIndex( { productName: "text", description: "text" } );
-    })
+    /** In Local */
+    // db.products.dropIndexes({})
+    // .then(()=>{
+    //     return db.products.createIndex( { productName: "text", description: "text" } );
+    // })
+    // .then(()=>{console.log("Created Index");})
+    // .catch(err=>console.log(err));
+
+    /** Remote */
+    db.products.createIndex( { productName: "text", description: "text" } )
     .then(()=>{console.log("Created Index");})
     .catch(err=>console.log(err));
 }

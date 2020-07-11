@@ -1,13 +1,24 @@
 version: '3'
 services:
     web:
-        build: .
+        image: yoyochingyu/shoppingsite_web:latest
+        # In local, use build; In remote, use image
+        # build: .
+        environment: 
+            - GOOGLE_OAUTH_CLIENTID=${GOOGLE_OAUTH_CLIENTID}
+            - GOOGLE_OAUTH_SECRET=${GOOGLE_OAUTH_SECRET}
+            - GOOGLE_OAUTH_REDIRECTURL=${GOOGLE_OAUTH_REDIRECTURL}
         ports:
         - "4000:4000"
-        volumes:
-            - .:/usr/src/app
-        environment:
-            NODE_ENV: development
+
+        # Causes error while deploying remote,"npm ERR! enoent ENOENT: no such file or directory, open '/usr/src/package.json'"
+        # See:"https://stackoverflow.com/questions/54884565/docker-compose-fails-to-start-with-npm-err-enoent-enoent-no-such-file-or-direc"
+        # Only use while developing local
+
+        # volumes:
+        #     - .:/usr/src/app
+        # environment:
+        #     NODE_ENV: development
     redis:
         image: "redis:alpine"
         ports:
