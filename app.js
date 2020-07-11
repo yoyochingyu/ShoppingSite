@@ -10,7 +10,8 @@ const express = require("express"),
       bodyParser = require("body-parser"),
       session = require("express-session"),
       redis = require('redis'),
-      redisClient = redis.createClient(),
+      redisClient = redis.createClient({port:6379,host:'redis'}), // docker modification
+      // redisClient = redis.createClient(), // usual
       redisStore = require('connect-redis')(session),
       {google} = require('googleapis'),
       request = require("request"),
@@ -24,7 +25,8 @@ const productRoutes = require("./routes/product"),
 
 
 // db connection
-const url = 'mongodb://localhost:27017';
+const url = 'mongodb://mongo:27017'; //docker modification
+// const url = 'mongodb://localhost:27017'; //usual
 const dbName = 'shoppingSite';
 
 // Redis connection

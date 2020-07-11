@@ -11,7 +11,7 @@ router.get("/products",(req,res)=>{
     .catch((err)=>{
         console.log(err);
         res.render("failure");
-    });  
+    }); 
 });
 
 // Show Route

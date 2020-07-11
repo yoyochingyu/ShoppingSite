@@ -18,6 +18,22 @@ function seedDB(db){
         console.log(`Seeding succeeds:Inserted ${insertResult.result.n} products`);
     })
     .catch(err=>console.log(err));
+
+    db.admins.deleteMany({})
+    .then(()=>{
+        return db.admins.insertOne({"email" : "admin@admin.com", "password" : "$2b$12$LX.7YBSTM8AsolLNtTJUnOLSBj2Lbzy.uS8tudTJ2o2nHE0in0P2e"});
+    })
+    .then((insertResult)=>{
+        console.log(`Seeding succeeds:Inserted ${insertResult.result.n} admin(s)`);
+    })
+    .catch(err=>console.log(err))
+
+    db.products.dropIndexes({})
+    .then(()=>{
+        return db.products.createIndex( { productName: "text", description: "text" } );
+    })
+    .then(()=>{console.log("Created Index");})
+    .catch(err=>console.log(err));
 }
 
 

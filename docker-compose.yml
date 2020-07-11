@@ -1,0 +1,19 @@
+version: '3'
+services:
+    web:
+        build: .
+        ports:
+        - "4000:4000"
+        volumes:
+            - .:/usr/src/app
+        environment:
+            NODE_ENV: development
+    redis:
+        image: "redis:alpine"
+        ports:
+            - "6379"
+    mongo:
+        image: mongo
+        restart: always
+        ports:
+            - "27017"
