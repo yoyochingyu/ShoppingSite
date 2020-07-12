@@ -8,6 +8,8 @@ services:
             - GOOGLE_OAUTH_CLIENTID=${GOOGLE_OAUTH_CLIENTID}
             - GOOGLE_OAUTH_SECRET=${GOOGLE_OAUTH_SECRET}
             - GOOGLE_OAUTH_REDIRECTURL=${GOOGLE_OAUTH_REDIRECTURL}
+            - REDIS_HOST=redis
+            - MONGODB_URL=mongodb://mongo:27017
         ports:
         - "4000:4000"
 

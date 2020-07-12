@@ -6,17 +6,17 @@ const express = require("express"),
       productSchema = require("./lib/schemas/product.json"),
       userSchema  = require("./lib/schemas/user.json"),
       orderSchema  = require("./lib/schemas/order.json"),
+      dotenv = require('dotenv').config(),
       bcrypt = require("bcryptjs"),
       bodyParser = require("body-parser"),
       session = require("express-session"),
       redis = require('redis'),
-      redisClient = redis.createClient({port:6379,host:'redis'}), // docker modification
-      // redisClient = redis.createClient(), // local
+      redisClient = redis.createClient(6379,`${process.env.REDIS_HOST}`),
       redisStore = require('connect-redis')(session),
       {google} = require('googleapis'),
       request = require("request"),
-      methodOverride = require("method-override"),
-      dotenv = require('dotenv').config();
+      methodOverride = require("method-override");
+      
 
 const productRoutes = require("./routes/product"),
       userRoutes  = require("./routes/user"),
@@ -25,8 +25,7 @@ const productRoutes = require("./routes/product"),
 
 
 // db connection
-const url = 'mongodb://mongo:27017'; //docker modification
-// const url = 'mongodb://localhost:27017'; //local
+const url = `${process.env.MONGODB_URL}`; //docker modification
 const dbName = 'shoppingSite';
 
 // Redis connection

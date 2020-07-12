@@ -113,22 +113,18 @@ router.get("/register/new",async(req,res)=>{
 router.post("/register",(req,res)=>{
   let db = req.app.db;    
   var inputUser = req.body;
-  console.log(1);
   test(userSchema,inputUser)
   .then(()=>{
-    console.log(2);
       // console.log("Register Validation succeeds!");
       // Hash password
       let saltRounds = 12;
       return bcrypt.hash(inputUser.password,saltRounds);
   })
   .then((hash)=>{
-    console.log(3);
       inputUser.password = hash;
       return db.users.insertOne(inputUser);
   })
   .then((result)=>{
-    console.log(4);
       //  console.log(result.ops);
       res.redirect("/products");
   })
