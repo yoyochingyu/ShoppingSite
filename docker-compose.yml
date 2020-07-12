@@ -4,6 +4,7 @@ services:
         image: yoyochingyu/shoppingsite_web:version1
         # In local, use build; In remote, use image
         # build: .
+        restart: always
         environment: 
             - GOOGLE_OAUTH_CLIENTID=${GOOGLE_OAUTH_CLIENTID}
             - GOOGLE_OAUTH_SECRET=${GOOGLE_OAUTH_SECRET}
@@ -23,6 +24,7 @@ services:
         #     NODE_ENV: development
     redis:
         image: "redis:alpine"
+        restart: always
         ports:
             - "6379"
     mongo:
