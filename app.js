@@ -1,3 +1,11 @@
+const http = require('http'),
+      https = require('https'),
+      fs=  require('fs'),
+      privateKey  = fs.readFileSync('sslcert/server.key', 'utf8'),
+      certificate = fs.readFileSync('sslcert/server.crt', 'utf8'),
+      credentials = {key: privateKey, cert: certificate};
+      
+
 const express = require("express"),
       app        = express();
       seedDB = require("./seed.js"), 
@@ -38,6 +46,9 @@ redisClient.on("error",(err)=>{
 
 // APP CONFIG
 app.set("view engine","ejs");
+// var httpServer = http.createServer(app);
+var httpsServer = https.createServer(credentials, app);
+
 app.use(express.static(__dirname + "/public"));
 app.use(methodOverride('_method'));
 app.use(bodyParser.urlencoded({extended:true}));
@@ -133,6 +144,13 @@ MongoClient.connect(url,{ useNewUrlParser: true, useUnifiedTopology: true },(err
 });   
 
 
-app.listen(4000,()=>{
-  console.log("Server has started!");
+// app.listen(4000,()=>{
+//   console.log("Server has started!");
+// });
+// httpServer.listen(4000,()=>{
+//   console.log('http server started successfully!');
+// });
+
+httpsServer.listen(4000,()=>{
+  console.log('HTTPS server started successfully');
 });

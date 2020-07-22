@@ -1,9 +1,9 @@
 version: '3'
 services:
     web:
-        image: yoyochingyu/shoppingsite_web:version1
+        # image: yoyochingyu/shoppingsite_web:version1
         # In local, use build; In remote, use image
-        # build: .
+        build: .
         restart: always
         environment: 
             - GOOGLE_OAUTH_CLIENTID=${GOOGLE_OAUTH_CLIENTID}

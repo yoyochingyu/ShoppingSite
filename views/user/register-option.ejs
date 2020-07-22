@@ -1,12 +1,117 @@
 <%-include("../partials/header")%>
+
 <div class="container-fluid push">
     <div class="card mx-auto" style="width: 30%;">
         <div class="card-body mx-auto">
             <h2 class="card-title text-center">Register</h2>
                 <a href="<%=consentUrl%>"><button type="button" class="btn btn-outline-primary mt-3" style="width: 100%;text-align: center;"><i class="fab fa-google"></i> Login with google</button></a>
                 <a href = "/register/new"><button type="button" class="btn btn-outline-primary mt-4 mb-3" style="width: 100%;text-align: center;"><i class="fas fa-user-circle"></i> New User</button></a>
+                <!-- Login with fb -->
+                <!-- <button type="button" class="btn btn-outline-primary mt-3" style="width: 100%;text-align: center;" onclick="checkLoginState()"><i class="fab fa-google"></i> Login with Facebook</button> -->
+          
+                <!-- Facebook login -->
+                <!-- <fb:login-button 
+                    scope="public_profile,email"
+                    onlogin="checkLoginState();">
+                </fb:login-button>
+
+                <p id="fbStatus"></p> -->
+                
         </div>
     </div>
 </div>
 
+<!-- <script>
+    function getcha(){
+        $.ajax({
+                type: "POST",
+                url: "/register/new",
+                data: "5",
+                dataType: "json",
+                success: function() {                    
+                    window.location ="/"
+                }
+        })
+    }
+
+    function checkLoginState() {
+        FB.getLoginStatus(function(res) {
+            if(res.status == "connected"){
+                console.log("Already authorized");
+                var accessToken = {"accessToken":res.authResponse.accessToken};
+                console.log(res);
+                $.ajax({
+                type: "POST",
+                url: "/fb",
+                data: accessToken,
+                dataType: "json",
+                success: function(data) {                    
+                    console.log(data);
+                }
+                });
+                
+                // window.location ="/register/new"
+
+                // FB.api('/me', "GET", { fields: 'last_name,first_name,name,email' },function(response) {
+                //     $("#fbStatus").html(JSON.stringify(response));
+                    
+                //     // console.log(response);
+                //     var fb_info = {"firstName":response.first_name,"lastName":response.last_name,email:response.email};
+                //     req.session.fb_info = fb_info;
+                //     console.log(2);
+                //     $.ajax({
+                //         url: '/fb',
+                //         type: 'POST',
+                //         data:fb_info,
+                //         success: function(result) {
+                //             window.location.href = "/fb";
+                //         }
+                //     });
+                // });   
+               
+
+            }else if (res.status == 'not_authorized' || res.status == "unknown") {
+                    FB.login(function (response) {
+                        if (response.status === 'connected') {
+                            console.log("Get authorization");
+                            getProfile(); 
+                        } else {
+                            alert("Facebook帳號無法登入");
+                        }
+                    }, {scope: 'public_profile,email'}); 
+            }
+        });
+    }
+
+    function getProfile(){
+        var response_outer;
+        $("#fbStatus").html("");
+        FB.api('/me', "GET", { fields: 'last_name,first_name,name,email' },function(response) {
+            $("#fbStatus").html(JSON.stringify(response));
+            response_outer = response;
+        }); 
+        return response_outer;
+    }
+
+    window.fbAsyncInit = function() {
+      FB.init({
+        appId      : '293174402045610',
+        cookie     : true,
+        xfbml      : true,
+        version    : 'v7.0'
+      });
+        
+      FB.AppEvents.logPageView();   
+        
+    };
+  
+    (function(d, s, id){
+       var js, fjs = d.getElementsByTagName(s)[0];
+       if (d.getElementById(id)) {return;}
+       js = d.createElement(s); js.id = id;
+       js.src = "https://connect.facebook.net/en_US/sdk.js";
+       fjs.parentNode.insertBefore(js, fjs);
+     }(document, 'script', 'facebook-jssdk'));
+  </script>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script> -->
 <%-include("../partials/footer")%>

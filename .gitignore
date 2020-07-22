@@ -9,3 +9,6 @@ developLog.md
 dev_progress.ods
 question.md
 test.js
+sslcert/
+test-Jest.js
+sum.test.js
