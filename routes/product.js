@@ -6,6 +6,10 @@ router.get("/products",(req,res)=>{
     let db = req.app.db;
     db.products.find({}).toArray() 
     .then((products)=>{
+        if(req.query.json === 'true'){
+            res.status(200).json(products);
+            return;
+        }
         res.render("product/index",{products:products,category:null,search:null});
     })
     .catch((err)=>{

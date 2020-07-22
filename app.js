@@ -1,11 +1,3 @@
-const http = require('http'),
-      https = require('https'),
-      fs=  require('fs'),
-      privateKey  = fs.readFileSync('sslcert/server.key', 'utf8'),
-      certificate = fs.readFileSync('sslcert/server.crt', 'utf8'),
-      credentials = {key: privateKey, cert: certificate};
-      
-
 const express = require("express"),
       app        = express();
       seedDB = require("./seed.js"), 
@@ -18,8 +10,7 @@ const express = require("express"),
       bcrypt = require("bcryptjs"),
       bodyParser = require("body-parser"),
       session = require("express-session"),
-      redis = require('redis'),
-      redisClient = redis.createClient(6379,`${process.env.REDIS_HOST}`),
+      redis = require("./lib/redis"),
       redisStore = require('connect-redis')(session),
       {google} = require('googleapis'),
       request = require("request"),
@@ -36,18 +27,10 @@ const productRoutes = require("./routes/product"),
 const url = `${process.env.MONGODB_URL}`; //docker modification
 const dbName = 'shoppingSite';
 
-// Redis connection
-redisClient.on('connect',()=>{
-  console.log('Redis server has started!');
-});
-redisClient.on("error",(err)=>{
-  console.log(err);
-});
 
 // APP CONFIG
 app.set("view engine","ejs");
-// var httpServer = http.createServer(app);
-var httpsServer = https.createServer(credentials, app);
+
 
 app.use(express.static(__dirname + "/public"));
 app.use(methodOverride('_method'));
@@ -61,7 +44,7 @@ app.use(session({
   resave:false,
   saveUninitialized:false,
   secret:'Odessy is the best game in the world!',
-  store: new redisStore({client:redisClient})
+  store: new redisStore({client:redis.redisClient})
 }));
 
 // User Session(every route)
@@ -143,14 +126,9 @@ MongoClient.connect(url,{ useNewUrlParser: true, useUnifiedTopology: true },(err
   
 });   
 
-
 // app.listen(4000,()=>{
 //   console.log("Server has started!");
 // });
-// httpServer.listen(4000,()=>{
-//   console.log('http server started successfully!');
-// });
 
-httpsServer.listen(4000,()=>{
-  console.log('HTTPS server started successfully');
-});
+
+module.exports = app;
