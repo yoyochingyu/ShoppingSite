@@ -24,7 +24,7 @@ afterAll(async () => {
 
 describe("Testing the landing page",()=>{
     test("Should return status code 200",async()=>{
-        setTimeout(()=>{
+        setTimeout(async()=>{
             const res = await request(app).get("/");
             expect(res.statusCode).toBe(200);
         },1000);
