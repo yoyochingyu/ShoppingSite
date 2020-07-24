@@ -1,6 +1,7 @@
 const express = require("express"),
       app        = express();
-      seedDB = require("./seed.js"), 
+      // db = require("./lib/mongo"),
+      // seedDB = require("./seed.js"), 
       MongoClient = require('mongodb').MongoClient,
       assert = require('assert'),
       productSchema = require("./lib/schemas/product.json"),
@@ -15,7 +16,6 @@ const express = require("express"),
       {google} = require('googleapis'),
       request = require("request"),
       methodOverride = require("method-override");
-      
 
 const productRoutes = require("./routes/product"),
       userRoutes  = require("./routes/user"),
@@ -24,7 +24,7 @@ const productRoutes = require("./routes/product"),
 
 
 // db connection
-const url = `${process.env.MONGODB_URL}`; //docker modification
+const url = `${process.env.MONGODB_URL}`; 
 const dbName = 'shoppingSite';
 
 
@@ -106,7 +106,7 @@ MongoClient.connect(url,{ useNewUrlParser: true, useUnifiedTopology: true },asyn
   db.users = db.collection('users');
   db.orders = db.collection('orders');
   db.admins = db.collection('admins');
-  await seedDB(db);
+  // await seedDB(db);
   
   app.db = db;
   
