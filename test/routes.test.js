@@ -1,6 +1,20 @@
 const request = require("supertest"),
         app = require("../app"),
-        redis = require("../lib/redis");
+        redis = require("../lib/redis"),
+        {initDB,getDB} = require("../lib/mongo"),
+        seedDB = require("../seed");
+
+
+beforeAll(()=>{
+    initDB((err)=>{
+        if(err){
+          console.log(err);
+        }else{
+          db = getDB();
+          seedDB(db);
+        }
+      });
+});
 
 afterAll(async () => {
     await redis.closeInstance();

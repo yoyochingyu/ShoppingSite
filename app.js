@@ -2,7 +2,7 @@ const express = require("express"),
       app        = express();
       // db = require("./lib/mongo"),
       // seedDB = require("./seed.js"), 
-      MongoClient = require('mongodb').MongoClient,
+      // MongoClient = require('mongodb').MongoClient,
       assert = require('assert'),
       productSchema = require("./lib/schemas/product.json"),
       userSchema  = require("./lib/schemas/user.json"),
@@ -21,11 +21,11 @@ const productRoutes = require("./routes/product"),
       userRoutes  = require("./routes/user"),
       adminRoutes = require("./routes/admin");
 
-
+const {initDB,getDB} = require("./lib/mongo");
 
 // db connection
-const url = `${process.env.MONGODB_URL}`; 
-const dbName = 'shoppingSite';
+// const url = `${process.env.MONGODB_URL}`; 
+// const dbName = 'shoppingSite';
 
 
 // APP CONFIG
@@ -97,18 +97,26 @@ app.use("/cart",(req,res,next)=>{
 });
 
 
-MongoClient.connect(url,{ useNewUrlParser: true, useUnifiedTopology: true },async(err,client)=>{
-  assert.equal(null,err);
-  console.log("Connected successfully to Mongodb");
-  const db = client.db(dbName);
+initDB((err)=>{
+  if(err){
+    console.log(err);
+  }else{
+    app.db = getDB();
+    
+  }
+});
+// MongoClient.connect(url,{ useNewUrlParser: true, useUnifiedTopology: true },async(err,client)=>{
+//   assert.equal(null,err);
+//   console.log("Connected successfully to Mongodb");
+//   const db = client.db(dbName);
   
-  db.products = db.collection('products');
-  db.users = db.collection('users');
-  db.orders = db.collection('orders');
-  db.admins = db.collection('admins');
-  // await seedDB(db);
+//   db.products = db.collection('products');
+//   db.users = db.collection('users');
+//   db.orders = db.collection('orders');
+//   db.admins = db.collection('admins');
+//   // await seedDB(db);
   
-  app.db = db;
+  // app.db = db;
   
   app.use("/",productRoutes);
   app.use("/",userRoutes);
@@ -125,7 +133,7 @@ MongoClient.connect(url,{ useNewUrlParser: true, useUnifiedTopology: true },asyn
     res.render("404");
   });
   
-});   
+// });   
 
 // app.listen(4000,()=>{
 //   console.log("Server has started!");
