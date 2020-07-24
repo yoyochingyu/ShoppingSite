@@ -97,18 +97,19 @@ app.use("/cart",(req,res,next)=>{
 });
 
 
-MongoClient.connect(url,{ useNewUrlParser: true, useUnifiedTopology: true },(err,client)=>{
+MongoClient.connect(url,{ useNewUrlParser: true, useUnifiedTopology: true },async(err,client)=>{
   assert.equal(null,err);
   console.log("Connected successfully to Mongodb");
   const db = client.db(dbName);
+  
   db.products = db.collection('products');
   db.users = db.collection('users');
   db.orders = db.collection('orders');
   db.admins = db.collection('admins');
-  
+  await seedDB(db);
   
   app.db = db;
-  seedDB(db);
+  
   app.use("/",productRoutes);
   app.use("/",userRoutes);
   app.use("/",adminRoutes);
