@@ -92,3 +92,4 @@ $ node app.js
 3. Travis CI
 4. Nodemailer for authentication
 5. Flash
+6. Data Visualization for sale statistics
